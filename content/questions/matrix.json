@@ -1,0 +1,145 @@
+[
+  {
+    "id": "mat-001",
+    "topicId": "matrix",
+    "subtopic": "determinant",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาดีเทอร์มิแนนต์ของเมทริกซ์ $A = \\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$",
+      "choices": {
+        "a": "2",
+        "b": "-2",
+        "c": "10",
+        "d": "-4",
+        "e": "4"
+      }
+    },
+    "answer": "b",
+    "hint": "$\\det\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = ad - bc$",
+    "solution": {
+      "steps": [
+        "$\\det(A) = (1)(4) - (2)(3)$",
+        "$= 4 - 6 = -2$"
+      ],
+      "keyFormula": "$\\det\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} = ad - bc$"
+    },
+    "tags": ["determinant", "2x2-matrix"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "mat-002",
+    "topicId": "matrix",
+    "subtopic": "matrix-addition",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} + \\begin{pmatrix} 5 & 6 \\\\ 7 & 8 \\end{pmatrix}$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$\\begin{pmatrix} 6 & 8 \\\\ 10 & 12 \\end{pmatrix}$",
+        "b": "$\\begin{pmatrix} 5 & 12 \\\\ 21 & 32 \\end{pmatrix}$",
+        "c": "$\\begin{pmatrix} 6 & 8 \\\\ 21 & 32 \\end{pmatrix}$",
+        "d": "$\\begin{pmatrix} 4 & 4 \\\\ 4 & 4 \\end{pmatrix}$",
+        "e": "$\\begin{pmatrix} 7 & 8 \\\\ 9 & 10 \\end{pmatrix}$"
+      }
+    },
+    "answer": "a",
+    "hint": "บวกสมาชิกในตำแหน่งเดียวกัน",
+    "solution": {
+      "steps": [
+        "บวกสมาชิกในตำแหน่งเดียวกัน",
+        "$\\begin{pmatrix} 1+5 & 2+6 \\\\ 3+7 & 4+8 \\end{pmatrix} = \\begin{pmatrix} 6 & 8 \\\\ 10 & 12 \\end{pmatrix}$"
+      ]
+    },
+    "tags": ["matrix-addition"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "mat-003",
+    "topicId": "matrix",
+    "subtopic": "scalar-multiplication",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$3 \\times \\begin{pmatrix} 2 & 1 \\\\ 0 & 4 \\end{pmatrix}$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$\\begin{pmatrix} 5 & 4 \\\\ 3 & 7 \\end{pmatrix}$",
+        "b": "$\\begin{pmatrix} 6 & 3 \\\\ 0 & 12 \\end{pmatrix}$",
+        "c": "$\\begin{pmatrix} 2 & 1 \\\\ 0 & 4 \\end{pmatrix}$",
+        "d": "$\\begin{pmatrix} 6 & 1 \\\\ 0 & 4 \\end{pmatrix}$",
+        "e": "$\\begin{pmatrix} 3 & 3 \\\\ 3 & 3 \\end{pmatrix}$"
+      }
+    },
+    "answer": "b",
+    "hint": "คูณสเกลาร์กับสมาชิกทุกตัว",
+    "solution": {
+      "steps": [
+        "คูณ 3 กับสมาชิกทุกตัว",
+        "$3 \\times \\begin{pmatrix} 2 & 1 \\\\ 0 & 4 \\end{pmatrix} = \\begin{pmatrix} 6 & 3 \\\\ 0 & 12 \\end{pmatrix}$"
+      ]
+    },
+    "tags": ["scalar-multiplication"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "mat-004",
+    "topicId": "matrix",
+    "subtopic": "matrix-multiplication",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} \\times \\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$\\begin{pmatrix} 0 & 0 \\\\ 0 & 0 \\end{pmatrix}$",
+        "b": "$\\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$",
+        "c": "$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$",
+        "d": "$\\begin{pmatrix} 2 & 4 \\\\ 6 & 8 \\end{pmatrix}$",
+        "e": "$\\begin{pmatrix} 3 & 2 \\\\ 3 & 5 \\end{pmatrix}$"
+      }
+    },
+    "answer": "c",
+    "hint": "เมทริกซ์เอกลักษณ์ $I$ มีสมบัติ $AI = A$",
+    "solution": {
+      "steps": [
+        "เมทริกซ์ $\\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$ คือเมทริกซ์เอกลักษณ์ $I$",
+        "สมบัติของเมทริกซ์เอกลักษณ์: $A \\cdot I = A$",
+        "ดังนั้นผลคูณคือ $\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$"
+      ]
+    },
+    "tags": ["matrix-multiplication", "identity-matrix"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "mat-005",
+    "topicId": "matrix",
+    "subtopic": "inverse-matrix",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "เมทริกซ์ผกผันของ $A = \\begin{pmatrix} 2 & 1 \\\\ 5 & 3 \\end{pmatrix}$ คือข้อใด",
+      "choices": {
+        "a": "$\\begin{pmatrix} 3 & -1 \\\\ -5 & 2 \\end{pmatrix}$",
+        "b": "$\\begin{pmatrix} 3 & 1 \\\\ 5 & 2 \\end{pmatrix}$",
+        "c": "$\\begin{pmatrix} 2 & -1 \\\\ -5 & 3 \\end{pmatrix}$",
+        "d": "$\\begin{pmatrix} -3 & 1 \\\\ 5 & -2 \\end{pmatrix}$",
+        "e": "$\\begin{pmatrix} 1 & -1 \\\\ -5 & 2 \\end{pmatrix}$"
+      }
+    },
+    "answer": "a",
+    "hint": "$A^{-1} = \\dfrac{1}{\\det(A)}\\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix}$",
+    "solution": {
+      "steps": [
+        "$\\det(A) = 2 \\cdot 3 - 1 \\cdot 5 = 6 - 5 = 1$",
+        "$A^{-1} = \\dfrac{1}{1}\\begin{pmatrix} 3 & -1 \\\\ -5 & 2 \\end{pmatrix} = \\begin{pmatrix} 3 & -1 \\\\ -5 & 2 \\end{pmatrix}$"
+      ],
+      "keyFormula": "$A^{-1} = \\dfrac{1}{ad-bc}\\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix}$"
+    },
+    "tags": ["inverse-matrix"],
+    "source": "A-Level 2565"
+  }
+]

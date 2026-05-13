@@ -1,0 +1,147 @@
+[
+  {
+    "id": "rf-001",
+    "topicId": "relations-functions",
+    "subtopic": "function-evaluation",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $f(x) = 2x + 3$ จงหาค่า $f(4)$",
+      "choices": {
+        "a": "8",
+        "b": "10",
+        "c": "11",
+        "d": "14",
+        "e": "9"
+      }
+    },
+    "answer": "c",
+    "hint": "แทนค่า $x = 4$ ลงในสูตร",
+    "solution": {
+      "steps": [
+        "แทนค่า $x = 4$ ลงใน $f(x) = 2x + 3$",
+        "$f(4) = 2(4) + 3 = 8 + 3 = 11$"
+      ]
+    },
+    "tags": ["function-evaluation"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "rf-002",
+    "topicId": "relations-functions",
+    "subtopic": "domain",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "โดเมนของฟังก์ชัน $f(x) = \\sqrt{x - 2}$ คือข้อใด",
+      "choices": {
+        "a": "$x > 2$",
+        "b": "$x \\geq 2$",
+        "c": "$x < 2$",
+        "d": "$x \\leq 2$",
+        "e": "$x \\in \\mathbb{R}$"
+      }
+    },
+    "answer": "b",
+    "hint": "นิพจน์ภายในรากที่สองต้องมีค่าไม่ติดลบ",
+    "solution": {
+      "steps": [
+        "สำหรับ $\\sqrt{x-2}$ จะมีความหมายเมื่อ $x - 2 \\geq 0$",
+        "$x - 2 \\geq 0$",
+        "$x \\geq 2$"
+      ]
+    },
+    "tags": ["domain", "square-root"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "rf-003",
+    "topicId": "relations-functions",
+    "subtopic": "composition",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $f(x) = x^2 - 4$ และ $g(x) = x + 1$ จงหา $f(g(2))$",
+      "choices": {
+        "a": "3",
+        "b": "0",
+        "c": "9",
+        "d": "-1",
+        "e": "5"
+      }
+    },
+    "answer": "e",
+    "hint": "หา $g(2)$ ก่อน แล้วแทนผลลัพธ์ใน $f$",
+    "solution": {
+      "steps": [
+        "หา $g(2) = 2 + 1 = 3$",
+        "หา $f(g(2)) = f(3) = 3^2 - 4 = 9 - 4 = 5$"
+      ]
+    },
+    "tags": ["composition"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "rf-004",
+    "topicId": "relations-functions",
+    "subtopic": "inverse-function",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ฟังก์ชันผกผันของ $f(x) = 3x - 6$ คือข้อใด",
+      "choices": {
+        "a": "$f^{-1}(x) = \\dfrac{x+6}{3}$",
+        "b": "$f^{-1}(x) = \\dfrac{x-6}{3}$",
+        "c": "$f^{-1}(x) = 3x + 6$",
+        "d": "$f^{-1}(x) = \\dfrac{1}{3x-6}$",
+        "e": "$f^{-1}(x) = \\dfrac{x}{3} + 6$"
+      }
+    },
+    "answer": "a",
+    "hint": "ให้ $y = 3x - 6$ แล้วแก้สมการหา $x$ ในรูปของ $y$",
+    "solution": {
+      "steps": [
+        "ให้ $y = 3x - 6$",
+        "$y + 6 = 3x$",
+        "$x = \\dfrac{y+6}{3}$",
+        "ดังนั้น $f^{-1}(x) = \\dfrac{x+6}{3}$"
+      ]
+    },
+    "tags": ["inverse-function"],
+    "source": "A-Level 2565"
+  },
+  {
+    "id": "rf-005",
+    "topicId": "relations-functions",
+    "subtopic": "types-of-functions",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ฟังก์ชันใดต่อไปนี้เป็นฟังก์ชันหนึ่งต่อหนึ่ง (one-to-one)",
+      "choices": {
+        "a": "$f(x) = x^2$",
+        "b": "$f(x) = |x|$",
+        "c": "$f(x) = 2x + 1$",
+        "d": "$f(x) = \\sin x$",
+        "e": "$f(x) = x^2 - 4$"
+      }
+    },
+    "answer": "c",
+    "hint": "ฟังก์ชันหนึ่งต่อหนึ่งคือฟังก์ชันที่ค่า $x$ ต่างกันให้ $f(x)$ ต่างกันเสมอ",
+    "solution": {
+      "steps": [
+        "$f(x) = 2x + 1$ เป็นฟังก์ชันเชิงเส้น",
+        "ถ้า $f(x_1) = f(x_2)$ แล้ว $2x_1 + 1 = 2x_2 + 1$, ดังนั้น $x_1 = x_2$",
+        "จึงเป็นฟังก์ชันหนึ่งต่อหนึ่ง",
+        "ส่วนฟังก์ชัน $x^2$ และ $|x|$ ไม่ใช่ เพราะ $f(-1) = f(1)$"
+      ]
+    },
+    "tags": ["one-to-one", "types-of-functions"],
+    "source": "ONET 2566"
+  }
+]

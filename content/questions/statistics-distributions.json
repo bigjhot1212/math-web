@@ -1,0 +1,152 @@
+[
+  {
+    "id": "stat-001",
+    "topicId": "statistics-distributions",
+    "subtopic": "mean",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ค่าเฉลี่ยเลขคณิตของข้อมูล $\\{4, 8, 6, 2, 10\\}$ คือเท่าใด",
+      "choices": {
+        "a": "5",
+        "b": "7",
+        "c": "6",
+        "d": "8",
+        "e": "4"
+      }
+    },
+    "answer": "c",
+    "hint": "บวกทุกค่าแล้วหารด้วยจำนวนข้อมูล",
+    "solution": {
+      "steps": [
+        "ผลรวม $= 4 + 8 + 6 + 2 + 10 = 30$",
+        "จำนวนข้อมูล $= 5$",
+        "ค่าเฉลี่ย $= \\dfrac{30}{5} = 6$"
+      ],
+      "keyFormula": "$\\bar{x} = \\dfrac{\\sum x_i}{n}$"
+    },
+    "tags": ["mean"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "stat-002",
+    "topicId": "statistics-distributions",
+    "subtopic": "median",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "มัธยฐานของข้อมูล $\\{7, 2, 9, 4, 5, 1, 8\\}$ คือเท่าใด",
+      "choices": {
+        "a": "4",
+        "b": "9",
+        "c": "5",
+        "d": "7",
+        "e": "6"
+      }
+    },
+    "answer": "c",
+    "hint": "เรียงข้อมูลจากน้อยไปมาก แล้วหาค่ากลาง",
+    "solution": {
+      "steps": [
+        "เรียงข้อมูล: $1, 2, 4, 5, 7, 8, 9$",
+        "จำนวนข้อมูล = 7 (คี่)",
+        "มัธยฐาน = ค่าตำแหน่งที่ $(7+1)/2 = 4$",
+        "ค่าตำแหน่งที่ 4 = 5"
+      ]
+    },
+    "tags": ["median"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "stat-003",
+    "topicId": "statistics-distributions",
+    "subtopic": "mode",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ฐานนิยมของข้อมูล $\\{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5\\}$ คือเท่าใด",
+      "choices": {
+        "a": "1",
+        "b": "3",
+        "c": "9",
+        "d": "5",
+        "e": "4"
+      }
+    },
+    "answer": "d",
+    "hint": "ฐานนิยมคือค่าที่ปรากฏบ่อยที่สุด",
+    "solution": {
+      "steps": [
+        "นับความถี่: 1→2, 2→1, 3→2, 4→1, 5→3, 6→1, 9→1",
+        "5 ปรากฏ 3 ครั้ง มากที่สุด",
+        "ฐานนิยม = 5"
+      ]
+    },
+    "tags": ["mode"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "stat-004",
+    "topicId": "statistics-distributions",
+    "subtopic": "variance",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ค่าความแปรปรวนของข้อมูล $\\{2, 4, 6\\}$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$\\dfrac{8}{3}$",
+        "b": "$2$",
+        "c": "$4$",
+        "d": "$\\sqrt{\\dfrac{8}{3}}$",
+        "e": "$\\dfrac{4}{3}$"
+      }
+    },
+    "answer": "a",
+    "hint": "$\\sigma^2 = \\dfrac{\\sum(x_i - \\bar{x})^2}{n}$",
+    "solution": {
+      "steps": [
+        "$\\bar{x} = \\dfrac{2+4+6}{3} = 4$",
+        "$\\sigma^2 = \\dfrac{(2-4)^2 + (4-4)^2 + (6-4)^2}{3}$",
+        "$= \\dfrac{4 + 0 + 4}{3} = \\dfrac{8}{3}$"
+      ],
+      "keyFormula": "$\\sigma^2 = \\dfrac{\\sum(x_i - \\bar{x})^2}{n}$"
+    },
+    "tags": ["variance"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "stat-005",
+    "topicId": "statistics-distributions",
+    "subtopic": "normal-distribution",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ในการแจกแจงแบบปกติ ประมาณร้อยละเท่าใดของข้อมูลที่อยู่ภายใน 1 ส่วนเบี่ยงเบนมาตรฐานจากค่าเฉลี่ย",
+      "choices": {
+        "a": "50%",
+        "b": "68%",
+        "c": "95%",
+        "d": "99.7%",
+        "e": "75%"
+      }
+    },
+    "answer": "b",
+    "hint": "จำกฎ 68-95-99.7 (Empirical Rule)",
+    "solution": {
+      "steps": [
+        "กฎเชิงประจักษ์ (Empirical Rule) สำหรับการแจกแจงแบบปกติ:",
+        "$\\mu \\pm 1\\sigma$ ครอบคลุมประมาณ 68% ของข้อมูล",
+        "$\\mu \\pm 2\\sigma$ ครอบคลุมประมาณ 95% ของข้อมูล",
+        "$\\mu \\pm 3\\sigma$ ครอบคลุมประมาณ 99.7% ของข้อมูล"
+      ],
+      "keyFormula": "68-95-99.7 Rule"
+    },
+    "tags": ["normal-distribution", "empirical-rule"],
+    "source": "A-Level 2566"
+  }
+]

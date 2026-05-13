@@ -1,0 +1,152 @@
+[
+  {
+    "id": "logic-001",
+    "topicId": "logic",
+    "subtopic": "connectives",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $p$ เป็นเท็จ และ $q$ เป็นจริง ค่าความจริงของ $p \\land q$ คือข้อใด",
+      "choices": {
+        "a": "จริง",
+        "b": "เท็จ",
+        "c": "จริงเมื่อ $p$ เป็นจริง",
+        "d": "ขึ้นอยู่กับค่าของ $q$",
+        "e": "ไม่สามารถระบุได้"
+      }
+    },
+    "answer": "b",
+    "hint": "$p \\land q$ เป็นจริงก็ต่อเมื่อ $p$ และ $q$ เป็นจริงทั้งคู่",
+    "solution": {
+      "steps": [
+        "$p \\land q$ (และ) เป็นจริงก็ต่อเมื่อทั้ง $p$ และ $q$ เป็นจริง",
+        "เนื่องจาก $p$ เป็นเท็จ",
+        "ดังนั้น $p \\land q$ เป็น เท็จ"
+      ],
+      "keyFormula": "$F \\land T = F$"
+    },
+    "tags": ["conjunction", "truth-value"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "logic-002",
+    "topicId": "logic",
+    "subtopic": "implication",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ประพจน์ $p \\rightarrow q$ สมมูลกับประพจน์ใด",
+      "choices": {
+        "a": "$q \\rightarrow p$",
+        "b": "$\\lnot q \\rightarrow \\lnot p$",
+        "c": "$\\lnot p \\lor q$",
+        "d": "$p \\land \\lnot q$",
+        "e": "$\\lnot p \\rightarrow q$"
+      }
+    },
+    "answer": "c",
+    "hint": "ลองสร้างตารางค่าความจริงของ $p \\rightarrow q$ และ $\\lnot p \\lor q$",
+    "solution": {
+      "steps": [
+        "$p \\rightarrow q$ เป็นเท็จก็ต่อเมื่อ $p$ จริงและ $q$ เท็จเท่านั้น",
+        "$\\lnot p \\lor q$ เป็นเท็จก็ต่อเมื่อ $\\lnot p$ เท็จและ $q$ เท็จ คือ $p$ จริงและ $q$ เท็จ",
+        "ทั้งสองประพจน์มีตารางค่าความจริงเหมือนกัน จึงสมมูลกัน"
+      ],
+      "keyFormula": "$p \\rightarrow q \\equiv \\lnot p \\lor q$"
+    },
+    "tags": ["implication", "equivalence"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "logic-003",
+    "topicId": "logic",
+    "subtopic": "negation",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "นิเสธของประพจน์ \"นักเรียนทุกคนสอบผ่าน\" คือข้อใด",
+      "choices": {
+        "a": "มีนักเรียนบางคนที่สอบไม่ผ่าน",
+        "b": "นักเรียนทุกคนสอบไม่ผ่าน",
+        "c": "ไม่มีนักเรียนคนใดสอบผ่าน",
+        "d": "นักเรียนบางคนสอบผ่าน",
+        "e": "นักเรียนส่วนใหญ่สอบผ่าน"
+      }
+    },
+    "answer": "a",
+    "hint": "นิเสธของ \"ทุกคน P\" คือ \"มีบางคนที่ไม่ P\"",
+    "solution": {
+      "steps": [
+        "ประพจน์เดิม: $\\forall x, P(x)$ (นักเรียนทุกคนสอบผ่าน)",
+        "นิเสธ: $\\exists x, \\lnot P(x)$",
+        "แปลว่า มีนักเรียนบางคนที่สอบไม่ผ่าน"
+      ],
+      "keyFormula": "$\\lnot(\\forall x, P(x)) \\equiv \\exists x, \\lnot P(x)$"
+    },
+    "tags": ["negation", "quantifiers"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "logic-004",
+    "topicId": "logic",
+    "subtopic": "biconditional",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$p \\leftrightarrow q$ เป็นจริงเมื่อใด",
+      "choices": {
+        "a": "$p$ จริง $q$ เท็จ",
+        "b": "$p$ เท็จ $q$ จริง",
+        "c": "$p$ และ $q$ มีค่าความจริงต่างกัน",
+        "d": "$p$ และ $q$ มีค่าความจริงเหมือนกัน",
+        "e": "$p$ จริงเสมอ"
+      }
+    },
+    "answer": "d",
+    "hint": "$p \\leftrightarrow q$ คือ $(p \\rightarrow q) \\land (q \\rightarrow p)$",
+    "solution": {
+      "steps": [
+        "$p \\leftrightarrow q$ เป็นจริงก็ต่อเมื่อ $p \\rightarrow q$ และ $q \\rightarrow p$ เป็นจริงทั้งคู่",
+        "กรณี $p$ จริง $q$ จริง: $T \\leftrightarrow T = T$",
+        "กรณี $p$ เท็จ $q$ เท็จ: $F \\leftrightarrow F = T$",
+        "ดังนั้นจริงเมื่อ $p$ และ $q$ มีค่าความจริงเหมือนกัน"
+      ]
+    },
+    "tags": ["biconditional"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "logic-005",
+    "topicId": "logic",
+    "subtopic": "contrapositive",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ประพจน์ \"ถ้าฝนตก แล้วถนนเปียก\" มีประพจน์บทกลับผกผัน (contrapositive) คือข้อใด",
+      "choices": {
+        "a": "ถ้าถนนเปียก แล้วฝนตก",
+        "b": "ถ้าฝนไม่ตก แล้วถนนไม่เปียก",
+        "c": "ถ้าถนนไม่เปียก แล้วฝนไม่ตก",
+        "d": "ฝนตกและถนนเปียก",
+        "e": "ถ้าถนนเปียก แล้วฝนไม่ตก"
+      }
+    },
+    "answer": "c",
+    "hint": "บทกลับผกผันของ $p \\rightarrow q$ คือ $\\lnot q \\rightarrow \\lnot p$",
+    "solution": {
+      "steps": [
+        "ประพจน์เดิม: ถ้า $p$ แล้ว $q$ ($p$ = ฝนตก, $q$ = ถนนเปียก)",
+        "บทกลับผกผัน (Contrapositive): ถ้า $\\lnot q$ แล้ว $\\lnot p$",
+        "แปลว่า ถ้าถนนไม่เปียก แล้วฝนไม่ตก"
+      ],
+      "keyFormula": "Contrapositive ของ $p \\rightarrow q$ คือ $\\lnot q \\rightarrow \\lnot p$"
+    },
+    "tags": ["contrapositive", "implication"],
+    "source": "A-Level 2565"
+  }
+]

@@ -1,0 +1,148 @@
+[
+  {
+    "id": "geo-001",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "distance",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาระยะห่างระหว่างจุด $(0, 0)$ กับจุด $(3, 4)$",
+      "choices": {
+        "a": "5",
+        "b": "7",
+        "c": "$\\sqrt{7}$",
+        "d": "25",
+        "e": "12"
+      }
+    },
+    "answer": "a",
+    "hint": "สูตรระยะห่าง $d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$",
+    "solution": {
+      "steps": [
+        "$d = \\sqrt{(3-0)^2 + (4-0)^2}$",
+        "$= \\sqrt{9 + 16} = \\sqrt{25} = 5$"
+      ],
+      "keyFormula": "$d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$"
+    },
+    "tags": ["distance-formula"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "geo-002",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "circle",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "วงกลม $x^2 + y^2 = 36$ มีรัศมีเท่าใด",
+      "choices": {
+        "a": "36",
+        "b": "6",
+        "c": "18",
+        "d": "$\\sqrt{36}$",
+        "e": "12"
+      }
+    },
+    "answer": "b",
+    "hint": "วงกลม $x^2 + y^2 = r^2$ มีรัศมี $r$",
+    "solution": {
+      "steps": [
+        "วงกลม $x^2 + y^2 = r^2$ มีจุดศูนย์กลางที่ $(0,0)$ และรัศมี $r$",
+        "$x^2 + y^2 = 36 = 6^2$",
+        "รัศมี $= 6$"
+      ]
+    },
+    "tags": ["circle"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "geo-003",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "midpoint",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จุดกึ่งกลางของส่วนของเส้นตรงที่เชื่อมจุด $(2, 4)$ กับ $(6, 8)$ คือข้อใด",
+      "choices": {
+        "a": "$(4, 6)$",
+        "b": "$(8, 12)$",
+        "c": "$(2, 4)$",
+        "d": "$(3, 5)$",
+        "e": "$(5, 7)$"
+      }
+    },
+    "answer": "a",
+    "hint": "จุดกึ่งกลาง $= \\left(\\dfrac{x_1+x_2}{2}, \\dfrac{y_1+y_2}{2}\\right)$",
+    "solution": {
+      "steps": [
+        "จุดกึ่งกลาง $= \\left(\\dfrac{2+6}{2}, \\dfrac{4+8}{2}\\right)$",
+        "$= \\left(\\dfrac{8}{2}, \\dfrac{12}{2}\\right) = (4, 6)$"
+      ]
+    },
+    "tags": ["midpoint"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "geo-004",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "circle-center",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "วงกลม $(x - 3)^2 + (y + 2)^2 = 25$ มีจุดศูนย์กลางและรัศมีเท่าใด",
+      "choices": {
+        "a": "จุดศูนย์กลาง $(3, 2)$, รัศมี $5$",
+        "b": "จุดศูนย์กลาง $(-3, 2)$, รัศมี $25$",
+        "c": "จุดศูนย์กลาง $(3, -2)$, รัศมี $5$",
+        "d": "จุดศูนย์กลาง $(-3, -2)$, รัศมี $5$",
+        "e": "จุดศูนย์กลาง $(3, -2)$, รัศมี $25$"
+      }
+    },
+    "answer": "c",
+    "hint": "วงกลม $(x-h)^2 + (y-k)^2 = r^2$ มีจุดศูนย์กลาง $(h, k)$ และรัศมี $r$",
+    "solution": {
+      "steps": [
+        "$(x-3)^2 + (y-(-2))^2 = 5^2$",
+        "จุดศูนย์กลาง $(h, k) = (3, -2)$",
+        "รัศมี $r = \\sqrt{25} = 5$"
+      ]
+    },
+    "tags": ["circle", "center-radius"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "geo-005",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "parabola",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "พาราโบลา $y = x^2 - 4x + 3$ มีจุดยอด (vertex) ที่ใด",
+      "choices": {
+        "a": "$(2, -1)$",
+        "b": "$(4, 3)$",
+        "c": "$(2, 3)$",
+        "d": "$(-2, -1)$",
+        "e": "$(1, 0)$"
+      }
+    },
+    "answer": "a",
+    "hint": "จุดยอดอยู่ที่ $x = -\\dfrac{b}{2a}$",
+    "solution": {
+      "steps": [
+        "$a = 1, b = -4, c = 3$",
+        "$x = -\\dfrac{-4}{2(1)} = 2$",
+        "$y = 2^2 - 4(2) + 3 = 4 - 8 + 3 = -1$",
+        "จุดยอด $= (2, -1)$"
+      ],
+      "keyFormula": "$x_{vertex} = -\\dfrac{b}{2a}$"
+    },
+    "tags": ["parabola", "vertex"],
+    "source": "A-Level 2565"
+  }
+]

@@ -1,0 +1,148 @@
+[
+  {
+    "id": "trig-001",
+    "topicId": "trigonometry",
+    "subtopic": "special-angles",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\sin 30°$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$\\dfrac{1}{2}$",
+        "b": "$\\dfrac{\\sqrt{3}}{2}$",
+        "c": "$1$",
+        "d": "$\\dfrac{\\sqrt{2}}{2}$",
+        "e": "$0$"
+      }
+    },
+    "answer": "a",
+    "hint": "จำค่าตรีโกณมิติของมุมพิเศษ 30°, 45°, 60°",
+    "solution": {
+      "steps": [
+        "จากตารางค่าตรีโกณมิติมุมพิเศษ",
+        "$\\sin 30° = \\dfrac{1}{2}$"
+      ],
+      "keyFormula": "$\\sin 30° = \\dfrac{1}{2}$, $\\cos 30° = \\dfrac{\\sqrt{3}}{2}$, $\\tan 30° = \\dfrac{1}{\\sqrt{3}}$"
+    },
+    "tags": ["special-angles", "sine"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "trig-002",
+    "topicId": "trigonometry",
+    "subtopic": "pythagorean-identity",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\sin^2\\theta + \\cos^2\\theta$ มีค่าเท่าใดเสมอ",
+      "choices": {
+        "a": "0",
+        "b": "1",
+        "c": "2",
+        "d": "$\\tan^2\\theta$",
+        "e": "ขึ้นอยู่กับค่า $\\theta$"
+      }
+    },
+    "answer": "b",
+    "hint": "นี่คืออัตลักษณ์ตรีโกณมิติที่สำคัญที่สุด",
+    "solution": {
+      "steps": [
+        "$\\sin^2\\theta + \\cos^2\\theta = 1$ เป็นอัตลักษณ์ตรีโกณมิติพื้นฐาน",
+        "ได้มาจากทฤษฎีบทพีทาโกรัสบนวงกลมหนึ่งหน่วย"
+      ],
+      "keyFormula": "$\\sin^2\\theta + \\cos^2\\theta = 1$"
+    },
+    "tags": ["pythagorean-identity"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "trig-003",
+    "topicId": "trigonometry",
+    "subtopic": "special-angles",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\tan 45°$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$\\dfrac{\\sqrt{3}}{3}$",
+        "b": "$\\sqrt{3}$",
+        "c": "$1$",
+        "d": "$0$",
+        "e": "$\\dfrac{1}{2}$"
+      }
+    },
+    "answer": "c",
+    "hint": "$\\tan\\theta = \\dfrac{\\sin\\theta}{\\cos\\theta}$",
+    "solution": {
+      "steps": [
+        "$\\tan 45° = \\dfrac{\\sin 45°}{\\cos 45°} = \\dfrac{\\frac{\\sqrt{2}}{2}}{\\frac{\\sqrt{2}}{2}} = 1$"
+      ]
+    },
+    "tags": ["special-angles", "tangent"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "trig-004",
+    "topicId": "trigonometry",
+    "subtopic": "quadrant",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $\\sin\\theta = \\dfrac{3}{5}$ และ $\\theta$ อยู่ในจตุภาคที่ 1 จงหา $\\cos\\theta$",
+      "choices": {
+        "a": "$\\dfrac{3}{4}$",
+        "b": "$\\dfrac{5}{3}$",
+        "c": "$-\\dfrac{4}{5}$",
+        "d": "$\\dfrac{4}{5}$",
+        "e": "$\\dfrac{3}{5}$"
+      }
+    },
+    "answer": "d",
+    "hint": "ใช้ $\\sin^2\\theta + \\cos^2\\theta = 1$ และ $\\theta$ อยู่ Q1 ดังนั้น $\\cos\\theta > 0$",
+    "solution": {
+      "steps": [
+        "$\\sin^2\\theta + \\cos^2\\theta = 1$",
+        "$\\left(\\dfrac{3}{5}\\right)^2 + \\cos^2\\theta = 1$",
+        "$\\dfrac{9}{25} + \\cos^2\\theta = 1$",
+        "$\\cos^2\\theta = \\dfrac{16}{25}$",
+        "เนื่องจาก $\\theta$ ใน Q1, $\\cos\\theta > 0$ ดังนั้น $\\cos\\theta = \\dfrac{4}{5}$"
+      ]
+    },
+    "tags": ["quadrant", "pythagorean-identity"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "trig-005",
+    "topicId": "trigonometry",
+    "subtopic": "double-angle",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $\\cos\\theta = \\dfrac{1}{3}$ จงหา $\\cos 2\\theta$",
+      "choices": {
+        "a": "$\\dfrac{2}{9}$",
+        "b": "$-\\dfrac{7}{9}$",
+        "c": "$\\dfrac{7}{9}$",
+        "d": "$-\\dfrac{2}{9}$",
+        "e": "$\\dfrac{1}{9}$"
+      }
+    },
+    "answer": "b",
+    "hint": "ใช้สูตร $\\cos 2\\theta = 2\\cos^2\\theta - 1$",
+    "solution": {
+      "steps": [
+        "$\\cos 2\\theta = 2\\cos^2\\theta - 1$",
+        "$= 2\\left(\\dfrac{1}{3}\\right)^2 - 1$",
+        "$= 2 \\cdot \\dfrac{1}{9} - 1 = \\dfrac{2}{9} - 1 = -\\dfrac{7}{9}$"
+      ],
+      "keyFormula": "$\\cos 2\\theta = 2\\cos^2\\theta - 1$"
+    },
+    "tags": ["double-angle"],
+    "source": "PAT1 2566"
+  }
+]

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "cpx-001",
+    "topicId": "complex-numbers",
+    "subtopic": "complex-arithmetic",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$(2 + 3i) + (1 - 2i)$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$3 + i$",
+        "b": "$3 - i$",
+        "c": "$1 + i$",
+        "d": "$3 + 5i$",
+        "e": "$3 - 5i$"
+      }
+    },
+    "answer": "a",
+    "hint": "บวกส่วนจริงกับส่วนจริง และส่วนจินตภาพกับส่วนจินตภาพ",
+    "solution": {
+      "steps": [
+        "ส่วนจริง: $2 + 1 = 3$",
+        "ส่วนจินตภาพ: $3 + (-2) = 1$",
+        "ดังนั้น $(2+3i) + (1-2i) = 3 + i$"
+      ]
+    },
+    "tags": ["complex-addition"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "cpx-002",
+    "topicId": "complex-numbers",
+    "subtopic": "powers-of-i",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$i^2$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$1$",
+        "b": "$-1$",
+        "c": "$i$",
+        "d": "$-i$",
+        "e": "$0$"
+      }
+    },
+    "answer": "b",
+    "hint": "$i = \\sqrt{-1}$ ดังนั้น $i^2 = ?$",
+    "solution": {
+      "steps": [
+        "นิยาม: $i = \\sqrt{-1}$",
+        "$i^2 = (\\sqrt{-1})^2 = -1$"
+      ],
+      "keyFormula": "$i^2 = -1$"
+    },
+    "tags": ["powers-of-i"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "cpx-003",
+    "topicId": "complex-numbers",
+    "subtopic": "modulus",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาโมดูลัสของ $z = 3 + 4i$",
+      "choices": {
+        "a": "7",
+        "b": "1",
+        "c": "5",
+        "d": "$\\sqrt{7}$",
+        "e": "25"
+      }
+    },
+    "answer": "c",
+    "hint": "$|z| = \\sqrt{a^2 + b^2}$ สำหรับ $z = a + bi$",
+    "solution": {
+      "steps": [
+        "$|3 + 4i| = \\sqrt{3^2 + 4^2}$",
+        "$= \\sqrt{9 + 16} = \\sqrt{25} = 5$"
+      ],
+      "keyFormula": "$|a + bi| = \\sqrt{a^2 + b^2}$"
+    },
+    "tags": ["modulus"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "cpx-004",
+    "topicId": "complex-numbers",
+    "subtopic": "complex-multiplication",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$(2 + i)(2 - i)$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$4 - i^2$",
+        "b": "$3$",
+        "c": "$4 + i$",
+        "d": "$5$",
+        "e": "$3 + 4i$"
+      }
+    },
+    "answer": "d",
+    "hint": "ใช้รูปแบบ $(a+b)(a-b) = a^2 - b^2$",
+    "solution": {
+      "steps": [
+        "$(2+i)(2-i) = 2^2 - i^2$",
+        "$= 4 - (-1) = 4 + 1 = 5$"
+      ],
+      "keyFormula": "$(a+bi)(a-bi) = a^2 + b^2$"
+    },
+    "tags": ["complex-multiplication", "conjugate"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "cpx-005",
+    "topicId": "complex-numbers",
+    "subtopic": "conjugate",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จำนวนเชิงซ้อนคอนจูเกตของ $z = 5 - 3i$ คือข้อใด",
+      "choices": {
+        "a": "$-5 + 3i$",
+        "b": "$5 - 3i$",
+        "c": "$-5 - 3i$",
+        "d": "$3 + 5i$",
+        "e": "$5 + 3i$"
+      }
+    },
+    "answer": "e",
+    "hint": "คอนจูเกตของ $a + bi$ คือ $a - bi$",
+    "solution": {
+      "steps": [
+        "คอนจูเกตของ $z = a + bi$ คือ $\\bar{z} = a - bi$",
+        "คอนจูเกตของ $5 - 3i = 5 - (-3)i = 5 + 3i$"
+      ]
+    },
+    "tags": ["conjugate"],
+    "source": "ONET 2566"
+  }
+]

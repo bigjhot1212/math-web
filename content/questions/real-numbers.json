@@ -1,0 +1,91 @@
+[
+  {
+    "id": "alg-001",
+    "topicId": "real-numbers",
+    "subtopic": "quadratic-equation",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "สมการ $x^2 - 5x + 6 = 0$ มีคำตอบคือข้อใด",
+      "choices": {
+        "a": "$x = 1, x = 6$",
+        "b": "$x = 2, x = 3$",
+        "c": "$x = -2, x = -3$",
+        "d": "$x = 1, x = -6$",
+        "e": "$x = -1, x = 6$"
+      }
+    },
+    "answer": "b",
+    "hint": "ลองแยกตัวประกอบดูครับ หาสองจำนวนที่คูณกันได้ 6 และบวกกันได้ -5",
+    "solution": {
+      "steps": [
+        "แยกตัวประกอบ: $x^2 - 5x + 6 = (x-2)(x-3) = 0$",
+        "ดังนั้น $x - 2 = 0$ หรือ $x - 3 = 0$",
+        "คำตอบคือ $x = 2$ หรือ $x = 3$"
+      ],
+      "keyFormula": "$(x-2)(x-3) = x^2 - 5x + 6$"
+    },
+    "tags": ["factoring", "quadratic"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "alg-002",
+    "topicId": "real-numbers",
+    "subtopic": "quadratic-equation",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $x^2 - 4 = 0$ แล้วค่าของ $x^2 + x$ เท่ากับเท่าใด เมื่อ $x > 0$",
+      "choices": {
+        "a": "$4$",
+        "b": "$6$",
+        "c": "$8$",
+        "d": "$2$",
+        "e": "$10$"
+      }
+    },
+    "answer": "b",
+    "hint": "หาค่า x ก่อน แล้วค่อยแทนใน $x^2 + x$",
+    "solution": {
+      "steps": [
+        "$x^2 - 4 = 0$ ดังนั้น $x^2 = 4$",
+        "เนื่องจาก $x > 0$ จะได้ $x = 2$",
+        "แทนค่า: $x^2 + x = 4 + 2 = 6$"
+      ],
+      "keyFormula": "$x^2 = 4 \\Rightarrow x = \\pm 2$"
+    },
+    "tags": ["quadratic", "substitution"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "alg-003",
+    "topicId": "real-numbers",
+    "subtopic": "quadratic-equation",
+    "level": "PAT1",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "สมการ $2x^2 - 7x + 3 = 0$ มีผลบวกของคำตอบเท่ากับเท่าใด",
+      "choices": {
+        "a": "$\\frac{3}{2}$",
+        "b": "$\\frac{7}{2}$",
+        "c": "$3$",
+        "d": "$7$",
+        "e": "$\\frac{1}{2}$"
+      }
+    },
+    "answer": "b",
+    "hint": "ใช้สูตร Vieta: ผลบวกของรากของ $ax^2 + bx + c = 0$ คือ $-\\frac{b}{a}$",
+    "solution": {
+      "steps": [
+        "จาก $2x^2 - 7x + 3 = 0$ มี $a=2, b=-7, c=3$",
+        "ผลบวกของรากทั้งสอง $= -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}$"
+      ],
+      "keyFormula": "x_1 + x_2 = -\\frac{b}{a}"
+    },
+    "tags": ["quadratic", "vieta"],
+    "source": "PAT1 2566"
+  }
+]

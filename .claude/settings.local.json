@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(start *)",
+      "Bash(npm install *)",
+      "Bash(Get-Content \"C:\\\\Users\\\\asus\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-math-web\\\\7d096d7c-4269-4662-b737-4e74f4ab9e5d\\\\tasks\\\\by1xgnm2v.output\" -Wait)",
+      "Bash(Select-String -Pattern \"Local:|Error|error|ready|Ready\")",
+      "Bash(Test-Path .env.local)",
+      "Bash(Test-Path .gitignore)",
+      "PowerShell(Get-ChildItem -Force -Name | Where-Object { $_ -match '^\\\\.' })"
+    ]
+  }
+}

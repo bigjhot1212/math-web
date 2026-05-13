@@ -1,0 +1,146 @@
+[
+  {
+    "id": "vec-001",
+    "topicId": "vector",
+    "subtopic": "magnitude",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาขนาดของเวกเตอร์ $\\vec{v} = (3, 4)$",
+      "choices": {
+        "a": "7",
+        "b": "5",
+        "c": "$\\sqrt{7}$",
+        "d": "25",
+        "e": "12"
+      }
+    },
+    "answer": "b",
+    "hint": "$|\\vec{v}| = \\sqrt{x^2 + y^2}$",
+    "solution": {
+      "steps": [
+        "$|\\vec{v}| = \\sqrt{3^2 + 4^2}$",
+        "$= \\sqrt{9 + 16} = \\sqrt{25} = 5$"
+      ],
+      "keyFormula": "$|\\vec{v}| = \\sqrt{x^2 + y^2}$"
+    },
+    "tags": ["magnitude"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "vec-002",
+    "topicId": "vector",
+    "subtopic": "dot-product",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาผลคูณดอทของเวกเตอร์ $\\vec{a} = (2, 3)$ และ $\\vec{b} = (4, -1)$",
+      "choices": {
+        "a": "8",
+        "b": "5",
+        "c": "11",
+        "d": "-3",
+        "e": "10"
+      }
+    },
+    "answer": "b",
+    "hint": "$\\vec{a} \\cdot \\vec{b} = a_1 b_1 + a_2 b_2$",
+    "solution": {
+      "steps": [
+        "$\\vec{a} \\cdot \\vec{b} = (2)(4) + (3)(-1)$",
+        "$= 8 + (-3) = 5$"
+      ],
+      "keyFormula": "$\\vec{a} \\cdot \\vec{b} = a_1 b_1 + a_2 b_2$"
+    },
+    "tags": ["dot-product"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "vec-003",
+    "topicId": "vector",
+    "subtopic": "vector-addition",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนด $\\vec{a} = (1, 2, 3)$ และ $\\vec{b} = (4, -1, 2)$ จงหา $\\vec{a} + \\vec{b}$",
+      "choices": {
+        "a": "$(5, 1, 5)$",
+        "b": "$(3, 3, 1)$",
+        "c": "$(5, 3, 5)$",
+        "d": "$(4, -2, 6)$",
+        "e": "$(3, 1, 5)$"
+      }
+    },
+    "answer": "a",
+    "hint": "บวกแต่ละสมาชิกในตำแหน่งเดียวกัน",
+    "solution": {
+      "steps": [
+        "$\\vec{a} + \\vec{b} = (1+4, 2+(-1), 3+2)$",
+        "$= (5, 1, 5)$"
+      ]
+    },
+    "tags": ["vector-addition"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "vec-004",
+    "topicId": "vector",
+    "subtopic": "perpendicular",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "เวกเตอร์ $(1, 0)$ และ $(0, 1)$ ตั้งฉากกันหรือไม่ เพราะเหตุใด",
+      "choices": {
+        "a": "ไม่ตั้งฉาก เพราะผลคูณดอทเป็น 1",
+        "b": "ตั้งฉาก เพราะผลคูณดอทเป็น 0",
+        "c": "ไม่ตั้งฉาก เพราะขนาดต่างกัน",
+        "d": "ตั้งฉาก เพราะขนาดเท่ากัน",
+        "e": "ไม่สามารถระบุได้"
+      }
+    },
+    "answer": "b",
+    "hint": "เวกเตอร์สองตัวตั้งฉากกันก็ต่อเมื่อผลคูณดอทเป็น 0",
+    "solution": {
+      "steps": [
+        "$(1, 0) \\cdot (0, 1) = (1)(0) + (0)(1) = 0$",
+        "เนื่องจากผลคูณดอทเป็น 0 แสดงว่าเวกเตอร์ทั้งสองตั้งฉากกัน"
+      ],
+      "keyFormula": "$\\vec{a} \\perp \\vec{b} \\iff \\vec{a} \\cdot \\vec{b} = 0$"
+    },
+    "tags": ["perpendicular", "dot-product"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "vec-005",
+    "topicId": "vector",
+    "subtopic": "unit-vector",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "เวกเตอร์หน่วยในทิศทางของ $\\vec{v} = (3, 4)$ คือข้อใด",
+      "choices": {
+        "a": "$(3, 4)$",
+        "b": "$\\left(\\dfrac{3}{5}, \\dfrac{4}{5}\\right)$",
+        "c": "$\\left(\\dfrac{3}{7}, \\dfrac{4}{7}\\right)$",
+        "d": "$\\left(\\dfrac{1}{3}, \\dfrac{1}{4}\\right)$",
+        "e": "$\\left(\\dfrac{4}{5}, \\dfrac{3}{5}\\right)$"
+      }
+    },
+    "answer": "b",
+    "hint": "หารเวกเตอร์ด้วยขนาดของมัน",
+    "solution": {
+      "steps": [
+        "$|\\vec{v}| = \\sqrt{3^2 + 4^2} = 5$",
+        "เวกเตอร์หน่วย $= \\dfrac{\\vec{v}}{|\\vec{v}|} = \\dfrac{(3,4)}{5} = \\left(\\dfrac{3}{5}, \\dfrac{4}{5}\\right)$"
+      ],
+      "keyFormula": "$\\hat{v} = \\dfrac{\\vec{v}}{|\\vec{v}|}$"
+    },
+    "tags": ["unit-vector"],
+    "source": "A-Level 2565"
+  }
+]

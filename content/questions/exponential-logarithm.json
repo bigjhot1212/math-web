@@ -1,0 +1,150 @@
+[
+  {
+    "id": "exp-001",
+    "topicId": "exponential-logarithm",
+    "subtopic": "exponential-equations",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงแก้สมการ $2^x = 32$",
+      "choices": {
+        "a": "$x = 4$",
+        "b": "$x = 5$",
+        "c": "$x = 6$",
+        "d": "$x = 3$",
+        "e": "$x = 16$"
+      }
+    },
+    "answer": "b",
+    "hint": "เขียน 32 ในรูปเลขยกกำลังฐาน 2",
+    "solution": {
+      "steps": [
+        "$2^x = 32$",
+        "$32 = 2^5$",
+        "ดังนั้น $2^x = 2^5$",
+        "$x = 5$"
+      ]
+    },
+    "tags": ["exponential-equations"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "exp-002",
+    "topicId": "exponential-logarithm",
+    "subtopic": "logarithm",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\log_2 32$ มีค่าเท่าใด",
+      "choices": {
+        "a": "4",
+        "b": "6",
+        "c": "5",
+        "d": "3",
+        "e": "2"
+      }
+    },
+    "answer": "c",
+    "hint": "$\\log_2 32 = x$ หมายความว่า $2^x = 32$",
+    "solution": {
+      "steps": [
+        "ให้ $\\log_2 32 = x$",
+        "หมายความว่า $2^x = 32 = 2^5$",
+        "ดังนั้น $x = 5$"
+      ]
+    },
+    "tags": ["logarithm"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "exp-003",
+    "topicId": "exponential-logarithm",
+    "subtopic": "log-properties",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$\\log 100 + \\log 10$ มีค่าเท่าใด (log คือ log ฐาน 10)",
+      "choices": {
+        "a": "3",
+        "b": "4",
+        "c": "1000",
+        "d": "2",
+        "e": "5"
+      }
+    },
+    "answer": "a",
+    "hint": "$\\log 100 = \\log 10^2 = 2$ และ $\\log 10 = 1$",
+    "solution": {
+      "steps": [
+        "$\\log 100 = \\log 10^2 = 2$",
+        "$\\log 10 = 1$",
+        "$\\log 100 + \\log 10 = 2 + 1 = 3$"
+      ]
+    },
+    "tags": ["log-properties"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "exp-004",
+    "topicId": "exponential-logarithm",
+    "subtopic": "natural-log",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$e^{\\ln 7}$ มีค่าเท่าใด",
+      "choices": {
+        "a": "1",
+        "b": "7",
+        "c": "$e^7$",
+        "d": "$\\ln 7$",
+        "e": "0"
+      }
+    },
+    "answer": "b",
+    "hint": "$e^{\\ln x} = x$ สำหรับ $x > 0$",
+    "solution": {
+      "steps": [
+        "ใช้คุณสมบัติ $e^{\\ln x} = x$",
+        "$e^{\\ln 7} = 7$"
+      ],
+      "keyFormula": "$e^{\\ln x} = x$"
+    },
+    "tags": ["natural-log", "exponential"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "exp-005",
+    "topicId": "exponential-logarithm",
+    "subtopic": "change-of-base",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $\\log_3 5 = a$ แล้ว $\\log_9 25$ มีค่าเท่าใด",
+      "choices": {
+        "a": "$2a$",
+        "b": "$a^2$",
+        "c": "$a$",
+        "d": "$\\dfrac{a}{2}$",
+        "e": "$\\dfrac{2}{a}$"
+      }
+    },
+    "answer": "c",
+    "hint": "แปลงฐาน: $\\log_9 25 = \\dfrac{\\log_3 25}{\\log_3 9}$",
+    "solution": {
+      "steps": [
+        "$\\log_9 25 = \\dfrac{\\log_3 25}{\\log_3 9}$",
+        "$\\log_3 25 = \\log_3 5^2 = 2\\log_3 5 = 2a$",
+        "$\\log_3 9 = \\log_3 3^2 = 2$",
+        "$\\log_9 25 = \\dfrac{2a}{2} = a$"
+      ],
+      "keyFormula": "$\\log_b x = \\dfrac{\\log_c x}{\\log_c b}$"
+    },
+    "tags": ["change-of-base"],
+    "source": "PAT1 2566"
+  }
+]

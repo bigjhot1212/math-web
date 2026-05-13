@@ -1,0 +1,153 @@
+[
+  {
+    "id": "set-001",
+    "topicId": "set",
+    "subtopic": "intersection",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $A = \\{1, 2, 3, 4, 5\\}$ และ $B = \\{3, 4, 5, 6, 7\\}$ จงหา $A \\cap B$",
+      "choices": {
+        "a": "$\\{1, 2\\}$",
+        "b": "$\\{3, 4, 5\\}$",
+        "c": "$\\{1, 2, 3, 4, 5, 6, 7\\}$",
+        "d": "$\\{6, 7\\}$",
+        "e": "$\\{1, 2, 6, 7\\}$"
+      }
+    },
+    "answer": "b",
+    "hint": "อินเตอร์เซกชันคือสมาชิกที่อยู่ในทั้งสองเซต",
+    "solution": {
+      "steps": [
+        "หาสมาชิกที่ปรากฏในทั้ง $A$ และ $B$",
+        "$A = \\{1, 2, 3, 4, 5\\}$ และ $B = \\{3, 4, 5, 6, 7\\}$",
+        "สมาชิกร่วมคือ 3, 4, 5",
+        "ดังนั้น $A \\cap B = \\{3, 4, 5\\}$"
+      ],
+      "keyFormula": "$A \\cap B = \\{x \\mid x \\in A \\text{ และ } x \\in B\\}$"
+    },
+    "tags": ["intersection", "set-operations"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "set-002",
+    "topicId": "set",
+    "subtopic": "union",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $A = \\{1, 2, 3\\}$ และ $B = \\{3, 4, 5\\}$ จงหา $A \\cup B$",
+      "choices": {
+        "a": "$\\{3\\}$",
+        "b": "$\\{1, 2\\}$",
+        "c": "$\\{1, 2, 3, 4, 5\\}$",
+        "d": "$\\{4, 5\\}$",
+        "e": "$\\{1, 2, 4, 5\\}$"
+      }
+    },
+    "answer": "c",
+    "hint": "ยูเนียนคือสมาชิกทั้งหมดที่อยู่ในเซตใดเซตหนึ่ง",
+    "solution": {
+      "steps": [
+        "รวมสมาชิกจากทั้งสองเซตโดยไม่นับซ้ำ",
+        "$A = \\{1, 2, 3\\}$, $B = \\{3, 4, 5\\}$",
+        "$A \\cup B = \\{1, 2, 3, 4, 5\\}$"
+      ],
+      "keyFormula": "$A \\cup B = \\{x \\mid x \\in A \\text{ หรือ } x \\in B\\}$"
+    },
+    "tags": ["union", "set-operations"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "set-003",
+    "topicId": "set",
+    "subtopic": "complement",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $U = \\{1, 2, 3, 4, 5, 6, 7, 8\\}$ และ $A = \\{2, 4, 6, 8\\}$ จงหา $A'$",
+      "choices": {
+        "a": "$\\{1, 3, 5, 7\\}$",
+        "b": "$\\{2, 4, 6, 8\\}$",
+        "c": "$\\{1, 2, 3, 4\\}$",
+        "d": "$\\{5, 6, 7, 8\\}$",
+        "e": "$\\emptyset$"
+      }
+    },
+    "answer": "a",
+    "hint": "คอมพลีเมนต์คือสมาชิกใน $U$ ที่ไม่อยู่ใน $A$",
+    "solution": {
+      "steps": [
+        "$A' = U - A$",
+        "$U = \\{1, 2, 3, 4, 5, 6, 7, 8\\}$, $A = \\{2, 4, 6, 8\\}$",
+        "สมาชิกใน $U$ ที่ไม่อยู่ใน $A$ คือ 1, 3, 5, 7",
+        "ดังนั้น $A' = \\{1, 3, 5, 7\\}$"
+      ]
+    },
+    "tags": ["complement"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "set-004",
+    "topicId": "set",
+    "subtopic": "cardinality",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $n(A) = 5$, $n(B) = 4$ และ $n(A \\cap B) = 2$ แล้ว $n(A \\cup B)$ มีค่าเท่าใด",
+      "choices": {
+        "a": "11",
+        "b": "9",
+        "c": "6",
+        "d": "7",
+        "e": "8"
+      }
+    },
+    "answer": "d",
+    "hint": "ใช้สูตร $n(A \\cup B) = n(A) + n(B) - n(A \\cap B)$",
+    "solution": {
+      "steps": [
+        "ใช้สูตร $n(A \\cup B) = n(A) + n(B) - n(A \\cap B)$",
+        "$n(A \\cup B) = 5 + 4 - 2$",
+        "$n(A \\cup B) = 7$"
+      ],
+      "keyFormula": "$n(A \\cup B) = n(A) + n(B) - n(A \\cap B)$"
+    },
+    "tags": ["cardinality", "inclusion-exclusion"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "set-005",
+    "topicId": "set",
+    "subtopic": "difference",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $A = \\{1, 2, 3, 4, 5\\}$ และ $B = \\{2, 4\\}$ จงหา $A - B$",
+      "choices": {
+        "a": "$\\{2, 4\\}$",
+        "b": "$\\{1, 3, 5\\}$",
+        "c": "$\\{1, 2, 3, 4, 5\\}$",
+        "d": "$\\{3\\}$",
+        "e": "$\\emptyset$"
+      }
+    },
+    "answer": "b",
+    "hint": "$A - B$ คือสมาชิกที่อยู่ใน $A$ แต่ไม่อยู่ใน $B$",
+    "solution": {
+      "steps": [
+        "$A - B = \\{x \\mid x \\in A \\text{ และ } x \\notin B\\}$",
+        "$A = \\{1, 2, 3, 4, 5\\}$, $B = \\{2, 4\\}$",
+        "ตัด 2 และ 4 ออกจาก $A$",
+        "$A - B = \\{1, 3, 5\\}$"
+      ]
+    },
+    "tags": ["difference", "set-operations"],
+    "source": "A-Level 2566"
+  }
+]

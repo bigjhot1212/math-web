@@ -1,0 +1,147 @@
+[
+  {
+    "id": "prob-001",
+    "topicId": "counting-probability",
+    "subtopic": "permutation",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$P(5, 2)$ มีค่าเท่าใด",
+      "choices": {
+        "a": "10",
+        "b": "20",
+        "c": "60",
+        "d": "120",
+        "e": "5"
+      }
+    },
+    "answer": "b",
+    "hint": "$P(n, r) = \\dfrac{n!}{(n-r)!}$",
+    "solution": {
+      "steps": [
+        "$P(5, 2) = \\dfrac{5!}{(5-2)!} = \\dfrac{5!}{3!}$",
+        "$= \\dfrac{5 \\times 4 \\times 3!}{3!} = 5 \\times 4 = 20$"
+      ],
+      "keyFormula": "$P(n, r) = \\dfrac{n!}{(n-r)!}$"
+    },
+    "tags": ["permutation"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "prob-002",
+    "topicId": "counting-probability",
+    "subtopic": "combination",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "$C(6, 2)$ มีค่าเท่าใด",
+      "choices": {
+        "a": "12",
+        "b": "30",
+        "c": "15",
+        "d": "36",
+        "e": "6"
+      }
+    },
+    "answer": "c",
+    "hint": "$C(n, r) = \\dfrac{n!}{r!(n-r)!}$",
+    "solution": {
+      "steps": [
+        "$C(6, 2) = \\dfrac{6!}{2! \\cdot 4!}$",
+        "$= \\dfrac{6 \\times 5}{2 \\times 1} = \\dfrac{30}{2} = 15$"
+      ],
+      "keyFormula": "$C(n, r) = \\dfrac{n!}{r!(n-r)!}$"
+    },
+    "tags": ["combination"],
+    "source": "ONET 2566"
+  },
+  {
+    "id": "prob-003",
+    "topicId": "counting-probability",
+    "subtopic": "basic-probability",
+    "level": "ONET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "โยนลูกเต๋าหนึ่งลูก ความน่าจะเป็นที่จะออกเลข 6 คือเท่าใด",
+      "choices": {
+        "a": "$\\dfrac{1}{6}$",
+        "b": "$\\dfrac{1}{3}$",
+        "c": "$\\dfrac{5}{6}$",
+        "d": "$\\dfrac{1}{2}$",
+        "e": "$1$"
+      }
+    },
+    "answer": "a",
+    "hint": "ลูกเต๋าปกติมีหน้าทั้งหมด 6 หน้า",
+    "solution": {
+      "steps": [
+        "จำนวนเหตุการณ์ทั้งหมด = 6 (หน้า 1 ถึง 6)",
+        "จำนวนเหตุการณ์ที่ต้องการ = 1 (หน้า 6)",
+        "$P(6) = \\dfrac{1}{6}$"
+      ],
+      "keyFormula": "$P(A) = \\dfrac{n(A)}{n(S)}$"
+    },
+    "tags": ["basic-probability"],
+    "source": "ONET 2565"
+  },
+  {
+    "id": "prob-004",
+    "topicId": "counting-probability",
+    "subtopic": "addition-rule",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $P(A) = 0.4$, $P(B) = 0.3$ และ $P(A \\cap B) = 0.1$ แล้ว $P(A \\cup B)$ มีค่าเท่าใด",
+      "choices": {
+        "a": "0.5",
+        "b": "0.7",
+        "c": "0.6",
+        "d": "0.8",
+        "e": "0.3"
+      }
+    },
+    "answer": "c",
+    "hint": "ใช้สูตร $P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$",
+    "solution": {
+      "steps": [
+        "$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$",
+        "$= 0.4 + 0.3 - 0.1 = 0.6$"
+      ],
+      "keyFormula": "$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$"
+    },
+    "tags": ["addition-rule"],
+    "source": "A-Level 2566"
+  },
+  {
+    "id": "prob-005",
+    "topicId": "counting-probability",
+    "subtopic": "arrangement",
+    "level": "ONET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "มีหนังสือ 4 เล่มที่แตกต่างกัน จะวางบนชั้นหนังสือได้กี่วิธี",
+      "choices": {
+        "a": "4",
+        "b": "8",
+        "c": "12",
+        "d": "24",
+        "e": "16"
+      }
+    },
+    "answer": "d",
+    "hint": "การจัดเรียงสิ่งของ $n$ สิ่งที่แตกต่างกันทั้งหมดมี $n!$ วิธี",
+    "solution": {
+      "steps": [
+        "การจัดเรียงหนังสือ 4 เล่มที่แตกต่างกัน = $4!$",
+        "$4! = 4 \\times 3 \\times 2 \\times 1 = 24$ วิธี"
+      ]
+    },
+    "tags": ["factorial", "arrangement"],
+    "source": "ONET 2566"
+  }
+]
