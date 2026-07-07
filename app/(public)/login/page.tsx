@@ -15,22 +15,24 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-background flex items-center justify-center p-6">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-10">
-          <div className="text-5xl mb-4">∑</div>
-          <h1 className="text-2xl font-semibold text-foreground mb-2">MathPrep</h1>
+      <div className="animate-fade-slide-in w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center text-3xl font-heading font-semibold text-primary">
+            ∑
+          </div>
+          <h1 className="text-2xl font-heading font-semibold text-foreground mb-2">MathPrep</h1>
           <p className="text-muted-foreground text-sm">
             ระบบฝึกโจทย์คณิตศาสตร์ ONET · A-Level · PAT1
           </p>
         </div>
 
-        <div className="rounded-xl border border-border p-8">
+        <div className="rounded-3xl border border-border bg-card/70 backdrop-blur-xl p-8 shadow-sm">
           <p className="text-sm text-muted-foreground text-center mb-6">
             เข้าสู่ระบบเพื่อบันทึกความก้าวหน้า
           </p>
           <button
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg border border-border hover:bg-accent transition-colors text-sm font-medium text-foreground"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 hover:-translate-y-0.5 transition-all cursor-pointer text-sm font-medium text-foreground"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
               <path
@@ -56,7 +58,7 @@ export default function LoginPage() {
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           การเข้าสู่ระบบถือว่ายอมรับ{' '}
-          <span className="underline cursor-pointer">นโยบายความเป็นส่วนตัว</span>
+          <span className="underline cursor-pointer hover:text-foreground transition-colors">นโยบายความเป็นส่วนตัว</span>
         </p>
       </div>
     </main>

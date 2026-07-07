@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { Lightbulb, CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import 'katex/dist/katex.min.css'
 
@@ -87,9 +88,9 @@ export default function PracticeTopicPage() {
           </span>
         </div>
 
-        <div className="h-1 bg-muted rounded-full mb-8">
+        <div className="h-1.5 bg-muted rounded-full mb-8 overflow-hidden">
           <div
-            className="h-1 bg-primary rounded-full transition-all"
+            className="h-full bg-primary rounded-full transition-all duration-500 shadow-[0_0_8px_0_var(--primary)]"
             style={{ width: `${((current + 1) / questions.length) * 100}%` }}
           />
         </div>
@@ -99,19 +100,24 @@ export default function PracticeTopicPage() {
         </div>
 
         {showHint && (
-          <div className="mb-4 p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200">
-            💡 {q.hint}
+          <div className="mb-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start gap-2.5 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200">
+            <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+            <span>{q.hint}</span>
           </div>
         )}
 
         {q.content.choices && (
           <div className="flex flex-col gap-3 mb-6">
             {Object.entries(q.content.choices).map(([key, value]) => {
-              let className = "flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all "
-              if (selected === key && isCorrect) className += "border-green-500 bg-green-50 dark:bg-green-950"
-              else if (selected === key && isWrong) className += "border-red-500 bg-red-50 dark:bg-red-950"
-              else if (showSolution && key === q.answer) className += "border-green-500 bg-green-50 dark:bg-green-950"
-              else className += "border-border hover:border-primary hover:bg-accent/50"
+              const isSelectedCorrect = selected === key && isCorrect
+              const isSelectedWrong = selected === key && isWrong
+              const isRevealedAnswer = showSolution && key === q.answer
+
+              let className = "flex items-center gap-3 p-4 rounded-2xl border transition-all "
+              if (isSelectedCorrect) className += "border-green-500 bg-green-50 dark:bg-green-950"
+              else if (isSelectedWrong) className += "border-red-500 bg-red-50 dark:bg-red-950"
+              else if (isRevealedAnswer) className += "border-green-500 bg-green-50 dark:bg-green-950"
+              else className += "border-border hover:border-primary hover:bg-accent/50 cursor-pointer"
 
               return (
                 <div
@@ -124,8 +130,14 @@ export default function PracticeTopicPage() {
                     }
                   }}
                 >
-                  <span className="font-medium text-sm w-6 text-muted-foreground uppercase">{key}.</span>
-                  <span className="text-sm">{renderText(value as string)}</span>
+                  <span className="font-medium text-sm w-6 text-muted-foreground uppercase shrink-0">{key}.</span>
+                  <span className="text-sm flex-1">{renderText(value as string)}</span>
+                  {(isSelectedCorrect || isRevealedAnswer) && (
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-green-600" aria-hidden="true" />
+                  )}
+                  {isSelectedWrong && (
+                    <XCircle className="w-4 h-4 shrink-0 text-red-600" aria-hidden="true" />
+                  )}
                 </div>
               )
             })}
@@ -133,7 +145,7 @@ export default function PracticeTopicPage() {
         )}
 
         {showSolution && (
-          <div className="mb-6 p-4 rounded-lg border border-border bg-muted/30">
+          <div className="mb-6 p-4 rounded-2xl border border-border bg-muted/30">
             <p className="font-medium text-sm mb-3">วิธีทำ</p>
             {q.solution.steps.map((step, i) => (
               <p key={i} className="text-sm text-muted-foreground mb-2">
@@ -147,15 +159,16 @@ export default function PracticeTopicPage() {
           {isWrong && !showHint && (
             <button
               onClick={() => setShowHint(true)}
-              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
             >
-              💡 ดู Hint
+              <Lightbulb className="w-4 h-4" aria-hidden="true" />
+              ดู Hint
             </button>
           )}
           {selected && !showSolution && (
             <button
               onClick={() => setShowSolution(true)}
-              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors"
+              className="px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
             >
               ดูเฉลย
             </button>
@@ -163,17 +176,19 @@ export default function PracticeTopicPage() {
           {selected && current < questions.length - 1 && (
             <button
               onClick={handleNext}
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
-              ข้อถัดไป →
+              ข้อถัดไป
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </button>
           )}
           {selected && current === questions.length - 1 && (
             <button
               onClick={() => window.location.href = '/practice'}
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
-              เสร็จสิ้น ✓
+              เสร็จสิ้น
+              <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
             </button>
           )}
         </div>

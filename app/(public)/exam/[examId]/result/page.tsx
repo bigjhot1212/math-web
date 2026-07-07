@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { CheckCircle2, XCircle } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import 'katex/dist/katex.min.css'
 
@@ -102,11 +103,11 @@ export default function ExamResultPage() {
       <div className="max-w-2xl mx-auto">
 
         {/* Score hero */}
-        <div className="text-center py-10 mb-10 border-b border-border">
+        <div className="animate-fade-slide-in text-center py-10 mb-10 border-b border-border relative">
           <p className="text-xs text-muted-foreground uppercase tracking-widest mb-4">
             {session.exam_type} · ผลสอบ
           </p>
-          <div className={`text-8xl font-bold mb-3 ${scoreColor}`}>{percentage}%</div>
+          <div className={`font-heading text-8xl font-bold mb-3 tabular-nums ${scoreColor}`}>{percentage}%</div>
           <p className="text-muted-foreground text-lg mb-2">
             {session.score} / {session.total_questions} ข้อ
           </p>
@@ -117,7 +118,7 @@ export default function ExamResultPage() {
         </div>
 
         {/* Topic breakdown */}
-        <div className="mb-10">
+        <div className="mb-10 p-5 rounded-3xl border border-border bg-card shadow-sm">
           <h2 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">
             ผลตามหัวข้อ
           </h2>
@@ -160,7 +161,8 @@ export default function ExamResultPage() {
               return (
                 <div
                   key={q.id}
-                  className={`p-4 rounded-xl border ${
+                  style={{ animationDelay: `${Math.min(i * 25, 300)}ms` }}
+                  className={`animate-fade-slide-in p-4 rounded-2xl border ${
                     correct
                       ? 'border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-800'
                       : 'border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800'
@@ -168,8 +170,12 @@ export default function ExamResultPage() {
                 >
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <span className="text-xs text-muted-foreground">ข้อ {i + 1}</span>
-                    <span className={`text-xs font-semibold ${correct ? 'text-green-600' : 'text-red-600'}`}>
-                      {correct ? '✓ ถูก' : '✗ ผิด'}
+                    <span className={`flex items-center gap-1 text-xs font-semibold ${correct ? 'text-green-600' : 'text-red-600'}`}>
+                      {correct ? (
+                        <><CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> ถูก</>
+                      ) : (
+                        <><XCircle className="w-3.5 h-3.5" aria-hidden="true" /> ผิด</>
+                      )}
                     </span>
                   </div>
                   <p className="text-sm text-foreground line-clamp-2">
@@ -196,13 +202,13 @@ export default function ExamResultPage() {
         <div className="flex gap-4 justify-center">
           <Link
             href="/exam"
-            className="px-6 py-3 border border-border rounded-lg text-sm hover:bg-accent transition-colors"
+            className="px-6 py-3 border border-border rounded-xl text-sm hover:bg-accent transition-colors cursor-pointer"
           >
             สอบอีกครั้ง
           </Link>
           <Link
             href="/practice"
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm hover:opacity-90 transition-opacity"
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-xl text-sm hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
           >
             ฝึกโจทย์ตามหัวข้อ
           </Link>

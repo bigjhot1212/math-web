@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import 'katex/dist/katex.min.css'
 
@@ -146,14 +147,14 @@ export default function ExamRoomPage() {
           /{examData.questions.length}
         </span>
 
-        <span className={`font-mono text-xl font-semibold tabular-nums ${isCritical ? 'text-red-600' : isLowTime ? 'text-amber-600' : 'text-foreground'}`}>
+        <span className={`font-mono text-xl font-semibold tabular-nums transition-colors ${isCritical ? 'text-red-600 animate-pulse' : isLowTime ? 'text-amber-600' : 'text-foreground'}`}>
           {formatTime(timeLeft)}
         </span>
 
         <button
           onClick={() => setShowConfirm(true)}
           disabled={submitting}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
         >
           ส่งข้อสอบ
         </button>
@@ -168,11 +169,11 @@ export default function ExamRoomPage() {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`h-8 rounded text-xs font-medium transition-colors ${
+                className={`h-8 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                   i === current
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-[0_0_10px_-2px_var(--primary)]'
                     : answers[qn.id]
-                    ? 'bg-primary/15 text-primary'
+                    ? 'bg-primary/15 text-primary hover:bg-primary/25'
                     : 'border border-border text-muted-foreground hover:bg-accent'
                 }`}
               >
@@ -204,9 +205,9 @@ export default function ExamRoomPage() {
                     <button
                       key={key}
                       onClick={() => setAnswers(prev => ({ ...prev, [q.id]: key }))}
-                      className={`flex items-center gap-3 p-4 rounded-xl border text-left w-full transition-all ${
+                      className={`flex items-center gap-3 p-4 rounded-2xl border text-left w-full transition-all cursor-pointer ${
                         selected
-                          ? 'border-primary bg-primary/10'
+                          ? 'border-primary bg-primary/10 shadow-[0_0_16px_-6px_var(--primary)]'
                           : 'border-border hover:border-primary/50 hover:bg-accent/50'
                       }`}
                     >
@@ -224,21 +225,23 @@ export default function ExamRoomPage() {
               <button
                 onClick={() => setCurrent(c => Math.max(0, c - 1))}
                 disabled={current === 0}
-                className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-30"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
               >
-                ← ก่อนหน้า
+                <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                ก่อนหน้า
               </button>
               {current < examData.questions.length - 1 ? (
                 <button
                   onClick={() => setCurrent(c => c + 1)}
-                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
                 >
-                  ถัดไป →
+                  ถัดไป
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </button>
               ) : (
                 <button
                   onClick={() => setShowConfirm(true)}
-                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
                 >
                   ส่งข้อสอบ
                 </button>
@@ -255,9 +258,9 @@ export default function ExamRoomPage() {
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`h-8 w-8 shrink-0 rounded text-xs font-medium transition-colors ${
+              className={`h-8 w-8 shrink-0 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 i === current
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-[0_0_10px_-2px_var(--primary)]'
                   : answers[qn.id]
                   ? 'bg-primary/15 text-primary'
                   : 'border border-border text-muted-foreground'
@@ -271,9 +274,9 @@ export default function ExamRoomPage() {
 
       {/* Confirm modal */}
       {showConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-background rounded-xl border border-border p-6 max-w-sm w-full shadow-xl">
-            <h2 className="text-lg font-semibold mb-2 text-foreground">ยืนยันการส่งข้อสอบ</h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-slide-in">
+          <div className="bg-card/90 backdrop-blur-xl rounded-3xl border border-border p-6 max-w-sm w-full shadow-2xl">
+            <h2 className="text-lg font-heading font-semibold mb-2 text-foreground">ยืนยันการส่งข้อสอบ</h2>
             <p className="text-sm text-muted-foreground mb-1">
               คุณตอบแล้ว{' '}
               <span className="font-medium text-foreground">{answeredCount}</span>{' '}
@@ -289,14 +292,14 @@ export default function ExamRoomPage() {
             <div className="flex gap-3 mt-5">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors"
+                className="flex-1 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
               >
                 ยกเลิก
               </button>
               <button
                 onClick={() => { setShowConfirm(false); handleSubmit() }}
                 disabled={submitting}
-                className="flex-1 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+                className="flex-1 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
               >
                 {submitting ? 'กำลังส่ง...' : 'ยืนยัน'}
               </button>

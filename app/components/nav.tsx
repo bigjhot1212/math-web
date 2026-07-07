@@ -13,33 +13,33 @@ export default async function Nav() {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="font-semibold text-foreground flex items-center gap-2">
-          <span className="text-lg">∑</span>
+        <Link href="/" className="font-heading font-semibold text-foreground flex items-center gap-2 cursor-pointer">
+          <span className="text-lg text-primary">∑</span>
           <span>MathPrep</span>
         </Link>
 
         <nav className="flex items-center gap-1">
           <Link
             href="/practice"
-            className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="px-3 py-1.5 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
           >
             ฝึกโจทย์
           </Link>
           <Link
             href="/exam"
-            className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="px-3 py-1.5 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
           >
             สอบจำลอง
           </Link>
           <Link
             href="/dashboard"
-            className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="px-3 py-1.5 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
           >
             Dashboard
           </Link>
           <Link
             href="/pricing"
-            className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="px-3 py-1.5 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
           >
             ราคา
           </Link>
@@ -48,7 +48,7 @@ export default async function Nav() {
           ) : (
             <Link
               href="/login"
-              className="ml-2 px-3 py-1.5 rounded-lg text-sm border border-border hover:bg-accent transition-colors"
+              className="ml-2 px-4 py-1.5 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
               เข้าสู่ระบบ
             </Link>

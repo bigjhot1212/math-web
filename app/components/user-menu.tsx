@@ -44,7 +44,7 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
     <div ref={ref} className="relative ml-2">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden border-2 border-border hover:border-primary transition-colors"
+        className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden border-2 border-border hover:border-primary transition-colors cursor-pointer"
       >
         {avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -57,7 +57,7 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-10 w-52 rounded-xl border border-border bg-background shadow-lg py-1 z-50">
+        <div className="animate-fade-slide-in absolute right-0 top-10 w-52 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-lg py-1 z-50">
           <div className="px-4 py-2.5 border-b border-border">
             <p className="text-sm font-medium text-foreground truncate">{name}</p>
             <p className="text-xs text-muted-foreground truncate">{email}</p>
@@ -65,13 +65,13 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
           <Link
             href="/dashboard"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors cursor-pointer"
           >
             Dashboard
           </Link>
           <button
             onClick={signOut}
-            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-accent transition-colors"
+            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-accent transition-colors cursor-pointer"
           >
             ออกจากระบบ
           </button>

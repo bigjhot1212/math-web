@@ -25,7 +25,7 @@ export default function PracticePage() {
       <div className="max-w-4xl mx-auto">
 
         <div className="mb-10">
-          <h1 className="text-3xl font-semibold text-foreground mb-2">
+          <h1 className="text-3xl font-heading font-semibold text-foreground mb-2">
             ฝึกทำโจทย์
           </h1>
           <p className="text-muted-foreground">
@@ -39,7 +39,7 @@ export default function PracticePage() {
             {levels.map(level => (
               <button
                 key={level}
-                className="px-4 py-2 rounded-full border border-border text-sm hover:bg-accent transition-colors"
+                className="px-4 py-2 rounded-full border border-border text-sm font-medium hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all cursor-pointer"
               >
                 {level}
               </button>
@@ -48,17 +48,20 @@ export default function PracticePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {topics.map(topic => (
+          {topics.map((topic, i) => (
             <Link
               key={topic.id}
               href={`/practice/${topic.id}`}
-              className="group p-6 rounded-xl border border-border hover:border-primary hover:bg-accent/50 transition-all"
+              style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
+              className="animate-fade-slide-in group p-5 rounded-2xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/30 transition-all duration-200 cursor-pointer flex items-center gap-4"
             >
-              <div className="mb-3">
-                <span className="text-2xl">{topic.icon}</span>
+              <span className="w-11 h-11 shrink-0 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg font-heading font-semibold transition-transform duration-200 group-hover:scale-110">
+                {topic.icon}
+              </span>
+              <div className="min-w-0">
+                <h2 className="font-medium text-foreground mb-0.5 truncate">{topic.name}</h2>
+                <p className="text-sm text-muted-foreground truncate">{topic.nameEn}</p>
               </div>
-              <h2 className="font-medium text-foreground mb-1">{topic.name}</h2>
-              <p className="text-sm text-muted-foreground">{topic.nameEn}</p>
             </Link>
           ))}
         </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Lock } from 'lucide-react'
 
 const EXAMS = [
   {
@@ -78,38 +79,39 @@ export default function ExamSelector({ isPremium }: Props) {
       <div className="max-w-3xl mx-auto">
 
         <div className="mb-10">
-          <h1 className="text-3xl font-semibold text-foreground mb-2">สอบจำลอง</h1>
+          <h1 className="text-3xl font-heading font-semibold text-foreground mb-2">สอบจำลอง</h1>
           <p className="text-muted-foreground">ข้อสอบ A-Level คณิตศาสตร์ จับเวลาจริง</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-lg border border-red-200 bg-red-50 text-red-700 text-sm dark:bg-red-950 dark:border-red-800 dark:text-red-300">
+          <div className="mb-6 p-4 rounded-2xl border border-destructive/30 bg-destructive/10 text-destructive text-sm text-center">
             {error}
           </div>
         )}
 
         <div className="grid md:grid-cols-2 gap-4">
-          {EXAMS.map(exam => {
+          {EXAMS.map((exam, i) => {
             const locked = exam.paid && !isPremium
             return (
               <div
                 key={exam.type}
-                className={`p-6 rounded-xl border-2 transition-all bg-background ${
+                style={{ animationDelay: `${i * 60}ms` }}
+                className={`animate-fade-slide-in p-6 rounded-3xl border-2 bg-card/70 backdrop-blur-xl transition-all duration-300 ${
                   locked
                     ? 'border-amber-200 dark:border-amber-900 opacity-75'
-                    : 'border-purple-300 hover:border-purple-500 dark:border-purple-800 dark:hover:border-purple-500'
+                    : 'border-primary/30 hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_0_28px_-8px_var(--primary)]'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${exam.tierStyle}`}>
                     {exam.tier}
                   </span>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
                     A-Level
                   </span>
                 </div>
 
-                <h2 className="text-base font-semibold text-foreground mb-1">{exam.subject}</h2>
+                <h2 className="text-base font-heading font-semibold text-foreground mb-1">{exam.subject}</h2>
                 <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{exam.topics}</p>
 
                 <div className="flex gap-4 text-sm text-muted-foreground mb-5">
@@ -120,15 +122,16 @@ export default function ExamSelector({ isPremium }: Props) {
                 {locked ? (
                   <Link
                     href="/pricing"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 rounded-lg text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 rounded-xl text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors cursor-pointer"
                   >
-                    🔒 อัปเกรดเป็น Premium
+                    <Lock className="w-4 h-4" aria-hidden="true" />
+                    อัปเกรดเป็น Premium
                   </Link>
                 ) : (
                   <button
                     onClick={() => startExam(exam.type)}
                     disabled={loading !== null}
-                    className="w-full px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+                    className="w-full px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
                   >
                     {loading === exam.type ? 'กำลังโหลด...' : 'เริ่มสอบ'}
                   </button>

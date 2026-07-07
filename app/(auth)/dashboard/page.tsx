@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { ListChecks, Target, Flame } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
 const TOPIC_NAMES: Record<string, string> = {
@@ -123,18 +124,18 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between mb-10">
           <div>
             <p className="text-sm text-muted-foreground mb-1">สวัสดี, {displayName}</p>
-            <h1 className="text-2xl font-semibold text-foreground">ความก้าวหน้าของคุณ</h1>
+            <h1 className="text-2xl font-heading font-semibold text-foreground">ความก้าวหน้าของคุณ</h1>
           </div>
           <div className="flex gap-3">
             <Link
               href="/practice"
-              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors"
+              className="px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
             >
               ฝึกโจทย์
             </Link>
             <Link
               href="/exam"
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
               สอบจำลอง
             </Link>
@@ -143,30 +144,39 @@ export default async function DashboardPage() {
 
         {/* Stat cards */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="p-5 rounded-xl border border-border">
+          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <span className="w-9 h-9 rounded-xl bg-chart-3/15 text-chart-3 flex items-center justify-center mb-3">
+              <ListChecks className="w-4.5 h-4.5" aria-hidden="true" />
+            </span>
             <p className="text-xs text-muted-foreground mb-1">โจทย์ทั้งหมด</p>
-            <p className="text-3xl font-bold text-foreground">{totalAnswered}</p>
+            <p className="text-3xl font-heading font-bold text-foreground tabular-nums">{totalAnswered}</p>
             <p className="text-xs text-muted-foreground mt-1">ข้อที่ทำแล้ว</p>
           </div>
-          <div className="p-5 rounded-xl border border-border">
+          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+              <Target className="w-4.5 h-4.5" aria-hidden="true" />
+            </span>
             <p className="text-xs text-muted-foreground mb-1">ความแม่นยำ</p>
-            <p className={`text-3xl font-bold ${overallAccuracy >= 80 ? 'text-green-600' : overallAccuracy >= 60 ? 'text-amber-600' : 'text-red-500'}`}>
+            <p className={`text-3xl font-heading font-bold tabular-nums ${overallAccuracy >= 80 ? 'text-green-600' : overallAccuracy >= 60 ? 'text-amber-600' : 'text-red-500'}`}>
               {totalAnswered > 0 ? `${overallAccuracy}%` : '—'}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {totalCorrect}/{totalAnswered} ข้อถูก
             </p>
           </div>
-          <div className="p-5 rounded-xl border border-border">
+          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <span className="w-9 h-9 rounded-xl bg-cta/10 text-cta flex items-center justify-center mb-3">
+              <Flame className="w-4.5 h-4.5" aria-hidden="true" />
+            </span>
             <p className="text-xs text-muted-foreground mb-1">Streak</p>
-            <p className="text-3xl font-bold text-foreground">{streak}</p>
+            <p className="text-3xl font-heading font-bold text-foreground tabular-nums">{streak}</p>
             <p className="text-xs text-muted-foreground mt-1">วันติดต่อกัน</p>
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           {/* Accuracy trend */}
-          <div className="p-5 rounded-xl border border-border">
+          <div className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
             <h2 className="text-sm font-semibold text-foreground mb-4">ความแม่นยำ 14 วันที่ผ่านมา</h2>
             {totalAnswered === 0 ? (
               <p className="text-sm text-muted-foreground">ยังไม่มีข้อมูล เริ่มทำโจทย์เลย!</p>
@@ -201,7 +211,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Weak topics */}
-          <div className="p-5 rounded-xl border border-border">
+          <div style={{ animationDelay: '80ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
             <h2 className="text-sm font-semibold text-foreground mb-4">หัวข้อที่ต้องฝึกเพิ่ม</h2>
             {weakTopics.length === 0 ? (
               <p className="text-sm text-muted-foreground">
@@ -238,12 +248,12 @@ export default async function DashboardPage() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Exam history */}
-          <div className="p-5 rounded-xl border border-border">
+          <div style={{ animationDelay: '140ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
             <h2 className="text-sm font-semibold text-foreground mb-4">ประวัติการสอบ</h2>
             {exams.length === 0 ? (
               <div className="text-sm text-muted-foreground">
                 <p className="mb-3">ยังไม่เคยสอบจำลอง</p>
-                <Link href="/exam" className="text-primary hover:underline">
+                <Link href="/exam" className="text-primary hover:underline cursor-pointer">
                   เริ่มสอบจำลอง →
                 </Link>
               </div>
@@ -284,7 +294,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Strong topics */}
-          <div className="p-5 rounded-xl border border-border">
+          <div style={{ animationDelay: '200ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
             <h2 className="text-sm font-semibold text-foreground mb-4">หัวข้อที่ทำได้ดี</h2>
             {strongTopics.length === 0 ? (
               <p className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</p>
