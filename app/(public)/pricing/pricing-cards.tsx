@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles } from 'lucide-react'
+import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen } from 'lucide-react'
 import { COURSES, ZONE_LABELS, BUNDLES, type CourseZone } from '@/content/course-videos'
 
 const POSTER_GRADIENTS = [
@@ -70,6 +70,8 @@ type CourseCardProps = {
 function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy }: CourseCardProps) {
   const course = COURSES[id]
   const available = course.status === 'available'
+  const [showCurriculum, setShowCurriculum] = useState(false)
+  const totalLessons = course.curriculum?.reduce((sum, s) => sum + s.items.length, 0) ?? 0
 
   return (
     <div
@@ -110,6 +112,38 @@ function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy
         </div>
         <h3 className="text-sm font-heading font-semibold text-foreground mb-1 line-clamp-1">{course.name}</h3>
         <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{course.nameEn} · {course.desc}</p>
+
+        {course.curriculum && course.curriculum.length > 0 && (
+          <div className="mb-3">
+            <button
+              onClick={() => setShowCurriculum((v) => !v)}
+              className="flex items-center gap-1.5 text-xs text-primary hover:underline cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+              {showCurriculum ? 'ซ่อนเนื้อหา' : `ดูเนื้อหาในคอร์ส (${totalLessons} บท)`}
+              <ChevronDown className={`w-3 h-3 transition-transform ${showCurriculum ? 'rotate-180' : ''}`} aria-hidden="true" />
+            </button>
+            {showCurriculum && (
+              <div className="mt-2 p-3 rounded-xl bg-accent/40 max-h-48 overflow-y-auto">
+                {course.curriculum.map((section, sIdx) => (
+                  <div key={sIdx} className={sIdx > 0 ? 'mt-2' : ''}>
+                    {section.title && (
+                      <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-1">{section.title}</p>
+                    )}
+                    <ol className="space-y-1">
+                      {section.items.map((item, i) => (
+                        <li key={i} className="flex gap-1.5 text-xs text-foreground">
+                          <span className="text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="border-t border-border pt-3">
           {!available ? (
