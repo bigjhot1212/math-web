@@ -52,7 +52,7 @@ const ALL_COURSES = [
   { id: 'statistics-distributions', icon: 'σ'    },
 ]
 
-const ZONE_ORDER: CourseZone[] = ['special', 'm4', 'm5', 'm6']
+const ZONE_ORDER: CourseZone[] = ['special', 'm6', 'm5', 'm4']
 
 type Props = { isLoggedIn: boolean; purchasedTopicIds: string[] }
 
