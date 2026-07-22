@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PlayCircle, Loader2, Lock, CheckCircle2 } from 'lucide-react'
-import { COURSES } from '@/content/course-videos'
+import { COURSES, ZONE_LABELS, type CourseZone } from '@/content/course-videos'
 
 const POSTER_GRADIENTS = [
   'bg-gradient-to-br from-[var(--primary)] to-[#1e1b4b]',
@@ -35,6 +35,7 @@ function useCountUp(target: number, durationMs = 900) {
 }
 
 const ALL_COURSES = [
+  { id: 'foundation-high-school',   icon: 'ABC'  },
   { id: 'set',                      icon: '∪'    },
   { id: 'logic',                    icon: '∧'    },
   { id: 'real-numbers',             icon: 'ℝ'    },
@@ -49,10 +50,100 @@ const ALL_COURSES = [
   { id: 'sequences-series',         icon: '∑'    },
   { id: 'calculus',                 icon: '∫'    },
   { id: 'statistics-distributions', icon: 'σ'    },
-  { id: 'foundation-high-school',   icon: 'ABC'  },
 ]
 
+const ZONE_ORDER: CourseZone[] = ['special', 'm4', 'm5', 'm6']
+
 type Props = { isLoggedIn: boolean; purchasedTopicIds: string[] }
+
+type CourseCardProps = {
+  id: string
+  icon: string
+  gradient: string
+  index: number
+  owned: boolean
+  loading: boolean
+  disabled: boolean
+  onBuy: (id: string) => void
+}
+
+function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy }: CourseCardProps) {
+  const course = COURSES[id]
+  const available = course.status === 'available'
+
+  return (
+    <div
+      style={{ animationDelay: `${Math.min(index * 30, 300)}ms` }}
+      className={`animate-fade-slide-in group relative rounded-3xl border border-border bg-card overflow-hidden shadow-sm transition-all duration-300 ${available ? 'hover:shadow-lg hover:-translate-y-1' : ''}`}
+    >
+      {/* Poster */}
+      <div className={`relative aspect-[4/3] flex items-center justify-center overflow-hidden ${gradient}`}>
+        <span className="text-7xl font-heading font-bold text-white/90 drop-shadow-lg select-none" aria-hidden="true">
+          {icon}
+        </span>
+        <span className="pointer-events-none absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
+
+        {owned && (
+          <span className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-white/90 text-primary">
+            <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
+            เป็นเจ้าของแล้ว
+          </span>
+        )}
+        {available && !owned && (
+          <span className="absolute top-3 right-3 text-[10px] font-medium px-2 py-1 rounded-full bg-white/85 text-foreground backdrop-blur-sm">
+            มีเฉลยละเอียด
+          </span>
+        )}
+        {!available && (
+          <div className="absolute inset-0 bg-background/75 backdrop-blur-[2px] flex flex-col items-center justify-center gap-1.5 text-muted-foreground">
+            <Lock className="w-5 h-5" aria-hidden="true" />
+            <span className="text-xs font-medium">เร็วๆ นี้</span>
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">คอร์สออนไลน์</span>
+          <span className="text-[10px] font-mono text-muted-foreground">{id}</span>
+        </div>
+        <h3 className="text-sm font-heading font-semibold text-foreground mb-1 line-clamp-1">{course.name}</h3>
+        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{course.nameEn} · {course.desc}</p>
+
+        <div className="border-t border-border pt-3">
+          {!available ? (
+            <p className="text-sm font-semibold text-muted-foreground">Coming Soon</p>
+          ) : owned ? (
+            <a
+              href={`/course/${id}`}
+              className="group/btn relative flex items-center justify-center gap-1.5 w-full text-xs font-medium px-3 py-2 rounded-xl bg-primary text-primary-foreground overflow-hidden transition-transform cursor-pointer hover:scale-[1.02]"
+            >
+              <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/25 -translate-x-[200%] group-hover/btn:translate-x-[400%] transition-transform duration-700" aria-hidden="true" />
+              <PlayCircle className="w-3.5 h-3.5" aria-hidden="true" />
+              เข้าเรียน
+            </a>
+          ) : (
+            <div className="flex items-center justify-between gap-3">
+              <p className="flex items-baseline gap-1.5 text-lg font-heading font-bold text-cta tabular-nums shrink-0">
+                ฿{course.price ?? '390'}
+              </p>
+              <button
+                onClick={() => onBuy(id)}
+                disabled={disabled}
+                className="shrink-0 text-xs font-medium px-3 py-2 rounded-xl border border-border hover:border-cta hover:bg-cta/5 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" aria-label="กำลังดำเนินการ" />
+                ) : 'ซื้อคอร์สนี้'}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
   const router = useRouter()
@@ -101,92 +192,39 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-10">
-          {[...ALL_COURSES].sort((a, b) => {
+        {ZONE_ORDER.map((zone) => {
+          const zoneCourses = ALL_COURSES.filter(({ id }) => COURSES[id]?.zone === zone)
+          if (zoneCourses.length === 0) return null
+
+          const sorted = [...zoneCourses].sort((a, b) => {
             const aAvail = COURSES[a.id]?.status === 'available' ? 0 : 1
             const bAvail = COURSES[b.id]?.status === 'available' ? 0 : 1
             return aAvail - bAvail
-          }).map(({ id, icon }, i) => {
-            const course = COURSES[id]
-            const owned = purchasedTopicIds.includes(id)
-            const available = course.status === 'available'
-            const gradient = POSTER_GRADIENTS[i % POSTER_GRADIENTS.length]
+          })
 
-            return (
-              <div
-                key={id}
-                style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
-                className={`animate-fade-slide-in group relative rounded-3xl border border-border bg-card overflow-hidden shadow-sm transition-all duration-300 ${available ? 'hover:shadow-lg hover:-translate-y-1' : ''}`}
-              >
-                {/* Poster */}
-                <div className={`relative aspect-[4/3] flex items-center justify-center overflow-hidden ${gradient}`}>
-                  <span className="text-7xl font-heading font-bold text-white/90 drop-shadow-lg select-none" aria-hidden="true">
-                    {icon}
-                  </span>
-                  <span className="pointer-events-none absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
-
-                  {owned && (
-                    <span className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-white/90 text-primary">
-                      <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
-                      เป็นเจ้าของแล้ว
-                    </span>
-                  )}
-                  {available && !owned && (
-                    <span className="absolute top-3 right-3 text-[10px] font-medium px-2 py-1 rounded-full bg-white/85 text-foreground backdrop-blur-sm">
-                      มีเฉลยละเอียด
-                    </span>
-                  )}
-                  {!available && (
-                    <div className="absolute inset-0 bg-background/75 backdrop-blur-[2px] flex flex-col items-center justify-center gap-1.5 text-muted-foreground">
-                      <Lock className="w-5 h-5" aria-hidden="true" />
-                      <span className="text-xs font-medium">เร็วๆ นี้</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Body */}
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">คอร์สออนไลน์</span>
-                    <span className="text-[10px] font-mono text-muted-foreground">{id}</span>
-                  </div>
-                  <h3 className="text-sm font-heading font-semibold text-foreground mb-1 line-clamp-1">{course.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{course.nameEn} · {course.desc}</p>
-
-                  <div className="border-t border-border pt-3">
-                    {!available ? (
-                      <p className="text-sm font-semibold text-muted-foreground">Coming Soon</p>
-                    ) : owned ? (
-                      <a
-                        href={`/course/${id}`}
-                        className="group/btn relative flex items-center justify-center gap-1.5 w-full text-xs font-medium px-3 py-2 rounded-xl bg-primary text-primary-foreground overflow-hidden transition-transform cursor-pointer hover:scale-[1.02]"
-                      >
-                        <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/25 -translate-x-[200%] group-hover/btn:translate-x-[400%] transition-transform duration-700" aria-hidden="true" />
-                        <PlayCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                        เข้าเรียน
-                      </a>
-                    ) : (
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="flex items-baseline gap-1.5 text-lg font-heading font-bold text-cta tabular-nums shrink-0">
-                          ฿{course.price ?? '390'}
-                        </p>
-                        <button
-                          onClick={() => handleBuyTopic(id)}
-                          disabled={topicLoading !== null}
-                          className="shrink-0 text-xs font-medium px-3 py-2 rounded-xl border border-border hover:border-cta hover:bg-cta/5 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
-                        >
-                          {topicLoading === id ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" aria-label="กำลังดำเนินการ" />
-                          ) : 'ซื้อคอร์สนี้'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+          return (
+            <section key={zone} className="mb-10">
+              <h2 className="text-lg font-heading font-bold text-foreground mb-4 pb-2 border-b border-border">
+                {ZONE_LABELS[zone]}
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {sorted.map(({ id, icon }, i) => (
+                  <CourseCard
+                    key={id}
+                    id={id}
+                    icon={icon}
+                    index={i}
+                    gradient={POSTER_GRADIENTS[i % POSTER_GRADIENTS.length]}
+                    owned={purchasedTopicIds.includes(id)}
+                    loading={topicLoading === id}
+                    disabled={topicLoading !== null}
+                    onBuy={handleBuyTopic}
+                  />
+                ))}
               </div>
-            )
-          })}
-        </div>
+            </section>
+          )
+        })}
 
         {!isLoggedIn && (
           <p className="text-center text-xs text-muted-foreground mt-4">
