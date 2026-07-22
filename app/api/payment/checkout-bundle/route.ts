@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'payment',
+    payment_method_types: ['card', 'promptpay'],
     line_items: [{
       price_data: {
         currency: 'thb',
@@ -52,6 +53,7 @@ export async function POST(request: NextRequest) {
       bundle_id: bundleId,
       topic_ids: bundle.topicIds.join(','),
       type: 'bundle_purchase',
+      price_thb: String(bundle.price),
     },
     success_url: `${origin}/pricing/success?bundle=${bundleId}`,
     cancel_url: `${origin}/pricing`,

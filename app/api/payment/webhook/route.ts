@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { inviteStudentToClassroom } from '@/lib/google-classroom'
 import { COURSES } from '@/content/course-videos'
 import Stripe from 'stripe'
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   switch (event.type) {
     case 'checkout.session.completed': {
@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
             user_id: userId,
             topic_id: topicId,
             stripe_payment_intent_id: session.payment_intent as string,
+            price_thb: Number(session.metadata.price_thb) || null,
+            payment_method: 'stripe',
           }, { onConflict: 'user_id,topic_id' })
 
           // Invite student to Google Classroom if available
@@ -52,11 +54,14 @@ export async function POST(request: NextRequest) {
 
       if (session.metadata?.type === 'bundle_purchase') {
         const topicIds = session.metadata.topic_ids?.split(',').filter(Boolean) ?? []
+        const perTopicPrice = topicIds.length > 0 ? Math.round((Number(session.metadata.price_thb) || 0) / topicIds.length) : null
         for (const topicId of topicIds) {
           await supabase.from('topic_purchases').upsert({
             user_id: userId,
             topic_id: topicId,
             stripe_payment_intent_id: session.payment_intent as string,
+            price_thb: perTopicPrice,
+            payment_method: 'stripe',
           }, { onConflict: 'user_id,topic_id' })
 
           const course = COURSES[topicId]

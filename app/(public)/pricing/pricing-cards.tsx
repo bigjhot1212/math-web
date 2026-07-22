@@ -191,45 +191,18 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
   const router = useRouter()
   const [topicLoading, setTopicLoading] = useState<string | null>(null)
   const [bundleLoading, setBundleLoading] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const regularPrice = useCountUp(390)
 
-  async function handleBuyTopic(topicId: string) {
-    if (!isLoggedIn) { router.push('/login'); return }
+  function handleBuyTopic(topicId: string) {
     setTopicLoading(topicId)
-    setError(null)
-    try {
-      const res = await fetch('/api/payment/checkout-topic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topicId }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
-      window.location.href = data.url
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
-      setTopicLoading(null)
-    }
+    if (!isLoggedIn) { router.push(`/login?next=${encodeURIComponent(`/checkout?type=topic&id=${topicId}`)}`); return }
+    router.push(`/checkout?type=topic&id=${topicId}`)
   }
 
-  async function handleBuyBundle(bundleId: string) {
-    if (!isLoggedIn) { router.push('/login'); return }
+  function handleBuyBundle(bundleId: string) {
     setBundleLoading(bundleId)
-    setError(null)
-    try {
-      const res = await fetch('/api/payment/checkout-bundle', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bundleId }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
-      window.location.href = data.url
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
-      setBundleLoading(null)
-    }
+    if (!isLoggedIn) { router.push(`/login?next=${encodeURIComponent(`/checkout?type=bundle&id=${bundleId}`)}`); return }
+    router.push(`/checkout?type=bundle&id=${bundleId}`)
   }
 
   return (
@@ -247,12 +220,6 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
             <p className="text-xs text-muted-foreground">ต่อบท</p>
           </div>
         </div>
-
-        {error && (
-          <div className="mb-6 p-4 rounded-2xl border border-destructive/30 bg-destructive/10 text-destructive text-sm text-center">
-            {error}
-          </div>
-        )}
 
         {ZONE_ORDER.map((zone) => {
           const zoneCourses = ALL_COURSES.filter(({ id }) => COURSES[id]?.zone === zone)
