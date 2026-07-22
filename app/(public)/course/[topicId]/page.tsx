@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { ArrowLeft, Clapperboard, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Clapperboard, ExternalLink, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { COURSES } from '@/content/course-videos'
 
@@ -73,6 +73,32 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
               เปิด Classroom
               <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
             </a>
+          </div>
+        )}
+
+        {course.curriculum && course.curriculum.length > 0 && (
+          <div className="mt-6 p-5 rounded-3xl border border-border bg-card/70 backdrop-blur-xl">
+            <div className="flex items-center gap-2 mb-4">
+              <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
+              <h2 className="text-sm font-heading font-semibold text-foreground">เนื้อหาในคอร์ส</h2>
+            </div>
+            <div className="space-y-5">
+              {course.curriculum.map((section, sIdx) => (
+                <div key={sIdx}>
+                  {section.title && (
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">{section.title}</p>
+                  )}
+                  <ol className="space-y-1.5">
+                    {section.items.map((item, i) => (
+                      <li key={i} className="flex gap-2.5 text-sm text-foreground">
+                        <span className="text-muted-foreground tabular-nums shrink-0">{i + 1}.</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
