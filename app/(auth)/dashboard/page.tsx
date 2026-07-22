@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ListChecks, Target, Flame } from 'lucide-react'
+import { ListChecks, Target, Flame, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/payment-config'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -127,6 +128,15 @@ export default async function DashboardPage() {
             <h1 className="text-2xl font-heading font-semibold text-foreground">ความก้าวหน้าของคุณ</h1>
           </div>
           <div className="flex gap-3">
+            {isAdminEmail(user.email) && (
+              <Link
+                href="/admin/bank-transfers"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
+              >
+                <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+                แอดมิน
+              </Link>
+            )}
             <Link
               href="/practice"
               className="px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
