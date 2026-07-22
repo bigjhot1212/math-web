@@ -19,6 +19,24 @@ export const ZONE_LABELS: Record<CourseZone, string> = {
   m6: 'ม.6',
 }
 
+export interface BundleConfig {
+  name: string
+  topicIds: string[]
+  price: number       // fixed bundle price in THB
+  regularTotal: number // sum of individual prices, for showing the strikethrough
+  zone: CourseZone
+}
+
+export const BUNDLES: Record<string, BundleConfig> = {
+  'm6-bundle': {
+    name: 'ครบชุด ม.6 (3 บท)',
+    topicIds: ['sequences-series', 'calculus', 'statistics-distributions'],
+    price: 1090,
+    regularTotal: 1170,
+    zone: 'm6',
+  },
+}
+
 export const COURSES: Record<string, CourseConfig> = {
   'foundation-high-school':   { name: 'ปรับพื้นฐานสำหรับเรียนม.ปลาย',    nameEn: 'High School Foundation',  desc: 'ทบทวนพื้นฐานคณิตศาสตร์ ม.ต้น เตรียมพร้อมก่อนเรียนคณิตศาสตร์ ม.ปลาย', status: 'available',   zone: 'special', classroomId: 'ODU0ODA2OTA5ODQx', price: 490 },
 

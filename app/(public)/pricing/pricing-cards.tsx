@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { PlayCircle, Loader2, Lock, CheckCircle2 } from 'lucide-react'
-import { COURSES, ZONE_LABELS, type CourseZone } from '@/content/course-videos'
+import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles } from 'lucide-react'
+import { COURSES, ZONE_LABELS, BUNDLES, type CourseZone } from '@/content/course-videos'
 
 const POSTER_GRADIENTS = [
   'bg-gradient-to-br from-[var(--primary)] to-[#1e1b4b]',
@@ -145,9 +145,52 @@ function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy
   )
 }
 
+type BundleBannerProps = {
+  bundleId: string
+  isLoggedIn: boolean
+  loading: boolean
+  disabled: boolean
+  onBuy: (bundleId: string) => void
+}
+
+function BundleBanner({ bundleId, isLoggedIn, loading, disabled, onBuy }: BundleBannerProps) {
+  const bundle = BUNDLES[bundleId]
+
+  return (
+    <div className="mb-5 p-5 rounded-2xl border-2 border-cta bg-card/70 backdrop-blur-xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-4 transition-all duration-300 hover:shadow-[0_0_32px_-6px_var(--cta)]">
+      <span className="animate-pulse-glow pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full bg-cta/40 blur-2xl" aria-hidden="true" />
+      <div className="relative flex items-center gap-3 text-left">
+        <span className="shrink-0 w-10 h-10 rounded-xl bg-cta/15 text-cta flex items-center justify-center">
+          <Sparkles className="w-5 h-5" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="text-sm font-heading font-semibold text-foreground">{bundle.name}</p>
+          <p className="text-xs text-muted-foreground">ซื้อพร้อมกันคุ้มกว่า</p>
+        </div>
+      </div>
+      <div className="relative flex items-center gap-4 shrink-0">
+        <p className="flex items-baseline gap-1.5 text-xl font-heading font-bold text-cta tabular-nums">
+          ฿{bundle.price}
+          <span className="text-xs font-normal text-muted-foreground line-through">฿{bundle.regularTotal}</span>
+        </p>
+        <button
+          onClick={() => onBuy(bundleId)}
+          disabled={disabled}
+          className="shrink-0 text-xs font-medium px-4 py-2 rounded-xl bg-cta text-cta-foreground hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" aria-label="กำลังดำเนินการ" />
+          ) : isLoggedIn ? 'ซื้อชุดนี้' : 'เข้าสู่ระบบเพื่อซื้อ'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
   const router = useRouter()
   const [topicLoading, setTopicLoading] = useState<string | null>(null)
+  const [bundleLoading, setBundleLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const regularPrice = useCountUp(390)
 
@@ -167,6 +210,25 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
       setTopicLoading(null)
+    }
+  }
+
+  async function handleBuyBundle(bundleId: string) {
+    if (!isLoggedIn) { router.push('/login'); return }
+    setBundleLoading(bundleId)
+    setError(null)
+    try {
+      const res = await fetch('/api/payment/checkout-bundle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bundleId }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      window.location.href = data.url
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
+      setBundleLoading(null)
     }
   }
 
@@ -202,11 +264,25 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
             return aAvail - bAvail
           })
 
+          const zoneBundles = Object.entries(BUNDLES).filter(
+            ([, bundle]) => bundle.zone === zone && !bundle.topicIds.some((t) => purchasedTopicIds.includes(t))
+          )
+
           return (
             <section key={zone} className="mb-10">
               <h2 className="text-lg font-heading font-bold text-foreground mb-4 pb-2 border-b border-border">
                 {ZONE_LABELS[zone]}
               </h2>
+              {zoneBundles.map(([bundleId]) => (
+                <BundleBanner
+                  key={bundleId}
+                  bundleId={bundleId}
+                  isLoggedIn={isLoggedIn}
+                  loading={bundleLoading === bundleId}
+                  disabled={bundleLoading !== null}
+                  onBuy={handleBuyBundle}
+                />
+              ))}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {sorted.map(({ id, icon }, i) => (
                   <CourseCard

@@ -50,6 +50,31 @@ export async function POST(request: NextRequest) {
         break
       }
 
+      if (session.metadata?.type === 'bundle_purchase') {
+        const topicIds = session.metadata.topic_ids?.split(',').filter(Boolean) ?? []
+        for (const topicId of topicIds) {
+          await supabase.from('topic_purchases').upsert({
+            user_id: userId,
+            topic_id: topicId,
+            stripe_payment_intent_id: session.payment_intent as string,
+          }, { onConflict: 'user_id,topic_id' })
+
+          const course = COURSES[topicId]
+          if (course?.classroomId) {
+            const { data: userData } = await supabase.auth.admin.getUserById(userId)
+            const email = userData?.user?.email
+            if (email) {
+              try {
+                await inviteStudentToClassroom(course.classroomId, email)
+              } catch (e) {
+                console.error('Classroom invite failed:', e)
+              }
+            }
+          }
+        }
+        break
+      }
+
       if (!session.subscription) break
       const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
       await supabase.from('subscriptions').upsert({
