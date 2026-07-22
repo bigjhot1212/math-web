@@ -3,13 +3,20 @@
 import { useState } from 'react'
 import { ArrowLeft, CreditCard, Landmark, Loader2, CheckCircle2, Upload } from 'lucide-react'
 import { BANK_TRANSFER_INFO } from '@/lib/payment-config'
+import { removeFromCart } from '@/lib/cart'
 
 type Props = {
-  type: 'topic' | 'bundle'
+  type: 'topic' | 'bundle' | 'cart'
   id: string
   name: string
   price: number
   email: string
+}
+
+const CHECKOUT_ENDPOINTS = {
+  topic: '/api/payment/checkout-topic',
+  bundle: '/api/payment/checkout-bundle',
+  cart: '/api/payment/checkout-cart',
 }
 
 export default function CheckoutClient({ type, id, name, price, email }: Props) {
@@ -20,19 +27,23 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
   const [bankSubmitted, setBankSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  function clearCartItems() {
+    if (type === 'cart') id.split(',').forEach((tid) => removeFromCart(tid))
+  }
+
   async function handlePayStripe() {
     setPayLoading(true)
     setError(null)
     try {
-      const endpoint = type === 'topic' ? '/api/payment/checkout-topic' : '/api/payment/checkout-bundle'
-      const body = type === 'topic' ? { topicId: id } : { bundleId: id }
-      const res = await fetch(endpoint, {
+      const body = type === 'topic' ? { topicId: id } : type === 'bundle' ? { bundleId: id } : { topicIds: id.split(',') }
+      const res = await fetch(CHECKOUT_ENDPOINTS[type], {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
+      clearCartItems()
       window.location.href = data.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')
@@ -52,6 +63,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
       const res = await fetch('/api/payment/bank-transfer', { method: 'POST', body: form })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
+      clearCartItems()
       setBankSubmitted(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาด')

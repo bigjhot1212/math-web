@@ -22,7 +22,11 @@ export default async function AdminBankTransfersPage() {
       const { data: signed } = await admin.storage
         .from('payment-slips')
         .createSignedUrl(r.slip_url, 600)
-      const name = r.topic_id ? COURSES[r.topic_id]?.name : r.bundle_id ? BUNDLES[r.bundle_id]?.name : '-'
+      const name = r.bundle_id
+        ? BUNDLES[r.bundle_id]?.name
+        : r.topic_id
+          ? r.topic_id.split(',').map((tid: string) => COURSES[tid]?.name ?? tid).join(', ')
+          : '-'
       return { ...r, signedUrl: signed?.signedUrl ?? null, courseName: name ?? r.topic_id ?? r.bundle_id }
     })
   )

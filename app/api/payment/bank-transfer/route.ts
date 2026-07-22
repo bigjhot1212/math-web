@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   const id = form.get('id')
   const slip = form.get('slip')
 
-  if ((type !== 'topic' && type !== 'bundle') || typeof id !== 'string' || !(slip instanceof File)) {
+  if ((type !== 'topic' && type !== 'bundle' && type !== 'cart') || typeof id !== 'string' || !(slip instanceof File)) {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     amountThb = course.price ?? 390
     topicId = id
-  } else {
+  } else if (type === 'bundle') {
     const bundle = BUNDLES[id]
     if (!bundle) return NextResponse.json({ error: 'Invalid bundle' }, { status: 400 })
 
@@ -49,6 +49,22 @@ export async function POST(request: NextRequest) {
 
     amountThb = bundle.price
     bundleId = id
+  } else {
+    const requestedIds = id.split(',').filter(Boolean)
+    if (requestedIds.length === 0) return NextResponse.json({ error: 'Invalid cart' }, { status: 400 })
+
+    const { data: existing } = await supabase
+      .from('topic_purchases')
+      .select('topic_id')
+      .eq('user_id', user.id)
+      .in('topic_id', requestedIds)
+    const ownedIds = new Set(existing?.map((r) => r.topic_id) ?? [])
+
+    const validIds = requestedIds.filter((tid) => COURSES[tid]?.status === 'available' && !ownedIds.has(tid))
+    if (validIds.length === 0) return NextResponse.json({ error: 'ไม่มีคอร์สที่สามารถซื้อได้ในตะกร้า' }, { status: 400 })
+
+    amountThb = validIds.reduce((sum, tid) => sum + (COURSES[tid].price ?? 390), 0)
+    topicId = validIds.join(',')
   }
 
   const path = `${user.id}/${Date.now()}-${slip.name}`

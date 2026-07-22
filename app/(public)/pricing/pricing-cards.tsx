@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen } from 'lucide-react'
+import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen, ShoppingCart, Check } from 'lucide-react'
 import { COURSES, ZONE_LABELS, BUNDLES, type CourseZone } from '@/content/course-videos'
+import { getCart, addToCart, removeFromCart, onCartChange } from '@/lib/cart'
 
 const POSTER_GRADIENTS = [
   'bg-gradient-to-br from-[var(--primary)] to-[#1e1b4b]',
@@ -72,6 +73,18 @@ function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy
   const available = course.status === 'available'
   const [showCurriculum, setShowCurriculum] = useState(false)
   const totalLessons = course.curriculum?.reduce((sum, s) => sum + s.items.length, 0) ?? 0
+  const [inCart, setInCart] = useState(false)
+
+  useEffect(() => {
+    const update = () => setInCart(getCart().includes(id))
+    update()
+    return onCartChange(update)
+  }, [id])
+
+  function toggleCart() {
+    if (inCart) removeFromCart(id)
+    else addToCart(id)
+  }
 
   return (
     <div
@@ -158,19 +171,30 @@ function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy
               เข้าเรียน
             </a>
           ) : (
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-2">
               <p className="flex items-baseline gap-1.5 text-lg font-heading font-bold text-cta tabular-nums shrink-0">
                 ฿{course.price ?? '390'}
               </p>
-              <button
-                onClick={() => onBuy(id)}
-                disabled={disabled}
-                className="shrink-0 text-xs font-medium px-3 py-2 rounded-xl border border-border hover:border-cta hover:bg-cta/5 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" aria-label="กำลังดำเนินการ" />
-                ) : 'ซื้อคอร์สนี้'}
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={toggleCart}
+                  title={inCart ? 'นำออกจากตะกร้า' : 'เพิ่มลงตะกร้า'}
+                  className={`shrink-0 p-2 rounded-xl border transition-all cursor-pointer ${
+                    inCart ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground hover:border-primary/40 hover:text-primary'
+                  }`}
+                >
+                  {inCart ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : <ShoppingCart className="w-3.5 h-3.5" aria-hidden="true" />}
+                </button>
+                <button
+                  onClick={() => onBuy(id)}
+                  disabled={disabled}
+                  className="shrink-0 text-xs font-medium px-3 py-2 rounded-xl border border-border hover:border-cta hover:bg-cta/5 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" aria-label="กำลังดำเนินการ" />
+                  ) : 'ซื้อเลย'}
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -225,7 +249,16 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
   const router = useRouter()
   const [topicLoading, setTopicLoading] = useState<string | null>(null)
   const [bundleLoading, setBundleLoading] = useState<string | null>(null)
+  const [cart, setCart] = useState<string[]>([])
   const regularPrice = useCountUp(390)
+
+  useEffect(() => {
+    const update = () => setCart(getCart())
+    update()
+    return onCartChange(update)
+  }, [])
+
+  const cartTotal = cart.reduce((sum, id) => sum + (COURSES[id]?.price ?? 390), 0)
 
   function handleBuyTopic(topicId: string) {
     setTopicLoading(topicId)
@@ -310,6 +343,20 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
         )}
 
       </div>
+
+      {cart.length > 0 && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 px-5 py-3 rounded-2xl border border-border bg-card shadow-lg">
+          <span className="text-sm text-foreground">
+            ตะกร้า <span className="font-semibold">{cart.length}</span> คอร์ส · <span className="font-heading font-bold text-cta tabular-nums">฿{cartTotal}</span>
+          </span>
+          <a
+            href="/cart"
+            className="text-xs font-medium px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+          >
+            ไปที่ตะกร้า
+          </a>
+        </div>
+      )}
     </main>
   )
 }

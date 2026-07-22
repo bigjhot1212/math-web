@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import UserMenu from './user-menu'
+import CartIcon from './cart-icon'
 
 export default async function Nav() {
   const supabase = await createClient()
@@ -43,6 +44,7 @@ export default async function Nav() {
           >
             ราคา
           </Link>
+          <CartIcon />
           {user ? (
             <UserMenu name={name} email={email} avatarUrl={avatarUrl} />
           ) : (

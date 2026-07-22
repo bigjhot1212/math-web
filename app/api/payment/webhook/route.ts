@@ -4,6 +4,36 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { inviteStudentToClassroom } from '@/lib/google-classroom'
 import { COURSES } from '@/content/course-videos'
 import Stripe from 'stripe'
+import type { SupabaseClient } from '@supabase/supabase-js'
+
+async function grantTopic(
+  supabase: SupabaseClient,
+  userId: string,
+  topicId: string,
+  priceThb: number | null,
+  paymentIntentId: string | null
+) {
+  await supabase.from('topic_purchases').upsert({
+    user_id: userId,
+    topic_id: topicId,
+    stripe_payment_intent_id: paymentIntentId,
+    price_thb: priceThb,
+    payment_method: 'stripe',
+  }, { onConflict: 'user_id,topic_id' })
+
+  const course = COURSES[topicId]
+  if (course?.classroomId) {
+    const { data: userData } = await supabase.auth.admin.getUserById(userId)
+    const email = userData?.user?.email
+    if (email) {
+      try {
+        await inviteStudentToClassroom(course.classroomId, email)
+      } catch (e) {
+        console.error('Classroom invite failed:', e)
+      }
+    }
+  }
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -24,30 +54,12 @@ export async function POST(request: NextRequest) {
       const userId = session.metadata?.supabase_user_id
       if (!userId) break
 
+      const paymentIntentId = session.payment_intent as string
+
       if (session.metadata?.type === 'topic_purchase') {
         const topicId = session.metadata.topic_id
         if (topicId) {
-          await supabase.from('topic_purchases').upsert({
-            user_id: userId,
-            topic_id: topicId,
-            stripe_payment_intent_id: session.payment_intent as string,
-            price_thb: Number(session.metadata.price_thb) || null,
-            payment_method: 'stripe',
-          }, { onConflict: 'user_id,topic_id' })
-
-          // Invite student to Google Classroom if available
-          const course = COURSES[topicId]
-          if (course?.classroomId) {
-            const { data: userData } = await supabase.auth.admin.getUserById(userId)
-            const email = userData?.user?.email
-            if (email) {
-              try {
-                await inviteStudentToClassroom(course.classroomId, email)
-              } catch (e) {
-                console.error('Classroom invite failed:', e)
-              }
-            }
-          }
+          await grantTopic(supabase, userId, topicId, Number(session.metadata.price_thb) || null, paymentIntentId)
         }
         break
       }
@@ -56,26 +68,16 @@ export async function POST(request: NextRequest) {
         const topicIds = session.metadata.topic_ids?.split(',').filter(Boolean) ?? []
         const perTopicPrice = topicIds.length > 0 ? Math.round((Number(session.metadata.price_thb) || 0) / topicIds.length) : null
         for (const topicId of topicIds) {
-          await supabase.from('topic_purchases').upsert({
-            user_id: userId,
-            topic_id: topicId,
-            stripe_payment_intent_id: session.payment_intent as string,
-            price_thb: perTopicPrice,
-            payment_method: 'stripe',
-          }, { onConflict: 'user_id,topic_id' })
+          await grantTopic(supabase, userId, topicId, perTopicPrice, paymentIntentId)
+        }
+        break
+      }
 
-          const course = COURSES[topicId]
-          if (course?.classroomId) {
-            const { data: userData } = await supabase.auth.admin.getUserById(userId)
-            const email = userData?.user?.email
-            if (email) {
-              try {
-                await inviteStudentToClassroom(course.classroomId, email)
-              } catch (e) {
-                console.error('Classroom invite failed:', e)
-              }
-            }
-          }
+      if (session.metadata?.type === 'cart_purchase') {
+        const topicIds = session.metadata.topic_ids?.split(',').filter(Boolean) ?? []
+        for (const topicId of topicIds) {
+          const price = COURSES[topicId]?.price ?? 390
+          await grantTopic(supabase, userId, topicId, price, paymentIntentId)
         }
         break
       }

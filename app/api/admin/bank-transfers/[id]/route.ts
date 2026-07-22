@@ -27,19 +27,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json({ ok: true })
   }
 
-  const topicIds: string[] = reqRow.topic_id
-    ? [reqRow.topic_id]
-    : reqRow.bundle_id
-      ? (BUNDLES[reqRow.bundle_id]?.topicIds ?? [])
-      : []
+  const isBundle = !!reqRow.bundle_id
+  const topicIds: string[] = isBundle
+    ? (BUNDLES[reqRow.bundle_id]?.topicIds ?? [])
+    : (reqRow.topic_id?.split(',').filter(Boolean) ?? [])
 
-  const perTopicPrice = topicIds.length > 0 ? Math.round(reqRow.amount_thb / topicIds.length) : null
+  // Bundles are sold at a discount, so split the paid amount evenly across topics;
+  // cart purchases are each topic's own listed price, not a discount split.
+  const perTopicPrice = isBundle && topicIds.length > 0 ? Math.round(reqRow.amount_thb / topicIds.length) : null
 
   for (const topicId of topicIds) {
     await admin.from('topic_purchases').upsert({
       user_id: reqRow.user_id,
       topic_id: topicId,
-      price_thb: perTopicPrice,
+      price_thb: perTopicPrice ?? (COURSES[topicId]?.price ?? 390),
       payment_method: 'bank_transfer',
     }, { onConflict: 'user_id,topic_id' })
 
