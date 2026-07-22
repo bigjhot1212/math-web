@@ -49,6 +49,7 @@ const ALL_COURSES = [
   { id: 'sequences-series',         icon: '∑'    },
   { id: 'calculus',                 icon: '∫'    },
   { id: 'statistics-distributions', icon: 'σ'    },
+  { id: 'foundation-high-school',   icon: 'ABC'  },
 ]
 
 type Props = { isLoggedIn: boolean; purchasedTopicIds: string[] }
@@ -58,7 +59,6 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
   const [topicLoading, setTopicLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const regularPrice = useCountUp(390)
-  const promoPrice = useCountUp(340)
 
   async function handleBuyTopic(topicId: string) {
     if (!isLoggedIn) { router.push('/login'); return }
@@ -88,19 +88,10 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
           <h1 className="text-3xl sm:text-4xl font-heading font-bold text-foreground mb-3">คอร์สทั้งหมด</h1>
           <p className="text-muted-foreground mb-8">ฝึกโจทย์และสอบจำลอง A-Level คณิตศาสตร์ครบทุกหัวข้อ</p>
 
-          <div className="inline-grid grid-cols-2 gap-4 text-left">
-            <div className="px-5 py-4 rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_var(--primary)]">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">ราคาปกติ</p>
-              <p className="text-2xl font-heading font-bold text-foreground mb-1 tabular-nums">฿{regularPrice}</p>
-              <p className="text-xs text-muted-foreground">ต่อบท</p>
-            </div>
-            <div className="px-5 py-4 rounded-2xl border-2 border-cta bg-card/70 backdrop-blur-xl relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_32px_-6px_var(--cta)]">
-              <span className="animate-pulse-glow pointer-events-none absolute -top-10 -right-10 w-28 h-28 rounded-full bg-cta/40 blur-2xl" aria-hidden="true" />
-              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-xs font-semibold px-2.5 py-0.5 bg-cta text-cta-foreground rounded-full z-10">โปรโมชัน</span>
-              <p className="relative text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">ซื้อ 2 บทขึ้นไป</p>
-              <p className="relative text-2xl font-heading font-bold text-foreground mb-1 tabular-nums">฿{promoPrice}</p>
-              <p className="relative text-xs text-muted-foreground">ต่อบท (ประหยัด ฿50)</p>
-            </div>
+          <div className="inline-block px-5 py-4 rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_var(--primary)]">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">ราคาปกติ</p>
+            <p className="text-2xl font-heading font-bold text-foreground mb-1 tabular-nums">฿{regularPrice}</p>
+            <p className="text-xs text-muted-foreground">ต่อบท</p>
           </div>
         </div>
 
@@ -177,10 +168,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
                     ) : (
                       <div className="flex items-center justify-between gap-3">
                         <p className="flex items-baseline gap-1.5 text-lg font-heading font-bold text-cta tabular-nums shrink-0">
-                          ฿{purchasedTopicIds.length > 0 ? '340' : '390'}
-                          {purchasedTopicIds.length > 0 && (
-                            <span className="text-xs font-normal text-muted-foreground line-through">฿390</span>
-                          )}
+                          ฿{course.price ?? '390'}
                         </p>
                         <button
                           onClick={() => handleBuyTopic(id)}

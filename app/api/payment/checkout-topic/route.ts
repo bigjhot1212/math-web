@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@/lib/supabase/server'
+import { COURSES } from '@/content/course-videos'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -17,6 +18,7 @@ const TOPIC_NAMES: Record<string, string> = {
   'sequences-series': 'ลำดับและอนุกรม',
   'calculus': 'แคลคูลัสเบื้องต้น',
   'statistics-distributions': 'สถิติและตัวแปรสุ่ม',
+  'foundation-high-school': 'ปรับพื้นฐานสำหรับเรียนม.ปลาย',
 }
 
 export async function POST(request: NextRequest) {
@@ -37,13 +39,8 @@ export async function POST(request: NextRequest) {
     .single()
   if (existing) return NextResponse.json({ error: 'ซื้อบทนี้ไปแล้ว' }, { status: 400 })
 
-  // Check if user has any previous purchases (promo price)
-  const { count } = await supabase
-    .from('topic_purchases')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-  const hasExistingPurchase = (count ?? 0) > 0
-  const price = hasExistingPurchase ? 34000 : 39000
+  const fixedPrice = COURSES[topicId]?.price
+  const price = fixedPrice ? fixedPrice * 100 : 39000
 
   // Reuse or create Stripe customer
   const { data: sub } = await supabase
@@ -66,7 +63,7 @@ export async function POST(request: NextRequest) {
       price_data: {
         currency: 'thb',
         unit_amount: price,
-        product_data: { name: `MathPrep — ${topicName}${hasExistingPurchase ? ' (ราคาพิเศษ)' : ''}` },
+        product_data: { name: `MathPrep — ${topicName}` },
       },
       quantity: 1,
     }],

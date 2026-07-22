@@ -7,6 +7,7 @@ export interface CourseConfig {
   status: CourseStatus
   classroomId?: string
   videoId?: string   // YouTube video ID (optional)
+  price?: number      // fixed price in THB; omit to use the standard 390/340 topic pricing
 }
 
 export const COURSES: Record<string, CourseConfig> = {
@@ -23,5 +24,6 @@ export const COURSES: Record<string, CourseConfig> = {
   'counting-probability':     { name: 'หลักการนับและความน่าจะเป็น',       nameEn: 'Counting & Probability',  desc: 'การเรียงสับเปลี่ยน การจัดหมู่ และความน่าจะเป็นเบื้องต้น',     status: 'coming_soon' },
   'sequences-series':         { name: 'ลำดับและอนุกรม',                   nameEn: 'Sequences & Series',      desc: 'ลำดับเลขคณิต เลขาคณิต อนุกรม และการประยุกต์',                 status: 'available',   classroomId: 'ODY0MjE2NjIwMTQ1' },
   'calculus':                 { name: 'แคลคูลัสเบื้องต้น',               nameEn: 'Calculus',                desc: 'ลิมิต อนุพันธ์ และปริพันธ์เบื้องต้น',                         status: 'available',   classroomId: 'ODQ4NjEwNjA0NDU0' },
-  'statistics-distributions': { name: 'สถิติและตัวแปรสุ่ม',              nameEn: 'Statistics',              desc: 'การแจกแจงความน่าจะเป็น ค่าเฉลี่ย และส่วนเบี่ยงเบนมาตรฐาน',  status: 'coming_soon' },
+  'statistics-distributions': { name: 'สถิติและตัวแปรสุ่ม',              nameEn: 'Statistics',              desc: 'การแจกแจงความน่าจะเป็น ค่าเฉลี่ย และส่วนเบี่ยงเบนมาตรฐาน',  status: 'available',   classroomId: 'ODY4ODkzMzcxMzAw' },
+  'foundation-high-school':   { name: 'ปรับพื้นฐานสำหรับเรียนม.ปลาย',    nameEn: 'High School Foundation',  desc: 'ทบทวนพื้นฐานคณิตศาสตร์ ม.ต้น เตรียมพร้อมก่อนเรียนคณิตศาสตร์ ม.ปลาย', status: 'available',   classroomId: 'ODU0ODA2OTA5ODQx', price: 490 },
 }
