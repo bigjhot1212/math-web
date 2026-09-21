@@ -25,7 +25,7 @@ export default function Home() {
               ตะลุยโจทย์ A-Level Math 1
             </div>
             <h1 className="mt-6 max-w-4xl text-4xl md:text-5xl font-heading font-bold tracking-tight leading-[1.15] text-foreground">
-              ถ้าอยากยื่นคะแนนโดยไม่ต้องมองคะแนน<br />
+              ถ้าอยากยื่นคณะโดยไม่ต้องมองคะแนน<br />
               ก็ต้องทำโจทย์โดยไม่ต้องดู<span className="text-primary">เวลาเหมือนกัน</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
