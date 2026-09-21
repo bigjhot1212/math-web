@@ -18,6 +18,10 @@ export async function GET(
   try {
     const { examId } = await params
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อน' }, { status: 401 })
+    }
 
     const { data: session, error } = await supabase
       .from('exam_sessions')

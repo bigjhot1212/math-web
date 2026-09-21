@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createClient } from '@/lib/supabase/server'
 import { COURSES } from '@/content/course-videos'
+import { getAppUrl } from '@/lib/app-url'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -19,9 +20,11 @@ const TOPIC_NAMES: Record<string, string> = {
   'calculus': 'แคลคูลัสเบื้องต้น',
   'statistics-distributions': 'สถิติและตัวแปรสุ่ม',
   'foundation-high-school': 'ปรับพื้นฐานสำหรับเรียนม.ปลาย',
+  'a-level-math-1-intensive': 'ตะลุยโจทย์ A-Level Math 1',
 }
 
 export async function POST(request: NextRequest) {
+  const stripe = getStripe()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อน' }, { status: 401 })
@@ -55,7 +58,7 @@ export async function POST(request: NextRequest) {
     customerId = customer.id
   }
 
-  const origin = request.headers.get('origin') ?? 'http://localhost:3000'
+  const origin = getAppUrl()
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'payment',

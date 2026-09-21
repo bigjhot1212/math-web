@@ -10,7 +10,9 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      // Ask each new student for the details needed to personalize support.
+      // The onboarding page sends returning students straight to `next`.
+      return NextResponse.redirect(`${origin}/onboarding?next=${encodeURIComponent(next.startsWith('/') ? next : '/')}`)
     }
   }
 

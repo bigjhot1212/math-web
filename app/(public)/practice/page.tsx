@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 
 const topics = [
   { id: 'set', name: 'เซต', nameEn: 'Set', icon: '∪' },
@@ -19,7 +20,10 @@ const topics = [
 
 const levels = ['ONET', 'A-Level', 'PAT1']
 
-export default function PracticePage() {
+export default async function PracticePage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <main className="min-h-screen bg-background p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
@@ -51,7 +55,7 @@ export default function PracticePage() {
           {topics.map((topic, i) => (
             <Link
               key={topic.id}
-              href={`/practice/${topic.id}`}
+              href={user ? `/practice/${topic.id}` : `/login?next=${encodeURIComponent(`/practice/${topic.id}`)}`}
               style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
               className="animate-fade-slide-in group p-5 rounded-2xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/30 transition-all duration-200 cursor-pointer flex items-center gap-4"
             >

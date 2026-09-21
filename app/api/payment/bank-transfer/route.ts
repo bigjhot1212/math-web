@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { COURSES, BUNDLES } from '@/content/course-videos'
+import { notifyNewBankTransfer } from '@/lib/admin-notifications'
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -83,6 +84,9 @@ export async function POST(request: NextRequest) {
     status: 'pending',
   })
   if (insertError) return NextResponse.json({ error: 'บันทึกคำขอไม่สำเร็จ' }, { status: 500 })
+
+  const courseName = bundleId ? BUNDLES[bundleId]?.name ?? bundleId : topicId?.split(',').map((topic) => COURSES[topic]?.name ?? topic).join(', ') ?? '-'
+  await notifyNewBankTransfer({ amountThb, courseName, email: user.email })
 
   return NextResponse.json({ ok: true })
 }

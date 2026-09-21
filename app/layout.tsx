@@ -33,6 +33,16 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Nav />
         {children}
+        <a
+          href="https://ig.me/m/j.3ra_"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="สอบถามผ่าน Instagram"
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#FCAF45] px-4 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-white/70 text-xs font-bold">IG</span>
+          สอบถามพี่ทาง Instagram
+        </a>
       </body>
     </html>
   );

@@ -1,0 +1,257 @@
+[
+  {
+    "id": "math1-mock-001",
+    "topicId": "math1-mock",
+    "subtopic": "composite-functions",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $f(x) = \\frac{2x+1}{x-3}$ เมื่อ $x \\ne 3$ และ $g(x) = x^3+2x-1$ ถ้า $(f \\circ g)^{-1}(a)=1$ แล้ว $a$ มีค่าเท่าใด",
+      "choices": { "a": "$-5$", "b": "$-1$", "c": "$1$", "d": "$5$", "e": "$7$" }
+    },
+    "answer": "a",
+    "hint": "แทน $x=1$ ใน $f(g(x))$ เพื่อหาค่า $a$",
+    "solution": { "steps": ["จาก $(f \\circ g)^{-1}(a)=1$ ได้ $f(g(1))=a$", "$g(1)=2$ และ $f(2)=\\frac{5}{-1}=-5$", "ดังนั้น $a=-5$"] },
+    "tags": ["function", "composition", "inverse"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-002",
+    "topicId": "math1-mock",
+    "subtopic": "polynomial-remainder",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนด $P(x)=x^4+ax^3+bx^2+cx+d$ โดย $a,b,c,d$ เป็นจำนวนจริง ถ้าเมื่อหาร $P(x)$ ด้วย $x-1$, $x-2$ และ $x-3$ เหลือเศษ $2$ เท่ากันทุกกรณี และ $P(0)=14$ จงหาผลบวกของคำตอบจริงทั้งหมดของสมการ $P(x)=2$",
+      "choices": { "a": "$3$", "b": "$5$", "c": "$6$", "d": "$8$", "e": "$14$" }
+    },
+    "answer": "c",
+    "hint": "พิจารณา $P(x)-2$ ซึ่งมีราก 1, 2 และ 3",
+    "solution": { "steps": ["ให้ $P(x)-2=(x-1)(x-2)(x-3)(x-r)$", "จาก $P(0)=14$ ได้ $6r+2=14$ จึงได้ $r=2$", "รากของ $P(x)=2$ คือ $1,2,2,3$ ผลบวกเท่ากับ $6$"] },
+    "tags": ["polynomial", "remainder-theorem"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-003",
+    "topicId": "math1-mock",
+    "subtopic": "logarithmic-inequality",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดอสมการ $\\log_{\\frac12}(4^x-2^{x+2}+3) \\ge -3$ ถ้า $S$ เป็นเซตคำตอบของอสมการนี้ จำนวนเต็มที่มากที่สุดในเซต $S$ มีค่าเท่าใด",
+      "choices": { "a": "$0$", "b": "$1$", "c": "$2$", "d": "$3$", "e": "$4$" }
+    },
+    "answer": "c",
+    "hint": "ฐานของลอการิทึมน้อยกว่า 1 จึงต้องกลับเครื่องหมายเมื่อยกกำลัง",
+    "solution": { "steps": ["ให้ $t=2^x>0$ จะได้ $0<t^2-4t+3\\le8$", "จึงได้ $t\\in(0,1)\\cup(3,5]$", "ดังนั้น $x<0$ หรือ $\\log_2 3<x\\le\\log_2 5$ จำนวนเต็มที่มากที่สุดคือ $2$"] },
+    "tags": ["logarithm", "inequality"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-004",
+    "topicId": "math1-mock",
+    "subtopic": "logic",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $(p\\land q)\\to(r\\land s)$ มีค่าความจริงเป็นเท็จ จงหาค่าความจริงของ $[(\\sim r\\lor\\sim s)\\land p]\\leftrightarrow(q\\to p)$",
+      "choices": { "a": "จริง", "b": "เท็จ", "c": "หาค่าไม่ได้", "d": "จริงได้หรือเท็จได้", "e": "ไม่มีข้อใดถูก" }
+    },
+    "answer": "a",
+    "hint": "ประพจน์ $A\\to B$ เป็นเท็จได้เมื่อ $A$ จริงและ $B$ เท็จเท่านั้น",
+    "solution": { "steps": ["ได้ $p,q$ เป็นจริง และ $r\\land s$ เป็นเท็จ", "ดังนั้น $(\\sim r\\lor\\sim s)\\land p$ เป็นจริง", "$q\\to p$ เป็นจริง จึงได้ประพจน์สมมูลมีค่าเป็นจริง"] },
+    "tags": ["logic", "truth-value"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-005",
+    "topicId": "math1-mock",
+    "subtopic": "series",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาผลบวกของอนุกรมอนันต์ $S=\\frac23+\\frac59+\\frac8{27}+\\frac{11}{81}+\\cdots$",
+      "choices": { "a": "$\\frac54$", "b": "$\\frac32$", "c": "$\\frac74$", "d": "$2$", "e": "$\\frac94$" }
+    },
+    "answer": "c",
+    "hint": "พจน์ที่ $n$ เขียนได้เป็น $\\frac{3n-1}{3^n}$",
+    "solution": { "steps": ["$S=3\\sum_{n=1}^{\\infty}\\frac{n}{3^n}-\\sum_{n=1}^{\\infty}\\frac1{3^n}$", "เมื่อ $r=\\frac13$ จะได้ $\\sum nr^n=\\frac{r}{(1-r)^2}=\\frac34$ และ $\\sum r^n=\\frac12$", "ดังนั้น $S=3\\left(\\frac34\\right)-\\frac12=\\frac74$"] },
+    "tags": ["sequence", "series"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-006",
+    "topicId": "math1-mock",
+    "subtopic": "trigonometry",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "รูปสามเหลี่ยม $ABC$ มี $a,b,c$ เป็นความยาวด้านตรงข้ามมุม $A,B,C$ ตามลำดับ ถ้า $\\cos B=\\frac14$ และ $(a+b+c)(a-b+c)=30$ แล้ว $ac$ มีค่าเท่าใด",
+      "choices": { "a": "$\\frac{20}{3}$", "b": "$12$", "c": "$\\frac{40}{3}$", "d": "$20$", "e": "$30$" }
+    },
+    "answer": "b",
+    "hint": "กระจายพจน์ด้านซ้ายและใช้กฎโคไซน์ที่มุม $B$",
+    "solution": { "steps": ["ด้านซ้ายเท่ากับ $a^2+2ac+c^2-b^2$", "จากกฎโคไซน์ $a^2+c^2-b^2=2ac\\cos B=\\frac12ac$", "จึงได้ $30=\\frac12ac+2ac=\\frac52ac$ และ $ac=12$"] },
+    "tags": ["trigonometry", "cosine-rule"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-007",
+    "topicId": "math1-mock",
+    "subtopic": "set-inequality",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $A$ เป็นเซตคำตอบของ $\\frac{x^2-2x-3}{x-1}\\le0$ และ $B$ เป็นเซตคำตอบของ $|2x-1|<5$ จงหา $A\\cap B$",
+      "choices": { "a": "$(-2,-1]\\cup(1,3)$", "b": "$[-1,1)$", "c": "$(-2,3)$", "d": "$(-\\infty,-1]\\cup(1,3]$", "e": "$(-2,-1)\\cup[1,3)$" }
+    },
+    "answer": "a",
+    "hint": "แยกตัวประกอบเศษเป็น $(x-3)(x+1)$ และทำตารางเครื่องหมาย",
+    "solution": { "steps": ["ได้ $A=(-\\infty,-1]\\cup(1,3]$", "จาก $|2x-1|<5$ ได้ $B=(-2,3)$", "ดังนั้น $A\\cap B=(-2,-1]\\cup(1,3)$"] },
+    "tags": ["set", "inequality"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-008",
+    "topicId": "math1-mock",
+    "subtopic": "circle",
+    "level": "A-Level",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้วงกลม $C$ มีสมการ $x^2+y^2-4x-6y-12=0$ ถ้า $(h,k)$ เป็นจุดศูนย์กลาง และ $A$ เป็นพื้นที่วงกลม แล้ว $h+k+\\frac{A}{\\pi}$ มีค่าเท่าใด",
+      "choices": { "a": "$20$", "b": "$25$", "c": "$30$", "d": "$35$", "e": "$40$" }
+    },
+    "answer": "c",
+    "hint": "จัดรูปเป็น $(x-h)^2+(y-k)^2=r^2$",
+    "solution": { "steps": ["จัดรูปได้ $(x-2)^2+(y-3)^2=25$", "จึงมี $h=2,k=3,r=5$ และ $\\frac{A}{\\pi}=25$", "ค่าที่ต้องการเท่ากับ $2+3+25=30$"] },
+    "tags": ["analytic-geometry", "circle"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-009",
+    "topicId": "math1-mock",
+    "subtopic": "counting",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ต้องการสร้างจำนวน 4 หลักจากเลขโดด $\\{0,1,2,3,4,5,6\\}$ โดยเลขโดดแต่ละหลักไม่ซ้ำกัน จงหาจำนวนจำนวน 4 หลักที่หารด้วย 5 ลงตัว",
+      "choices": { "a": "$100$", "b": "$120$", "c": "$180$", "d": "$220$", "e": "$240$" }
+    },
+    "answer": "d",
+    "hint": "หลักหน่วยต้องเป็น 0 หรือ 5 แล้วแยกกรณี",
+    "solution": { "steps": ["ลงท้าย 0: เลือกและเรียง 3 หลักแรกจาก 1 ถึง 6 ได้ $6\\cdot5\\cdot4=120$ แบบ", "ลงท้าย 5: หลักแรกเลือกได้ 5 แบบ และอีก 2 หลักเรียงได้ $5\\cdot4$ แบบ จึงได้ $100$ แบบ", "รวมทั้งหมด $120+100=220$ แบบ"] },
+    "tags": ["counting", "casework"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-010",
+    "topicId": "math1-mock",
+    "subtopic": "sets-three-groups",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "สำรวจนักเรียน ม.6 จำนวน 200 คนที่เลือกเรียนแคลคูลัส 110 คน ฟิสิกส์ขั้นสูง 120 คน และวิทยาการคำนวณ 100 คน โดยทุกคนเลือกอย่างน้อย 1 วิชา จำนวนผู้เลือกเพียง 2 วิชามากกว่าผู้เลือกครบ 3 วิชา 40 คน ผู้เลือกเฉพาะแคลคูลัสเท่ากับผู้เลือกเฉพาะฟิสิกส์ขั้นสูง และผู้เลือกทั้งแคลคูลัสกับฟิสิกส์ขั้นสูงรวม 50 คน จงหาจำนวนผู้เลือกเฉพาะวิทยาการคำนวณ",
+      "choices": { "a": "$20$", "b": "$30$", "c": "$40$", "d": "$50$", "e": "$60$" }
+    },
+    "answer": "c",
+    "hint": "กำหนดจำนวนที่เลือกครบ 3 วิชาเป็นตัวแปร แล้วใช้จำนวนสมาชิกและผลรวมจำนวนที่เลือกวิชา",
+    "solution": { "steps": ["จากผลรวมการเลือกวิชาได้ผู้เลือกครบ 3 วิชา $30$ คน", "ให้ผู้เลือกเฉพาะแคลคูลัสและเฉพาะฟิสิกส์เป็น $x$ จะได้จำนวนผู้เลือกเฉพาะวิทยาการคำนวณเป็น $100-2x$", "แทนในข้อมูลรายวิชาได้ $x=40$ ดังนั้นผู้เลือกเฉพาะวิทยาการคำนวณเท่ากับ $40$ คน"] },
+    "tags": ["set", "inclusion-exclusion"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-011",
+    "topicId": "math1-mock",
+    "subtopic": "parabola-line-distance",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ให้ $P$ เป็นจุดบนพาราโบลา $y=x^2-4x+5$ และ $L$ เป็นเส้นตรง $2x-y-6=0$ ระยะทางที่สั้นที่สุดจากจุด $P$ ไปยังเส้นตรง $L$ มีค่าเท่าใด",
+      "choices": { "a": "$\\frac1{\\sqrt5}$", "b": "$\\frac2{\\sqrt5}$", "c": "$\\frac3{\\sqrt5}$", "d": "$\\frac4{\\sqrt5}$", "e": "$\\sqrt5$" }
+    },
+    "answer": "b",
+    "hint": "แทน $y=x^2-4x+5$ ในสูตรระยะจากจุดถึงเส้นตรง",
+    "solution": { "steps": ["ระยะเท่ากับ $\\frac{|2x-(x^2-4x+5)-6|}{\\sqrt5}=\\frac{(x-3)^2+2}{\\sqrt5}$", "ค่าน้อยสุดเกิดเมื่อ $x=3$", "ระยะสั้นที่สุดคือ $\\frac2{\\sqrt5}$"] },
+    "tags": ["analytic-geometry", "parabola", "distance"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-012",
+    "topicId": "math1-mock",
+    "subtopic": "circular-permutation",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "มีคน 8 คน เป็นชาย 4 คนและหญิง 4 คน โดยมีสามีภรรยาคู่หนึ่งอยู่ในกลุ่มนี้ หากจัดนั่งรอบโต๊ะกลม 8 ที่นั่งอย่างสุ่ม ความน่าจะเป็นที่ชายและหญิงนั่งสลับกันทีละคน และสามีภรรยาคู่นี้นั่งติดกัน เท่ากับเท่าใด",
+      "choices": { "a": "$\\frac1{35}$", "b": "$\\frac2{35}$", "c": "$\\frac4{35}$", "d": "$\\frac1{7}$", "e": "$\\frac2{7}$" }
+    },
+    "answer": "c",
+    "hint": "นับแบบจัดชายและหญิงสลับกันก่อน แล้วพิจารณาตำแหน่งข้างสามีของภรรยา",
+    "solution": { "steps": ["จำนวนจัดนั่งทั้งหมดรอบโต๊ะคือ $7!$", "แบบนั่งสลับเพศมี $2(4!)(4!)$ แบบ และในแต่ละแบบภรรยามี 2 ตำแหน่งจาก 4 ตำแหน่งที่ติดกับสามี", "ความน่าจะเป็นเท่ากับ $\\frac{2(4!)(4!)\\cdot\\frac24}{7!}=\\frac4{35}$"] },
+    "tags": ["probability", "circular-permutation"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-013",
+    "topicId": "math1-mock",
+    "subtopic": "optimization",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "เส้นสัมผัสเส้นโค้ง $y=9-x^2$ ที่จุด $(t,9-t^2)$ เมื่อ $t>0$ ตัดแกน $X$ ที่ $A$ และตัดแกน $Y$ ที่ $B$ ให้ $O$ เป็นจุดกำเนิด ค่าของ $t$ และพื้นที่น้อยที่สุดของสามเหลี่ยม $OAB$ คือข้อใด",
+      "choices": { "a": "$t=1$, พื้นที่ $8$", "b": "$t=\\sqrt2$, พื้นที่ $8\\sqrt2$", "c": "$t=\\sqrt3$, พื้นที่ $12\\sqrt3$", "d": "$t=2$, พื้นที่ $18$", "e": "$t=3$, พื้นที่ $24$" }
+    },
+    "answer": "c",
+    "hint": "เขียนสมการเส้นสัมผัส แล้วหาพื้นที่จากจุดตัดแกน",
+    "solution": { "steps": ["สมการเส้นสัมผัสคือ $y=-2tx+t^2+9$", "พื้นที่คือ $\\frac12\\cdot\\frac{t^2+9}{2t}\\cdot(t^2+9)=\\frac{(t^2+9)^2}{4t}$", "ทำให้ค่าน้อยสุดได้ $t=\\sqrt3$ และพื้นที่ $12\\sqrt3$"] },
+    "tags": ["calculus", "optimization", "tangent"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-014",
+    "topicId": "math1-mock",
+    "subtopic": "logarithmic-equation",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จงหาผลบวกของรากทั้งหมดของสมการ $\\log_2(2^x-3)+\\log_2(2^x-1)=3$",
+      "choices": { "a": "$1$", "b": "$2$", "c": "$\\log_2 3$", "d": "$\\log_2 5$", "e": "$5$" }
+    },
+    "answer": "d",
+    "hint": "ให้ $u=2^x$ แล้วรวมลอการิทึมเป็นลอการิทึมตัวเดียว",
+    "solution": { "steps": ["ได้ $(u-3)(u-1)=8$", "$u^2-4u-5=0$ จึงได้ $u=5$ หรือ $-1$", "เนื่องจาก $u=2^x>0$ จึงมี $x=\\log_2 5$"] },
+    "tags": ["logarithm", "equation"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  },
+  {
+    "id": "math1-mock-015",
+    "topicId": "math1-mock",
+    "subtopic": "integration",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $f''(x)=12x-4$ สำหรับทุกจำนวนจริง $x$ ถ้าเส้นตรง $y=3x-2$ สัมผัสกราฟของ $f$ ที่จุด $(1,1)$ จงหาค่า $\\int_0^2 f(x)\\,dx$",
+      "choices": { "a": "$\\frac{28}{3}$", "b": "$12$", "c": "$\\frac{40}{3}$", "d": "$\\frac{44}{3}$", "e": "$16$" }
+    },
+    "answer": "d",
+    "hint": "อินทิเกรตสองครั้ง แล้วใช้ $f'(1)=3$ และ $f(1)=1$",
+    "solution": { "steps": ["ได้ $f'(x)=6x^2-4x+1$ และ $f(x)=2x^3-2x^2+x$", "เงื่อนไขเส้นสัมผัสให้ $f'(1)=3$ และ $f(1)=1$ ซึ่งกำหนดค่าคงที่ได้พอดี", "$\\int_0^2(2x^3-2x^2+x)\\,dx=\\frac{44}{3}$"] },
+    "tags": ["calculus", "integration", "derivative"],
+    "source": "โจทย์คัดเลือกจากเอกสารผู้สอน"
+  }
+]

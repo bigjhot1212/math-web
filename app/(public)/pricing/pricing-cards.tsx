@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen, ShoppingCart, Check } from 'lucide-react'
+import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen, ShoppingCart, Check, MessageCircle } from 'lucide-react'
 import { COURSES, ZONE_LABELS, BUNDLES, type CourseZone } from '@/content/course-videos'
 import { getCart, addToCart, removeFromCart, onCartChange } from '@/lib/cart'
 
@@ -37,6 +37,7 @@ function useCountUp(target: number, durationMs = 900) {
 
 const ALL_COURSES = [
   { id: 'foundation-high-school',   icon: 'ABC'  },
+  { id: 'a-level-math-1-intensive', icon: 'A1'   },
   { id: 'set',                      icon: '∪'    },
   { id: 'logic',                    icon: '∧'    },
   { id: 'real-numbers',             icon: 'ℝ'    },
@@ -287,6 +288,24 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
             <p className="text-xs text-muted-foreground">ต่อบท</p>
           </div>
         </div>
+
+        <a
+          href="https://ig.me/m/j.3ra_"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-10 flex items-center justify-between gap-4 rounded-3xl border border-primary/20 bg-primary/5 p-5 transition-all hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_var(--primary)]"
+        >
+          <span className="flex items-center gap-3 text-left">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span>
+              <span className="block text-sm font-heading font-semibold text-foreground">ยังเลือกคอร์สไม่ถูก?</span>
+              <span className="block text-xs text-muted-foreground">ทักมาสอบถามพี่ได้โดยตรงทาง Instagram</span>
+            </span>
+          </span>
+          <span className="shrink-0 text-xs font-semibold text-primary">ส่งข้อความเลย →</span>
+        </a>
 
         {ZONE_ORDER.map((zone) => {
           const zoneCourses = ALL_COURSES.filter(({ id }) => COURSES[id]?.zone === zone)

@@ -85,6 +85,42 @@ export const COURSES: Record<string, CourseConfig> = {
     ],
   },
 
+  'a-level-math-1-intensive': {
+    name: 'ตะลุยโจทย์ A-Level Math 1',
+    nameEn: 'A-Level Math 1 Intensive Practice',
+    desc: 'ตะลุยโจทย์จริง 15 ปีย้อนหลัง พร้อมเทคนิคอ่าน Keyword และจุดหลอกข้อสอบ',
+    status: 'available',
+    zone: 'special',
+    price: 1490,
+    curriculum: [
+      {
+        title: 'ตะลุยโจทย์จริง 15 ปีย้อนหลัง',
+        items: [
+          'ตะลุยข้อสอบ A-Level คณิตศาสตร์ 1 ย้อนหลัง พ.ศ. 2555–2569',
+          'เรียนรวมอย่างน้อย 30 ชั่วโมง พร้อมเฉลยและแนวคิดทุกข้อ',
+          'ฝึกมองว่าโจทย์แต่ละข้อดึงเนื้อหาส่วนไหนมาใช้',
+          'จับจุดหลอกและรูปแบบที่ข้อสอบชอบออกซ้ำ',
+        ],
+      },
+      {
+        title: 'คิดเป็น ทำโจทย์เองได้',
+        items: [
+          'เทคนิคเริ่มคิดเมื่ออ่านโจทย์แล้วไม่รู้จะเริ่มจากตรงไหน',
+          'อ่าน Keyword สำคัญที่พาไปสู่คำตอบ',
+          'วางวิธีทำให้เร็วขึ้นและลดการโดนข้อสอบหลอก',
+        ],
+      },
+      {
+        title: 'ของแถมในคอร์ส',
+        items: [
+          'ชุดโจทย์ PAT1 แยกบท สำหรับฝึกเพิ่มทีละเรื่อง',
+          'สรุปเนื้อหาครบทุกบท พร้อมวิธีเลือกใช้สูตรกับโจทย์จริง',
+          'ดูเนื้อหาได้จนกว่าจะสอบติด ไม่มีวันหมดอายุ',
+        ],
+      },
+    ],
+  },
+
   'set':                      { name: 'เซต',                             nameEn: 'Set Theory',              desc: 'สหภาพ ทางตัด ส่วนเติมเต็ม และการดำเนินการบนเซต',              status: 'coming_soon', zone: 'm4' },
   'logic':                    { name: 'ตรรกศาสตร์',                      nameEn: 'Logic',                   desc: 'ประพจน์ ตัวเชื่อม ตารางค่าความจริง และการอ้างเหตุผล',          status: 'coming_soon', zone: 'm4' },
   'real-numbers':             { name: 'จำนวนจริง',                       nameEn: 'Real Numbers',            desc: 'สมบัติของจำนวนจริง ค่าสัมบูรณ์ และอสมการ',                    status: 'coming_soon', zone: 'm4' },
@@ -92,7 +128,7 @@ export const COURSES: Record<string, CourseConfig> = {
   'exponential-logarithm':    { name: 'เอกซ์โพเนนเชียลและลอการิทึม',    nameEn: 'Exponential & Logarithm', desc: 'กราฟ สมการ และอสมการเอกซ์โพเนนเชียลและลอการิทึม',             status: 'coming_soon', zone: 'm4' },
   'analytic-geometry-conics': { name: 'เรขาคณิตวิเคราะห์และภาคตัดกรวย', nameEn: 'Analytic Geometry',       desc: 'วงกลม วงรี พาราโบลา และไฮเพอร์โบลา',                          status: 'coming_soon', zone: 'm4' },
 
-  'trigonometry':             { name: 'ตรีโกณมิติ',                      nameEn: 'Trigonometry',            desc: 'ฟังก์ชันตรีโกณมิติ เอกลักษณ์ สูตรผลบวกและผลต่าง',             status: 'coming_soon', zone: 'm5' },
+  'trigonometry':             { name: 'ตรีโกณมิติ',                      nameEn: 'Trigonometry',            desc: 'ฟังก์ชันตรีโกณมิติ เอกลักษณ์ สูตรผลบวกและผลต่าง',             status: 'available', zone: 'm5' },
   'matrix':                   { name: 'เมทริกซ์',                        nameEn: 'Matrix',                  desc: 'การดำเนินการเมทริกซ์ ดีเทอร์มิแนนต์ และเมทริกซ์ผกผัน',        status: 'coming_soon', zone: 'm5' },
   'vector':                   { name: 'เวกเตอร์',                        nameEn: 'Vector',                  desc: 'ผลคูณดอต ผลคูณไขว้ และการประยุกต์ใช้เวกเตอร์',               status: 'coming_soon', zone: 'm5' },
   'complex-numbers':          { name: 'จำนวนเชิงซ้อน',                   nameEn: 'Complex Numbers',         desc: 'รูปแบบ a+bi การดำเนินการ และรูปแบบเชิงขั้ว',                  status: 'coming_soon', zone: 'm5' },

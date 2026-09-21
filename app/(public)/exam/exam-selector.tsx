@@ -11,9 +11,9 @@ const EXAMS = [
     subject: 'คณิตศาสตร์ 1',
     tier: 'ฟรี',
     tierStyle: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
-    topics: 'เซต · ตรรกศาสตร์ · จำนวนจริง · ฟังก์ชัน · เอกซ์โพเนนเชียล · เรขาคณิตวิเคราะห์',
-    questionCount: 10,
-    durationMinutes: 30,
+    topics: 'ชุดคัดสรร: ฟังก์ชัน · เซต · ตรรกะ · ลอการิทึม · เรขาคณิต · แคลคูลัส',
+    questionCount: 15,
+    durationMinutes: 45,
     paid: false,
   },
   {
@@ -48,14 +48,18 @@ const EXAMS = [
   },
 ]
 
-type Props = { isPremium: boolean }
+type Props = { isPremium: boolean; isLoggedIn: boolean }
 
-export default function ExamSelector({ isPremium }: Props) {
+export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   async function startExam(examType: string) {
+    if (!isLoggedIn) {
+      router.push('/login?next=%2Fexam')
+      return
+    }
     setLoading(examType)
     setError(null)
     try {

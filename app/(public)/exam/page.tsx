@@ -15,5 +15,5 @@ export default async function ExamPage() {
     isPremium = data?.status === 'active'
   }
 
-  return <ExamSelector isPremium={isPremium} />
+  return <ExamSelector isPremium={isPremium} isLoggedIn={Boolean(user)} />
 }

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createClient } from '@/lib/supabase/server'
 import { BUNDLES } from '@/content/course-videos'
+import { getAppUrl } from '@/lib/app-url'
 
 export async function POST(request: NextRequest) {
+  const stripe = getStripe()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อน' }, { status: 401 })
@@ -35,7 +37,7 @@ export async function POST(request: NextRequest) {
     customerId = customer.id
   }
 
-  const origin = request.headers.get('origin') ?? 'http://localhost:3000'
+  const origin = getAppUrl()
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'payment',

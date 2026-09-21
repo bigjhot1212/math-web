@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
+import { getAppUrl } from '@/lib/app-url'
 
 export async function POST(request: NextRequest) {
+  const stripe = getStripe()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -10,7 +12,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
   }
 
-  const origin = request.headers.get('origin') ?? 'http://localhost:3000'
+  const origin = getAppUrl()
 
   // Reuse existing Stripe customer if available
   const { data: sub } = await supabase

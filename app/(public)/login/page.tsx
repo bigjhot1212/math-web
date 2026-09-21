@@ -71,7 +71,7 @@ export default function LoginPage() {
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           การเข้าสู่ระบบถือว่ายอมรับ{' '}
-          <span className="underline cursor-pointer hover:text-foreground transition-colors">นโยบายความเป็นส่วนตัว</span>
+          <a href="/privacy" className="underline hover:text-foreground transition-colors">นโยบายความเป็นส่วนตัว</a>
         </p>
       </div>
     </main>

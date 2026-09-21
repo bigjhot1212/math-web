@@ -20,8 +20,15 @@ export default function PracticeTopicPage() {
 
   useEffect(() => {
     fetch(`/api/questions?topicId=${topicId}`)
-      .then(res => res.json())
+      .then(async res => {
+        if (res.status === 401) {
+          window.location.assign(`/login?next=${encodeURIComponent(`/practice/${topicId}`)}`)
+          return null
+        }
+        return res.json()
+      })
       .then(data => {
+        if (!data) return
         setQuestions(data.questions)
         setLoading(false)
       })

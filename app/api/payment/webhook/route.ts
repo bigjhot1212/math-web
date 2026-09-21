@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { inviteStudentToClassroom } from '@/lib/google-classroom'
 import { COURSES } from '@/content/course-videos'
@@ -36,6 +36,7 @@ async function grantTopic(
 }
 
 export async function POST(request: NextRequest) {
+  const stripe = getStripe()
   const body = await request.text()
   const sig = request.headers.get('stripe-signature')!
 

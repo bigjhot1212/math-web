@@ -34,15 +34,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid exam type' }, { status: 400 })
     }
     const { topics, tier } = parsed
-    const questionCount = tier === 'paid' ? 30 : 10
-    const durationMinutes = tier === 'paid' ? 90 : 30
+    const isMath1Mock = examType === 'A-Level-1-free'
+    const selectedTopics = isMath1Mock ? ['math1-mock'] : topics
+    const questionCount = isMath1Mock ? 15 : tier === 'paid' ? 30 : 10
+    const durationMinutes = isMath1Mock ? 45 : tier === 'paid' ? 90 : 30
 
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    if (!user) {
+      return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อนเริ่มข้อสอบ' }, { status: 401 })
+    }
+
     // Gate paid exams behind active subscription
     if (tier === 'paid') {
-      if (!user) return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อน' }, { status: 401 })
       const { data: sub } = await supabase
         .from('subscriptions')
         .select('status')
@@ -54,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     const allQuestions = loadAllQuestions()
-    const topicSet = new Set(topics)
+    const topicSet = new Set(selectedTopics)
     const pool = allQuestions.filter(q => topicSet.has(q.topicId))
     const selected = (pool.length > 0 ? pool : allQuestions)
       .sort(() => Math.random() - 0.5)
@@ -64,7 +69,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('exam_sessions')
       .insert({
-        user_id: user?.id ?? null,
+        user_id: user.id,
         exam_type: examType,
         question_ids: selected.map(q => q.id),
         answers: {},
@@ -84,6 +89,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (err) {
     console.error(err)
-    return NextResponse.json({ error: 'Failed to create exam' }, { status: 500 })
+    return NextResponse.json({ error: 'ไม่สามารถเริ่มข้อสอบได้ กรุณาลองใหม่อีกครั้ง' }, { status: 500 })
   }
 }

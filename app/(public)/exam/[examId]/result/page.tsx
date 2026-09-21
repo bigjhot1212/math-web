@@ -21,6 +21,7 @@ type Session = {
 }
 
 const TOPIC_NAMES: Record<string, string> = {
+  'math1-mock': 'ข้อสอบจำลอง คณิตศาสตร์ 1',
   'set': 'เซต',
   'logic': 'ตรรกศาสตร์',
   'real-numbers': 'จำนวนจริง',

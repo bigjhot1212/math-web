@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, LogOut } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import 'katex/dist/katex.min.css'
 
@@ -151,13 +151,31 @@ export default function ExamRoomPage() {
           {formatTime(timeLeft)}
         </span>
 
-        <button
-          onClick={() => setShowConfirm(true)}
-          disabled={submitting}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
-        >
-          ส่งข้อสอบ
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => router.push('/exam')}
+            disabled={submitting}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
+          >
+            <LogOut className="w-4 h-4" aria-hidden="true" />
+            ออกจากข้อสอบ
+          </button>
+          <button
+            onClick={() => router.push('/exam')}
+            disabled={submitting}
+            aria-label="ออกจากข้อสอบ"
+            className="sm:hidden p-2 border border-border rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
+          >
+            <LogOut className="w-4 h-4" aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => setShowConfirm(true)}
+            disabled={submitting}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+          >
+            ส่งข้อสอบ
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -186,11 +204,8 @@ export default function ExamRoomPage() {
         {/* Question area */}
         <main className="flex-1 overflow-y-auto p-6 md:p-10">
           <div className="max-w-2xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6">
               <span className="text-sm text-muted-foreground font-medium">ข้อที่ {current + 1}</span>
-              <span className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground">
-                {q.level} · {q.difficulty}
-              </span>
             </div>
 
             <div className="mb-8 text-base leading-relaxed text-foreground">

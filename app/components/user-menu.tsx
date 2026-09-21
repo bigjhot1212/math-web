@@ -69,6 +69,13 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
           >
             Dashboard
           </Link>
+          <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors cursor-pointer"
+          >
+            แก้ไขข้อมูลของฉัน
+          </Link>
           <button
             onClick={signOut}
             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-accent transition-colors cursor-pointer"

@@ -19,6 +19,7 @@ const TOPIC_NAMES: Record<string, string> = {
   'sequences-series': 'ลำดับและอนุกรม',
   'calculus': 'แคลคูลัสเบื้องต้น',
   'statistics-distributions': 'สถิติและตัวแปรสุ่ม',
+  'a-level-math-1-intensive': 'ตะลุยโจทย์ A-Level Math 1',
 }
 
 type ProgressRow = {
