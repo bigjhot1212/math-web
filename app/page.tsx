@@ -106,7 +106,7 @@ export default function Home() {
         <div className="grid overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm lg:grid-cols-[0.9fr_1.1fr]">
           <div className="bg-primary p-8 text-primary-foreground md:p-10">
             <h2 className="text-3xl font-heading font-bold leading-tight">เข้าใจโจทย์<br />ก่อนรีบหาคำตอบ</h2>
-            <p className="mt-5 max-w-sm leading-relaxed text-primary-foreground/80">ก่อนจะหาคำตอบ มันต้องเข้าใจสิ่งที่โจทย์อยากจะทดสอบก่อน</p>
+            <p className="mt-5 max-w-sm leading-relaxed text-primary-foreground/80">ก่อนจะหาคำตอบ เราต้องเข้าใจก่อนว่าโจทย์อยากทดสอบอะไร และคนออกข้อสอบกำลังอยาก Challenge เราตรงไหน</p>
           </div>
           <div className="p-8 md:p-10">
             <div className="flex items-center gap-3 text-primary"><GraduationCap className="w-5 h-5" /><span className="text-sm font-bold">PROFILE</span></div>
