@@ -251,6 +251,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
   const [topicLoading, setTopicLoading] = useState<string | null>(null)
   const [bundleLoading, setBundleLoading] = useState<string | null>(null)
   const [cart, setCart] = useState<string[]>([])
+  const [activeZone, setActiveZone] = useState<CourseZone | 'all'>('all')
   const regularPrice = useCountUp(390)
 
   useEffect(() => {
@@ -277,15 +278,34 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
     <main className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
 
-        {/* Hero */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-foreground mb-3">คอร์สทั้งหมด</h1>
-          <p className="text-muted-foreground mb-8">ฝึกโจทย์และสอบจำลอง A-Level คณิตศาสตร์ครบทุกหัวข้อ</p>
+        {/* Browse header */}
+        <div className="mb-10 border-b border-border pb-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">MathPrep courses</p>
+              <h1 className="mt-2 text-3xl sm:text-4xl font-heading font-bold text-foreground">เลือกคอร์สที่อยากเริ่ม</h1>
+              <p className="mt-2 text-muted-foreground">เลือกเรียนเป็นบท หรือค่อย ๆ เก็บครบตามระดับชั้น</p>
+            </div>
 
-          <div className="inline-block px-5 py-4 rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_var(--primary)]">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">ราคาปกติ</p>
-            <p className="text-2xl font-heading font-bold text-foreground mb-1 tabular-nums">฿{regularPrice}</p>
-            <p className="text-xs text-muted-foreground">ต่อบท</p>
+            <div className="inline-block self-start px-5 py-4 rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-8px_var(--primary)]">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">เริ่มต้น</p>
+              <p className="text-2xl font-heading font-bold text-foreground mb-1 tabular-nums">฿{regularPrice}</p>
+              <p className="text-xs text-muted-foreground">ต่อบท</p>
+            </div>
+          </div>
+
+          <div className="mt-7 flex gap-2 overflow-x-auto pb-1" aria-label="เลือกหมวดคอร์ส">
+            {([{ id: 'all', label: 'ทุกคอร์ส' }, ...ZONE_ORDER.map((zone) => ({ id: zone, label: ZONE_LABELS[zone] }))] as { id: CourseZone | 'all'; label: string }[]).map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => setActiveZone(id)}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                  activeZone === id ? 'bg-primary text-primary-foreground shadow-sm' : 'border border-border bg-card text-muted-foreground hover:border-primary/35 hover:text-primary'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -307,7 +327,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
           <span className="shrink-0 text-xs font-semibold text-primary">ส่งข้อความเลย →</span>
         </a>
 
-        {ZONE_ORDER.map((zone) => {
+        {ZONE_ORDER.filter((zone) => activeZone === 'all' || activeZone === zone).map((zone) => {
           const zoneCourses = ALL_COURSES.filter(({ id }) => COURSES[id]?.zone === zone)
           if (zoneCourses.length === 0) return null
 
@@ -323,7 +343,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
 
           return (
             <section key={zone} className="mb-10">
-              <h2 className="text-lg font-heading font-bold text-foreground mb-4 pb-2 border-b border-border">
+              <h2 className="text-lg font-heading font-bold text-foreground mb-5 pb-2 border-b border-border">
                 {ZONE_LABELS[zone]}
               </h2>
               {zoneBundles.map(([bundleId]) => (
@@ -336,7 +356,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
                   onBuy={handleBuyBundle}
                 />
               ))}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {sorted.map(({ id, icon }, i) => (
                   <CourseCard
                     key={id}
