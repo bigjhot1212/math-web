@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { Question } from '@/lib/types/question'
+import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import fs from 'fs'
 import path from 'path'
 
@@ -24,7 +25,10 @@ export async function GET(request: NextRequest) {
     }
 
     const fileContent = fs.readFileSync(filePath, 'utf-8')
-    let questions: Question[] = JSON.parse(fileContent)
+    let questions: Question[] = [
+      ...(JSON.parse(fileContent) as Question[]),
+      ...originalPracticeQuestions.filter(question => question.topicId === topicId),
+    ]
 
     if (level) {
       questions = questions.filter(q => q.level === level)

@@ -91,7 +91,7 @@ export default function PracticeTopicPage() {
             ข้อ {current + 1} / {questions.length}
           </span>
           <span className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground">
-            {q.level} · {q.difficulty}
+            {q.tags.includes('example') ? 'ตัวอย่างพร้อมเฉลย' : 'แบบฝึกหัด'} · {q.level}
           </span>
         </div>
 
