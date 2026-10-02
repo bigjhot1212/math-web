@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
 
     const fileContent = fs.readFileSync(filePath, 'utf-8')
     let questions: Question[] = [
-      ...(JSON.parse(fileContent) as Question[]),
       ...originalPracticeQuestions.filter(question => question.topicId === topicId),
+      ...(JSON.parse(fileContent) as Question[]),
     ]
 
     if (level) {
