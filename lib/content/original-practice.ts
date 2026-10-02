@@ -7,7 +7,7 @@ function q({ id, kind, ...question }: Draft): Question {
 }
 
 // Newly written for MathPrep. These questions do not reproduce the supplied PDF.
-export const originalPracticeQuestions: Question[] = [
+const baseOriginalPracticeQuestions: Question[] = [
   q({ id: 'set-example-01', kind: 'example', topicId: 'set', subtopic: 'cardinality', difficulty: 'easy', content: { text: 'กำหนดให้ $A = \\{2, 4, 6\\}$ จงหา $n(A)$', choices: { a: '2', b: '3', c: '4', d: '6', e: '8' } }, answer: 'b', hint: 'นับจำนวนสมาชิกที่ไม่ซ้ำกันในเซต', solution: { steps: ['เซต $A$ มีสมาชิกคือ 2, 4 และ 6', 'ดังนั้น $n(A)=3$'] } }),
   q({ id: 'set-exercise-01', kind: 'exercise', topicId: 'set', subtopic: 'inclusion-exclusion', difficulty: 'medium', content: { text: 'ถ้า $n(A \\cup B)=12$, $n(A)=7$ และ $n(B)=8$ แล้ว $n(A \\cap B)$ เท่ากับเท่าใด', choices: { a: '1', b: '2', c: '3', d: '4', e: '5' } }, answer: 'c', hint: 'ใช้สูตร $n(A \\cup B)=n(A)+n(B)-n(A \\cap B)$', solution: { steps: ['$12=7+8-n(A \\cap B)$', 'ดังนั้น $n(A \\cap B)=3$'], keyFormula: '$n(A \\cup B)=n(A)+n(B)-n(A \\cap B)$' } }),
   q({ id: 'logic-example-01', kind: 'example', topicId: 'logic', subtopic: 'implication', difficulty: 'easy', content: { text: 'ถ้า $p$ เป็นจริง และ $q$ เป็นเท็จ แล้วประพจน์ $p \\to q$ มีค่าความจริงเป็นอย่างไร', choices: { a: 'จริง', b: 'เท็จ', c: 'บอกไม่ได้', d: 'จริงและเท็จพร้อมกัน', e: 'ไม่เป็นประพจน์' } }, answer: 'b', hint: 'นิเสธเพียงกรณีที่เหตุเป็นจริง แต่ผลเป็นเท็จ', solution: { steps: ['$p \\to q$ เป็นเท็จเมื่อ $p$ จริงและ $q$ เท็จ', 'ตรงกับเงื่อนไขที่กำหนด จึงตอบเท็จ'] } }),
@@ -36,4 +36,116 @@ export const originalPracticeQuestions: Question[] = [
   q({ id: 'calculus-exercise-01', kind: 'exercise', topicId: 'calculus', subtopic: 'derivatives', difficulty: 'medium', content: { text: 'ถ้า $f(x)=3x^2-4x+7$ แล้ว $f\'(x)$ คือข้อใด', choices: { a: '$3x-4$', b: '$6x-4$', c: '$6x+7$', d: '$3x^2-4$', e: '$6x-4x$' } }, answer: 'b', hint: 'หาอนุพันธ์ทีละพจน์', solution: { steps: ['$\\dfrac{d}{dx}(3x^2)=6x$, $\\dfrac{d}{dx}(-4x)=-4$', 'ค่าคงที่ 7 มีอนุพันธ์เป็น 0', 'ดังนั้น $f\'(x)=6x-4$'] } }),
   q({ id: 'statistics-distributions-example-01', kind: 'example', topicId: 'statistics-distributions', subtopic: 'mean', difficulty: 'easy', content: { text: 'ค่าเฉลี่ยเลขคณิตของข้อมูล $4,6,8,10$ เท่ากับเท่าใด', choices: { a: '6', b: '7', c: '8', d: '9', e: '28' } }, answer: 'b', hint: 'นำผลรวมของข้อมูลหารด้วยจำนวนข้อมูล', solution: { steps: ['ผลรวมคือ $4+6+8+10=28$', 'มีข้อมูล 4 ค่า จึงได้ค่าเฉลี่ย $\\dfrac{28}{4}=7$'] } }),
   q({ id: 'statistics-distributions-exercise-01', kind: 'exercise', topicId: 'statistics-distributions', subtopic: 'median', difficulty: 'medium', content: { text: 'มัธยฐานของข้อมูล $3,5,7,9,11$ เท่ากับเท่าใด', choices: { a: '5', b: '6', c: '7', d: '8', e: '9' } }, answer: 'c', hint: 'ข้อมูลเรียงแล้วและมีจำนวนข้อมูลเป็นจำนวนคี่', solution: { steps: ['มีข้อมูล 5 ค่า ตำแหน่งกึ่งกลางคือค่าที่ 3', 'ค่าที่ 3 คือ 7 จึงเป็นมัธยฐาน'] } }),
+]
+
+const answerKeys = ['a', 'b', 'c', 'd', 'e'] as const
+
+function numberChoices(correct: number, distractors: number[], answerIndex: number) {
+  const values = distractors.filter(value => value !== correct).slice(0, 4)
+  let next = correct + 1
+  while (values.length < 4) {
+    if (!values.includes(next)) values.push(next)
+    next++
+  }
+  values.splice(answerIndex, 0, correct)
+  return {
+    choices: Object.fromEntries(answerKeys.map((key, index) => [key, String(values[index])])) as NonNullable<Question['content']['choices']>,
+    answer: answerKeys[answerIndex],
+  }
+}
+
+function numericSetQuestion({
+  id, subtopic, difficulty, text, correct, distractors, hint, steps,
+}: {
+  id: string
+  subtopic: string
+  difficulty: Question['difficulty']
+  text: string
+  correct: number
+  distractors: number[]
+  hint: string
+  steps: string[]
+}) {
+  const { choices, answer } = numberChoices(correct, distractors, Number(id.slice(-2)) % 5)
+  return q({
+    id, kind: 'exercise', topicId: 'set', subtopic, difficulty,
+    content: { text, choices }, answer, hint, solution: { steps },
+  })
+}
+
+const setMemberCounts = [
+  ['03', '1, 3, 5, 7', 4], ['04', '2, 4, 6, 8, 10', 5], ['05', '0, 1, 2, 3, 4, 5', 6], ['06', '-3, -1, 0, 1, 3', 5],
+  ['07', '2, 3, 5, 7, 11, 13, 17', 7], ['08', 'a, e, i, o, u', 5], ['09', '1, 2, 2, 3, 3, 3, 4', 4], ['10', 'แดง, น้ำเงิน, เขียว, เหลือง, ม่วง, ส้ม', 6],
+] as const
+
+const setPowerSets = [
+  ['11', 2], ['12', 3], ['13', 4], ['14', 5], ['15', 6], ['16', 1], ['17', 7], ['18', 0],
+] as const
+
+const setUnionCounts = [
+  ['19', 9, 8, 3], ['20', 12, 10, 4], ['21', 15, 11, 5], ['22', 6, 7, 2],
+  ['23', 20, 16, 8], ['24', 13, 9, 1], ['25', 18, 14, 6], ['26', 10, 10, 5],
+] as const
+
+const setComplementCounts = [
+  ['27', 12, 5], ['28', 20, 8], ['29', 15, 9], ['30', 30, 12],
+  ['31', 18, 7], ['32', 25, 15], ['33', 10, 4], ['34', 40, 18],
+] as const
+
+const setSurveyCounts = [
+  ['35', 32, 25, 11], ['36', 40, 28, 13], ['37', 24, 19, 8], ['38', 45, 30, 17],
+  ['39', 50, 36, 20], ['40', 27, 21, 9], ['41', 38, 29, 14], ['42', 60, 42, 25],
+] as const
+
+const extraSetPracticeQuestions: Question[] = [
+  ...setMemberCounts.map(([id, members, correct]) => numericSetQuestion({
+    id: `set-exercise-${id}`, subtopic: 'cardinality', difficulty: Number(id) <= 8 ? 'easy' : 'medium',
+    text: `กำหนดให้ $A=\\{${members}\\}$ แล้ว $n(A)$ มีค่าเท่าใด`, correct, distractors: [correct - 2, correct - 1, correct + 1, correct + 2],
+    hint: 'นับสมาชิกที่แตกต่างกันเท่านั้น สมาชิกที่เขียนซ้ำยังนับเพียงครั้งเดียว',
+    steps: [`สมาชิกที่ไม่ซ้ำกันของ $A$ มีทั้งหมด ${correct} ตัว`, `ดังนั้น $n(A)=${correct}$`],
+  })),
+  ...setPowerSets.map(([id, memberCount]) => {
+    const correct = 2 ** memberCount
+    return numericSetQuestion({
+      id: `set-exercise-${id}`, subtopic: 'power-set', difficulty: memberCount >= 5 ? 'medium' : 'easy',
+      text: `ถ้าเซต $A$ มีสมาชิก ${memberCount} ตัว แล้วเพาเวอร์เซต $\\mathcal{P}(A)$ มีสมาชิกกี่เซต`, correct, distractors: [memberCount, 2 * memberCount, correct / 2, correct + 2],
+      hint: 'เซตที่มีสมาชิก $n$ ตัว มีสับเซตทั้งหมด $2^n$ เซต',
+      steps: [`$n(A)=${memberCount}$`, `$n(\\mathcal{P}(A))=2^{${memberCount}}=${correct}$`],
+    })
+  }),
+  ...setUnionCounts.map(([id, a, b, intersection]) => {
+    const correct = a + b - intersection
+    return numericSetQuestion({
+      id: `set-exercise-${id}`, subtopic: 'inclusion-exclusion', difficulty: 'medium',
+      text: `กำหนดให้ $n(A)=${a}$, $n(B)=${b}$ และ $n(A\\cap B)=${intersection}$ แล้ว $n(A\\cup B)$ เท่ากับเท่าใด`, correct, distractors: [a + b, a + b - 2 * intersection, a - b + intersection, correct + intersection],
+      hint: 'ตอนรวมสมาชิกของ $A$ กับ $B$ สมาชิกในส่วนร่วมถูกนับซ้ำหนึ่งครั้ง',
+      steps: [`$n(A\\cup B)=n(A)+n(B)-n(A\\cap B)$`, `$=${a}+${b}-${intersection}=${correct}$`],
+    })
+  }),
+  ...setComplementCounts.map(([id, universal, memberCount]) => {
+    const correct = universal - memberCount
+    return numericSetQuestion({
+      id: `set-exercise-${id}`, subtopic: 'complement', difficulty: 'easy',
+      text: `กำหนดให้ $n(U)=${universal}$ และ $n(A)=${memberCount}$ แล้ว $n(A\')$ เท่ากับเท่าใด`, correct, distractors: [memberCount, universal + memberCount, correct - 2, correct + 2],
+      hint: 'คอมพลีเมนต์ของ $A$ คือสมาชิกในเอกภพสัมพัทธ์ที่ไม่อยู่ใน $A$',
+      steps: [`$n(A\')=n(U)-n(A)$`, `$=${universal}-${memberCount}=${correct}$`],
+    })
+  }),
+  ...setSurveyCounts.map(([id, math, science, both]) => {
+    const correct = math + science - both
+    return numericSetQuestion({
+      id: `set-exercise-${id}`, subtopic: 'venn-diagram', difficulty: 'hard',
+      text: `นักเรียนกลุ่มหนึ่งชอบคณิตศาสตร์ ${math} คน ชอบวิทยาศาสตร์ ${science} คน และชอบทั้งสองวิชา ${both} คน จำนวนนักเรียนที่ชอบอย่างน้อยหนึ่งวิชาเท่ากับเท่าใด`, correct, distractors: [math + science, math + science - 2 * both, math - both, science - both],
+      hint: 'ใช้หลักบวกลบรวม โดยหักจำนวนคนที่ชอบทั้งสองวิชาออกหนึ่งครั้ง',
+      steps: [`จำนวนที่ชอบอย่างน้อยหนึ่งวิชาคือ $n(M\\cup S)$`, `$=${math}+${science}-${both}=${correct}$ คน`],
+    })
+  }),
+  q({ id: 'set-exercise-43', kind: 'exercise', topicId: 'set', subtopic: 'difference', difficulty: 'medium', content: { text: 'กำหนดให้ $A=\\{1,2,3,4,5,6\\}$ และ $B=\\{2,3,5,7\\}$ แล้ว $A-B$ คือข้อใด', choices: { a: '$\\{2,3,5\\}$', b: '$\\{1,4,6\\}$', c: '$\\{1,2,3,4,5,6,7\\}$', d: '$\\{7\\}$', e: '$\\emptyset$' } }, answer: 'b', hint: 'เก็บสมาชิกที่อยู่ใน $A$ แต่ตัดสมาชิกที่อยู่ใน $B$ ออก', solution: { steps: ['สมาชิกของ $A$ ที่ซ้ำกับ $B$ คือ 2, 3 และ 5', 'จึงเหลือ $A-B=\\{1,4,6\\}$'] } }),
+  q({ id: 'set-exercise-44', kind: 'exercise', topicId: 'set', subtopic: 'de-morgan', difficulty: 'hard', content: { text: 'ข้อใดถูกต้องตามกฎของดีมอร์แกน', choices: { a: '$(A\\cup B)\'=A\'\\cup B\'$', b: '$(A\\cap B)\'=A\'\\cap B\'$', c: '$(A\\cup B)\'=A\'\\cap B\'$', d: '$A-B=B-A$', e: '$A\\cup B=A\\cap B$' } }, answer: 'c', hint: 'นิเสธของ “หรือ” จะเปลี่ยนเป็น “และ”', solution: { steps: ['สมาชิกที่ไม่อยู่ใน $A\\cup B$ ต้องไม่อยู่ทั้ง $A$ และ $B$', 'ดังนั้น $(A\\cup B)\'=A\'\\cap B\'$'] } }),
+  q({ id: 'set-exercise-45', kind: 'exercise', topicId: 'set', subtopic: 'subset', difficulty: 'medium', content: { text: 'กำหนด $A=\\{1,2,3\\}$ ข้อใดเป็นสับเซตของ $A$', choices: { a: '$\\{1,4\\}$', b: '$\\{2,3\\}$', c: '$\\{0,1\\}$', d: '$\\{1,2,3,4\\}$', e: '$\\{\\{1\\},2\\}$' } }, answer: 'b', hint: 'สับเซตต้องมีสมาชิกทุกตัวอยู่ในเซตเดิม', solution: { steps: ['$\\{2,3\\}$ มีสมาชิกทุกตัวอยู่ใน $A$', 'จึงเป็นสับเซตของ $A$'] } }),
+]
+
+export const originalPracticeQuestions: Question[] = [
+  ...extraSetPracticeQuestions,
+  ...baseOriginalPracticeQuestions,
 ]
