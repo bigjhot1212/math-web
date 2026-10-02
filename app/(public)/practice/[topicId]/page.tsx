@@ -86,12 +86,9 @@ export default function PracticeTopicPage() {
     <main className="min-h-screen bg-background p-6 md:p-12">
       <div className="max-w-2xl mx-auto">
 
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6">
           <span className="text-sm text-muted-foreground">
             ข้อ {current + 1} / {questions.length}
-          </span>
-          <span className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground">
-            {q.tags.includes('example') ? 'ตัวอย่างพร้อมเฉลย' : 'แบบฝึกหัด'} · {q.level}
           </span>
         </div>
 
