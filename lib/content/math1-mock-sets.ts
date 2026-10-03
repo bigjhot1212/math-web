@@ -140,8 +140,7 @@ function cloneQuestion(question: Question, setNumber: number, index: number, sho
   }
 }
 
-function buildSet(number: number, difficulty: Math1MockDifficulty): Math1MockSet {
-  const used = new Set<string>()
+function buildSet(number: number, difficulty: Math1MockDifficulty, used: Set<string>): Math1MockSet {
   const multipleChoice: Question[] = []
   const shortAnswer: Question[] = []
 
@@ -175,7 +174,9 @@ function buildSet(number: number, difficulty: Math1MockDifficulty): Math1MockSet
   return { type: `math1-mock-${String(number).padStart(2, '0')}`, number, difficulty, questions }
 }
 
-export const math1MockSets: Math1MockSet[] = configs.map((difficulty, index) => buildSet(index + 1, difficulty))
+const globallyUsedSourceIds = new Set<string>()
+export const math1MockSets: Math1MockSet[] = configs.map((difficulty, index) => buildSet(index + 1, difficulty, globallyUsedSourceIds))
+if (globallyUsedSourceIds.size !== 300) throw new Error(`Expected 300 unique source questions, received ${globallyUsedSourceIds.size}`)
 export const allMath1MockQuestions: Question[] = math1MockSets.flatMap(set => set.questions)
 
 const allIds = new Set<string>()
