@@ -25,7 +25,7 @@ export default async function Nav() {
             ['สอบจำลอง', '/exam'],
             ...(user ? [['คอร์สของฉัน', '/courses']] : []),
             ['Dashboard', '/dashboard'],
-            ['ราคา', '/pricing'],
+            ['คอร์ส', '/pricing'],
           ].map(([label, href]) => (
             <Link key={href} href={href} className="rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary cursor-pointer">
               {label}
