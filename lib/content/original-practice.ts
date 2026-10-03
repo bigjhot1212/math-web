@@ -146,6 +146,10 @@ const extraSetPracticeQuestions: Question[] = [
 ]
 
 export const originalPracticeQuestions: Question[] = [
+  ...baseOriginalPracticeQuestions.filter(question => question.topicId !== 'set'),
+]
+
+export const legacySetPracticeQuestions: Question[] = [
   ...extraSetPracticeQuestions,
-  ...baseOriginalPracticeQuestions,
+  ...baseOriginalPracticeQuestions.filter(question => question.topicId === 'set'),
 ]

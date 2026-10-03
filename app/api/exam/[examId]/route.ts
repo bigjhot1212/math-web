@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { Question } from '@/lib/types/question'
-import { originalPracticeQuestions } from '@/lib/content/original-practice'
+import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/content/original-practice'
+import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -10,7 +11,7 @@ function loadAllQuestions(): Question[] {
   return fs.readdirSync(dir)
     .filter(f => f.endsWith('.json'))
     .flatMap(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8')) as Question[])
-    .concat(originalPracticeQuestions)
+    .concat(originalPracticeQuestions, legacySetPracticeQuestions, setChallengeQuestions)
 }
 
 export async function GET(
