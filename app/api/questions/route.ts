@@ -6,6 +6,7 @@ import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { logicChallengeQuestions } from '@/lib/content/logic-challenge'
 import { realNumbersChallengeQuestions } from '@/lib/content/real-numbers-challenge'
 import { relationsFunctionsChallengeQuestions } from '@/lib/content/relations-functions-challenge'
+import { exponentialLogarithmChallengeQuestions } from '@/lib/content/exponential-logarithm-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -37,6 +38,8 @@ export async function GET(request: NextRequest) {
           ? realNumbersChallengeQuestions
           : topicId === 'relations-functions'
             ? relationsFunctionsChallengeQuestions
+            : topicId === 'exponential-logarithm'
+              ? exponentialLogarithmChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
