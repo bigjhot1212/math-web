@@ -13,6 +13,7 @@ import { matrixChallengeQuestions } from '@/lib/content/matrix-challenge'
 import { vectorChallengeQuestions } from '@/lib/content/vector-challenge'
 import { complexNumbersChallengeQuestions } from '@/lib/content/complex-numbers-challenge'
 import { countingProbabilityChallengeQuestions } from '@/lib/content/counting-probability-challenge'
+import { sequencesSeriesChallengeQuestions } from '@/lib/content/sequences-series-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -58,6 +59,8 @@ export async function GET(request: NextRequest) {
                         ? complexNumbersChallengeQuestions
                         : topicId === 'counting-probability'
                           ? countingProbabilityChallengeQuestions
+                          : topicId === 'sequences-series'
+                            ? sequencesSeriesChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
