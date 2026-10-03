@@ -23,6 +23,7 @@ export default async function Nav() {
           {[
             ['ฝึกโจทย์', '/practice'],
             ['สอบจำลอง', '/exam'],
+            ...(user ? [['คอร์สของฉัน', '/courses']] : []),
             ['Dashboard', '/dashboard'],
             ['ราคา', '/pricing'],
           ].map(([label, href]) => (

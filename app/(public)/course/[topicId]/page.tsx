@@ -25,11 +25,11 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
 
         <div className="mb-6">
           <a
-            href="/pricing"
+            href="/courses"
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-            กลับหน้าคอร์ส
+            กลับคอร์สของฉัน
           </a>
         </div>
 

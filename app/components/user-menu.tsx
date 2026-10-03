@@ -63,6 +63,13 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
             <p className="text-xs text-muted-foreground truncate">{email}</p>
           </div>
           <Link
+            href="/courses"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors cursor-pointer"
+          >
+            คอร์สของฉัน
+          </Link>
+          <Link
             href="/dashboard"
             onClick={() => setOpen(false)}
             className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors cursor-pointer"
