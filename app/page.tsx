@@ -50,9 +50,9 @@ export default function Home() {
       <section className={styles.hero}>
         <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[1.06fr_0.94fr] lg:px-14 lg:py-28">
           <div>
-            <p className={styles.leadLine}>เตรียม A-Level Math 1 ให้เป็นระบบ</p>
+            <p className={styles.leadLine}>เข้าใจสิ่งที่โจทย์ทดสอบ ก่อนรีบหาคำตอบ</p>
             <h1 className="mt-5 max-w-[760px] text-balance font-heading text-[2.6rem] font-semibold leading-[1.16] tracking-[-0.03em] text-foreground sm:text-[3.5rem] lg:text-[4rem]">
-              เข้าใจสิ่งที่โจทย์ทดสอบ<br />ก่อนรีบหาคำตอบ
+              ถ้าอยากยื่นคณะโดยไม่ต้องมองคะแนน<br />ก็ต้องทำโจทย์โดยไม่ต้องดูเวลาเหมือนกัน
             </h1>
             <p className="mt-6 max-w-[620px] text-pretty text-lg leading-8 text-muted-foreground">
               ฝึกทีละบท จับเวลาสอบจริง และดูความก้าวหน้าของตัวเองในที่เดียว เพื่อให้ทุกครั้งที่ทำโจทย์พาเราเข้าใกล้คะแนนที่ต้องการ

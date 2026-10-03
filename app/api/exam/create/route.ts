@@ -39,6 +39,10 @@ export async function POST(request: NextRequest) {
     if (!mockSet && !parsed) {
       return NextResponse.json({ error: 'Invalid exam type' }, { status: 400 })
     }
+
+    if (examType === 'A-Level-1-paid' || examType === 'A-Level-2-paid') {
+      return NextResponse.json({ error: 'ข้อสอบชุดนี้ยังไม่เปิดใช้งาน' }, { status: 403 })
+    }
     const tier = parsed?.tier ?? 'free'
     const topics = parsed?.topics ?? []
     const questionCount = mockSet ? 30 : tier === 'paid' ? 30 : 10

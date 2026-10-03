@@ -25,6 +25,7 @@ const EXAMS = [
     questionCount: 30,
     durationMinutes: 90,
     paid: true,
+    available: false,
   },
   {
     type: 'A-Level-2-free',
@@ -45,6 +46,7 @@ const EXAMS = [
     questionCount: 30,
     durationMinutes: 90,
     paid: true,
+    available: false,
   },
 ]
 
@@ -95,7 +97,8 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
 
         <div className="grid md:grid-cols-2 gap-4">
           {EXAMS.map((exam, i) => {
-            const locked = exam.paid && !isPremium
+            const unavailable = exam.available === false
+            const locked = unavailable || (exam.paid && !isPremium)
             return (
               <div
                 key={exam.type}
@@ -123,7 +126,16 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                   <span>{exam.durationMinutes} นาที</span>
                 </div>
 
-                {locked ? (
+                {unavailable ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 rounded-xl text-sm font-medium opacity-80 cursor-not-allowed"
+                  >
+                    <Lock className="w-4 h-4" aria-hidden="true" />
+                    ยังไม่เปิดใช้งาน
+                  </button>
+                ) : locked ? (
                   <Link
                     href="/pricing"
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 rounded-xl text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors cursor-pointer"
