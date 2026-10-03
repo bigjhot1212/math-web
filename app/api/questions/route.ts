@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Question } from '@/lib/types/question'
 import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
+import { logicChallengeQuestions } from '@/lib/content/logic-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -28,7 +29,9 @@ export async function GET(request: NextRequest) {
     const fileContent = fs.readFileSync(filePath, 'utf-8')
     let questions: Question[] = topicId === 'set'
       ? setChallengeQuestions
-      : [
+      : topicId === 'logic'
+        ? logicChallengeQuestions
+        : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
         ]
