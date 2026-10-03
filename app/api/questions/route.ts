@@ -9,6 +9,7 @@ import { relationsFunctionsChallengeQuestions } from '@/lib/content/relations-fu
 import { exponentialLogarithmChallengeQuestions } from '@/lib/content/exponential-logarithm-challenge'
 import { analyticGeometryConicsChallengeQuestions } from '@/lib/content/analytic-geometry-conics-challenge'
 import { trigonometryChallengeQuestions } from '@/lib/content/trigonometry-challenge'
+import { matrixChallengeQuestions } from '@/lib/content/matrix-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -46,6 +47,8 @@ export async function GET(request: NextRequest) {
                 ? analyticGeometryConicsChallengeQuestions
                 : topicId === 'trigonometry'
                   ? trigonometryChallengeQuestions
+                  : topicId === 'matrix'
+                    ? matrixChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
