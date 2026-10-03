@@ -11,6 +11,7 @@ import { analyticGeometryConicsChallengeQuestions } from '@/lib/content/analytic
 import { trigonometryChallengeQuestions } from '@/lib/content/trigonometry-challenge'
 import { matrixChallengeQuestions } from '@/lib/content/matrix-challenge'
 import { vectorChallengeQuestions } from '@/lib/content/vector-challenge'
+import { complexNumbersChallengeQuestions } from '@/lib/content/complex-numbers-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -52,6 +53,8 @@ export async function GET(request: NextRequest) {
                     ? matrixChallengeQuestions
                     : topicId === 'vector'
                       ? vectorChallengeQuestions
+                      : topicId === 'complex-numbers'
+                        ? complexNumbersChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
