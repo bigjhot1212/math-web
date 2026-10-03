@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { Lightbulb, CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
+import { Lightbulb, CheckCircle2, XCircle, ArrowLeft, ArrowRight, LogOut, SkipForward } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import 'katex/dist/katex.min.css'
 
@@ -72,6 +72,13 @@ export default function PracticeTopicPage() {
   setShowSolution(false)
 }
 
+  function moveToQuestion(nextQuestion: number) {
+    setCurrent(nextQuestion)
+    setSelected(null)
+    setShowHint(false)
+    setShowSolution(false)
+  }
+
   function renderText(text: string) {
     const parts = text.split(/(\$[^$]+\$)/)
     return parts.map((part, i) => {
@@ -86,10 +93,18 @@ export default function PracticeTopicPage() {
     <main className="min-h-screen bg-background p-6 md:p-12">
       <div className="max-w-2xl mx-auto">
 
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">
             ข้อ {current + 1} / {questions.length}
           </span>
+          <button
+            type="button"
+            onClick={() => window.location.assign('/practice')}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          >
+            <LogOut className="w-4 h-4" aria-hidden="true" />
+            ออกจากแบบฝึก
+          </button>
         </div>
 
         <div className="h-1.5 bg-muted rounded-full mb-8 overflow-hidden">
@@ -160,6 +175,16 @@ export default function PracticeTopicPage() {
         )}
 
         <div className="flex gap-3 flex-wrap">
+          {current > 0 && (
+            <button
+              type="button"
+              onClick={() => moveToQuestion(current - 1)}
+              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent active:scale-[0.98] transition-transform cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              ย้อนกลับ
+            </button>
+          )}
           {isWrong && !showHint && (
             <button
               onClick={() => setShowHint(true)}
@@ -193,6 +218,16 @@ export default function PracticeTopicPage() {
             >
               เสร็จสิ้น
               <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+            </button>
+          )}
+          {!selected && current < questions.length - 1 && (
+            <button
+              type="button"
+              onClick={() => moveToQuestion(current + 1)}
+              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent active:scale-[0.98] transition-transform cursor-pointer"
+            >
+              ข้ามข้อ
+              <SkipForward className="w-4 h-4" aria-hidden="true" />
             </button>
           )}
         </div>
