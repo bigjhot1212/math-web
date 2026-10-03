@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kanit, Sarabun } from "next/font/google";
+import { JetBrains_Mono, Kanit, Sarabun, STIX_Two_Text } from "next/font/google";
 import "./globals.css";
 import Nav from "./components/nav";
 
@@ -15,6 +15,18 @@ const sarabun = Sarabun({
   weight: ["400", "500", "600", "700"],
 });
 
+const stix = STIX_Two_Text({
+  variable: "--font-math",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["500", "600"],
+});
+
 export const metadata: Metadata = {
   title: "MathPrep — เตรียมสอบคณิตศาสตร์",
   description: "ฝึกโจทย์และสอบจำลอง ONET · A-Level · PAT1",
@@ -28,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="th"
-      className={`${kanit.variable} ${sarabun.variable} h-full antialiased`}
+      className={`${kanit.variable} ${sarabun.variable} ${stix.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Nav />
