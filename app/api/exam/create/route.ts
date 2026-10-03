@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Question } from '@/lib/types/question'
 import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
+import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import fs from 'fs'
 import path from 'path'
 
@@ -33,15 +34,15 @@ function loadAllQuestions(): Question[] {
 export async function POST(request: NextRequest) {
   try {
     const { examType } = await request.json()
-    const parsed = parseExamType(examType)
-    if (!parsed) {
+    const mockSet = getMath1MockSet(examType)
+    const parsed = mockSet ? null : parseExamType(examType)
+    if (!mockSet && !parsed) {
       return NextResponse.json({ error: 'Invalid exam type' }, { status: 400 })
     }
-    const { topics, tier } = parsed
-    const isMath1Mock = examType === 'A-Level-1-free'
-    const selectedTopics = isMath1Mock ? ['math1-mock'] : topics
-    const questionCount = isMath1Mock ? 15 : tier === 'paid' ? 30 : 10
-    const durationMinutes = isMath1Mock ? 45 : tier === 'paid' ? 90 : 30
+    const tier = parsed?.tier ?? 'free'
+    const topics = parsed?.topics ?? []
+    const questionCount = mockSet ? 30 : tier === 'paid' ? 30 : 10
+    const durationMinutes = mockSet ? 90 : tier === 'paid' ? 90 : 30
 
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -63,9 +64,9 @@ export async function POST(request: NextRequest) {
     }
 
     const allQuestions = loadAllQuestions()
-    const topicSet = new Set(selectedTopics)
+    const topicSet = new Set(topics)
     const pool = allQuestions.filter(q => topicSet.has(q.topicId))
-    const selected = (pool.length > 0 ? pool : allQuestions)
+    const selected = mockSet?.questions ?? (pool.length > 0 ? pool : allQuestions)
       .sort(() => Math.random() - 0.5)
       .slice(0, Math.min(questionCount, pool.length))
 

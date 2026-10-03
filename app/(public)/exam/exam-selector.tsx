@@ -5,48 +5,26 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
 
-const EXAMS = [
-  {
-    type: 'A-Level-1-free',
-    subject: 'คณิตศาสตร์ 1',
-    tier: 'ฟรี',
-    tierStyle: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
-    topics: 'ชุดคัดสรร: ฟังก์ชัน · เซต · ตรรกะ · ลอการิทึม · เรขาคณิต · แคลคูลัส',
-    questionCount: 15,
-    durationMinutes: 45,
-    paid: false,
-  },
-  {
-    type: 'A-Level-1-paid',
-    subject: 'คณิตศาสตร์ 1',
-    tier: 'Premium',
-    tierStyle: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
-    topics: 'เซต · ตรรกศาสตร์ · จำนวนจริง · ฟังก์ชัน · เอกซ์โพเนนเชียล · เรขาคณิตวิเคราะห์',
-    questionCount: 30,
-    durationMinutes: 90,
-    paid: true,
-  },
-  {
-    type: 'A-Level-2-free',
-    subject: 'คณิตศาสตร์ 2',
-    tier: 'ฟรี',
-    tierStyle: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
-    topics: 'ตรีโกณมิติ · เมทริกซ์ · เวกเตอร์ · จำนวนเชิงซ้อน · หลักการนับ · ลำดับ · แคลคูลัส · สถิติ',
-    questionCount: 10,
-    durationMinutes: 30,
-    paid: false,
-  },
-  {
-    type: 'A-Level-2-paid',
-    subject: 'คณิตศาสตร์ 2',
-    tier: 'Premium',
-    tierStyle: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
-    topics: 'ตรีโกณมิติ · เมทริกซ์ · เวกเตอร์ · จำนวนเชิงซ้อน · หลักการนับ · ลำดับ · แคลคูลัส · สถิติ',
-    questionCount: 30,
-    durationMinutes: 90,
-    paid: true,
-  },
+const MOCK_DIFFICULTIES = [
+  ...Array(5).fill('ระดับกลาง'),
+  ...Array(3).fill('ระดับยาก'),
+  ...Array(2).fill('ระดับยากมาก'),
 ]
+
+const MOCK_EXAMS = MOCK_DIFFICULTIES.map((difficulty, index) => ({
+  type: `math1-mock-${String(index + 1).padStart(2, '0')}`,
+  subject: `ข้อสอบจำลองคณิตศาสตร์ 1 · ชุดที่ ${index + 1}`,
+  tier: difficulty,
+  tierStyle: difficulty === 'ระดับกลาง'
+    ? 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300'
+    : difficulty === 'ระดับยาก'
+      ? 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+      : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300',
+  topics: 'ตาม Blueprint A-Level Math 1 · ปรนัย 25 ข้อ · ระบายตัวเลข 5 ข้อ',
+  questionCount: 30,
+  durationMinutes: 90,
+  paid: false,
+}))
 
 type Props = { isPremium: boolean; isLoggedIn: boolean }
 
@@ -94,7 +72,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
         )}
 
         <div className="grid md:grid-cols-2 gap-4">
-          {EXAMS.map((exam, i) => {
+          {MOCK_EXAMS.map((exam, i) => {
             const locked = exam.paid && !isPremium
             return (
               <div

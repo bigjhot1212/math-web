@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Question } from '@/lib/types/question'
 import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
+import { allMath1MockQuestions } from '@/lib/content/math1-mock-sets'
 import fs from 'fs'
 import path from 'path'
 
@@ -11,7 +12,17 @@ function loadAllQuestions(): Question[] {
   return fs.readdirSync(dir)
     .filter(f => f.endsWith('.json'))
     .flatMap(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8')) as Question[])
-    .concat(originalPracticeQuestions, legacySetPracticeQuestions, setChallengeQuestions)
+    .concat(originalPracticeQuestions, legacySetPracticeQuestions, setChallengeQuestions, allMath1MockQuestions)
+}
+
+function normalizeAnswer(value: unknown): string {
+  return String(value ?? '').trim().replace(/,/g, '').replace(/\s+/g, '').toLowerCase()
+}
+
+function isCorrectAnswer(question: Question, value: unknown): boolean {
+  const submitted = normalizeAnswer(value)
+  const accepted = [question.answer, ...(question.acceptedAnswers ?? [])].map(normalizeAnswer)
+  return submitted.length > 0 && accepted.includes(submitted)
 }
 
 export async function POST(request: NextRequest) {
@@ -44,10 +55,15 @@ export async function POST(request: NextRequest) {
       .filter((q): q is Question => q !== undefined)
 
     let score = 0
+    let points = 0
+    let maximumPoints = 0
     const breakdown: Record<string, { correct: number; total: number }> = {}
     for (const q of questions) {
-      const correct = answers[q.id] === q.answer
+      const correct = isCorrectAnswer(q, answers[q.id])
+      const questionPoints = q.type === 'short-answer' ? 5 : 3
+      maximumPoints += questionPoints
       if (correct) score++
+      if (correct) points += questionPoints
       if (!breakdown[q.topicId]) breakdown[q.topicId] = { correct: 0, total: 0 }
       breakdown[q.topicId].total++
       if (correct) breakdown[q.topicId].correct++
@@ -67,7 +83,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       score,
       total: questions.length,
-      percentage: questions.length > 0 ? Math.round((score / questions.length) * 100) : 0,
+      points,
+      maximumPoints,
+      percentage: maximumPoints > 0 ? Math.round((points / maximumPoints) * 100) : 0,
       breakdown,
     })
   } catch (err) {

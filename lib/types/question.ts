@@ -22,7 +22,8 @@ export type Question = {
     }
   }
 
-  answer: "a" | "b" | "c" | "d" | "e"
+  answer: string | number
+  acceptedAnswers?: Array<string | number>
   hint: string
   solution: {
     steps: string[]

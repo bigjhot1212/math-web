@@ -10,6 +10,16 @@ import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
 
+function normalizeAnswer(value: unknown): string {
+  return String(value ?? '').trim().replace(/,/g, '').replace(/\s+/g, '').toLowerCase()
+}
+
+function isCorrectAnswer(question: Question, value: unknown): boolean {
+  const submitted = normalizeAnswer(value)
+  const accepted = [question.answer, ...(question.acceptedAnswers ?? [])].map(normalizeAnswer)
+  return submitted.length > 0 && accepted.includes(submitted)
+}
+
 type Session = {
   id: string
   exam_type: string
@@ -73,9 +83,12 @@ export default function ExamResultPage() {
 
   if (!session) return null
 
-  const percentage = session.total_questions > 0
-    ? Math.round((session.score / session.total_questions) * 100)
-    : 0
+  const correctCount = questions.filter(q => isCorrectAnswer(q, session.answers?.[q.id])).length
+  const earnedPoints = questions.reduce((sum, q) => (
+    sum + (isCorrectAnswer(q, session.answers?.[q.id]) ? (q.type === 'short-answer' ? 5 : 3) : 0)
+  ), 0)
+  const maximumPoints = questions.reduce((sum, q) => sum + (q.type === 'short-answer' ? 5 : 3), 0)
+  const percentage = maximumPoints > 0 ? Math.round((earnedPoints / maximumPoints) * 100) : 0
 
   const scoreColor =
     percentage >= 80 ? 'text-green-600' :
@@ -92,7 +105,7 @@ export default function ExamResultPage() {
   for (const q of questions) {
     if (!breakdown[q.topicId]) breakdown[q.topicId] = { correct: 0, total: 0 }
     breakdown[q.topicId].total++
-    if (session.answers?.[q.id] === q.answer) breakdown[q.topicId].correct++
+    if (isCorrectAnswer(q, session.answers?.[q.id])) breakdown[q.topicId].correct++
   }
 
   const durationMs = new Date(session.submitted_at).getTime() - new Date(session.started_at).getTime()
@@ -110,7 +123,7 @@ export default function ExamResultPage() {
           </p>
           <div className={`font-heading text-8xl font-bold mb-3 tabular-nums ${scoreColor}`}>{percentage}%</div>
           <p className="text-muted-foreground text-lg mb-2">
-            {session.score} / {session.total_questions} ข้อ
+            {earnedPoints} / {maximumPoints} คะแนน · ถูก {correctCount}/{questions.length} ข้อ
           </p>
           <p className={`font-medium ${scoreColor}`}>{scoreLabel}</p>
           <p className="text-xs text-muted-foreground mt-3">
@@ -158,7 +171,7 @@ export default function ExamResultPage() {
           <div className="flex flex-col gap-3">
             {questions.map((q, i) => {
               const userAns = session.answers?.[q.id]
-              const correct = userAns === q.answer
+              const correct = isCorrectAnswer(q, userAns)
               return (
                 <div
                   key={q.id}

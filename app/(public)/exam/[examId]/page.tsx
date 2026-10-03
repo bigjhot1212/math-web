@@ -236,6 +236,25 @@ export default function ExamRoomPage() {
               </div>
             )}
 
+            {q.type === 'short-answer' && !q.content.choices && (
+              <div className="rounded-2xl border border-primary/25 bg-primary/5 p-5">
+                <label htmlFor={`answer-${q.id}`} className="block text-sm font-medium text-foreground mb-2">
+                  ระบายคำตอบที่เป็นตัวเลข
+                </label>
+                <input
+                  id={`answer-${q.id}`}
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  value={answers[q.id] ?? ''}
+                  onChange={event => setAnswers(prev => ({ ...prev, [q.id]: event.target.value }))}
+                  placeholder="กรอกคำตอบ เช่น 12 หรือ 3.5"
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-lg font-mono text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <p className="mt-2 text-xs text-muted-foreground">กรอกเฉพาะตัวเลข ไม่ต้องใส่หน่วย</p>
+              </div>
+            )}
+
             <div className="flex justify-between mt-10">
               <button
                 onClick={() => setCurrent(c => Math.max(0, c - 1))}
