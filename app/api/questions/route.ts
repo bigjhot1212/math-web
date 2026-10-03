@@ -4,6 +4,7 @@ import { Question } from '@/lib/types/question'
 import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { logicChallengeQuestions } from '@/lib/content/logic-challenge'
+import { realNumbersChallengeQuestions } from '@/lib/content/real-numbers-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -31,6 +32,8 @@ export async function GET(request: NextRequest) {
       ? setChallengeQuestions
       : topicId === 'logic'
         ? logicChallengeQuestions
+        : topicId === 'real-numbers'
+          ? realNumbersChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
