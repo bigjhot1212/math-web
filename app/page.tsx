@@ -1,131 +1,265 @@
 import Link from 'next/link'
-import { ArrowRight, BookOpen, CheckCircle2, Clock3, GraduationCap, Sparkles, Target, TrendingUp } from 'lucide-react'
+import {
+  ArrowRight,
+  BarChart3,
+  BookOpenCheck,
+  Check,
+  ChevronRight,
+  Clock3,
+  MessageCircle,
+  LibraryBig,
+  ReceiptText,
+  ShieldCheck,
+  Target,
+} from 'lucide-react'
+import { COURSES, ZONE_LABELS } from '@/content/course-videos'
+import styles from './home.module.css'
 
-const learningPoints = [
-  'เริ่มทำโจทย์ได้ แม้เจอโจทย์ที่ไม่คุ้น',
-  'อ่าน Keyword ออก และไม่ตกหลุมข้อสอบ',
-  'ฝึกจับเวลากับข้อสอบจำลอง 15 ข้อ',
+const availableCourses = Object.entries(COURSES)
+  .filter(([, course]) => course.status === 'available')
+  .map(([id, course]) => ({ id, ...course }))
+
+const courseMarks: Record<string, string> = {
+  'foundation-high-school': 'x',
+  'a-level-math-1-intensive': 'A¹',
+  trigonometry: 'θ',
+  'sequences-series': 'Σ',
+  calculus: '∫',
+  'statistics-distributions': 'σ',
+}
+
+const courseColors = [
+  'oklch(0.51 0.22 275)',
+  'oklch(0.24 0.08 280)',
+  'oklch(0.67 0.18 45)',
+  'oklch(0.55 0.16 195)',
+  'oklch(0.56 0.16 145)',
+  'oklch(0.55 0.18 335)',
 ]
 
-const tools = [
-  { icon: Target, title: 'คิดเป็น ไม่ใช่ท่องจำ', description: 'เห็นแนวคิดก่อนลงมือทำ เพื่อรับมือโจทย์ที่พลิกแพลงได้' },
-  { icon: BookOpen, title: 'ฝึกเป็นบท', description: 'ทบทวนเนื้อหา ฝึกโจทย์ และดูเฉลยอย่างเป็นระบบ' },
-  { icon: TrendingUp, title: 'วัดผลได้จริง', description: 'สอบจำลองพร้อมเวลา รู้ทันทีว่าต้องกลับไปเติมตรงไหน' },
+const practiceTopics = [
+  ['เซต', '50 ข้อ'],
+  ['ฟังก์ชัน', '50 ข้อ'],
+  ['แคลคูลัส', '50 ข้อ'],
+  ['สถิติ', '50 ข้อ'],
 ]
 
 export default function Home() {
   return (
-    <main className="flex-1 overflow-hidden bg-background">
-      <section className="relative isolate">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_18%_10%,rgba(111,82,255,0.16),transparent_35%),radial-gradient(circle_at_78%_16%,rgba(255,177,73,0.14),transparent_30%)]" />
-        <div className="max-w-6xl mx-auto grid items-center gap-12 px-6 pt-16 pb-20 md:pt-24 md:pb-28 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="animate-fade-slide-in">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card/80 px-3.5 py-2 text-sm font-semibold text-primary shadow-sm">
-              <Sparkles className="w-4 h-4" aria-hidden="true" />
-              ตะลุยโจทย์ A-Level Math 1
-            </div>
-            <h1 className="mt-6 max-w-4xl text-4xl md:text-5xl font-heading font-bold tracking-tight leading-[1.15] text-foreground">
-              ถ้าอยากยื่นคณะโดยไม่ต้องมองคะแนน<br />
-              ก็ต้องทำโจทย์โดยไม่ต้องดู<span className="text-primary">เวลาเหมือนกัน</span>
+    <main className={`${styles.page} flex-1 overflow-hidden bg-background`}>
+      <section className={styles.hero}>
+        <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[1.06fr_0.94fr] lg:px-14 lg:py-28">
+          <div>
+            <p className={styles.leadLine}>เตรียม A-Level Math 1 ให้เป็นระบบ</p>
+            <h1 className="mt-5 max-w-[760px] text-balance font-heading text-[2.6rem] font-semibold leading-[1.16] tracking-[-0.03em] text-foreground sm:text-[3.5rem] lg:text-[4rem]">
+              เข้าใจสิ่งที่โจทย์ทดสอบ<br />ก่อนรีบหาคำตอบ
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              ฝึกมองโครงสร้างโจทย์ อ่านจุดหลอกให้ขาด และค่อย ๆ เปลี่ยนข้อที่เคยตันให้เป็นคะแนนของเรา
+            <p className="mt-6 max-w-[620px] text-pretty text-lg leading-8 text-muted-foreground">
+              ฝึกทีละบท จับเวลาสอบจริง และดูความก้าวหน้าของตัวเองในที่เดียว เพื่อให้ทุกครั้งที่ทำโจทย์พาเราเข้าใกล้คะแนนที่ต้องการ
             </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link href="/pricing" className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/25">
-                ดูคอร์สตะลุยโจทย์ <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/practice" className={styles.primaryButton}>
+                เริ่มฝึกโจทย์ฟรี <ArrowRight aria-hidden="true" className="size-4" />
               </Link>
-              <Link href="/exam" className="rounded-2xl border border-border bg-card/70 px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent">
-                ลองทำข้อสอบจำลองฟรี
+              <Link href="/pricing" className={styles.secondaryButton}>
+                ดูคอร์สทั้งหมด
               </Link>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> โจทย์จริง 15 ปีย้อนหลัง</span>
-              <span className="inline-flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary" /> เรียนได้จนกว่าจะสอบติด</span>
-            </div>
+            <dl className="mt-11 grid max-w-[590px] grid-cols-3 border-t border-border pt-6">
+              <div>
+                <dt className="font-heading text-2xl font-semibold text-foreground">14 บท</dt>
+                <dd className="mt-1 text-sm text-muted-foreground">ครบ ม.4–ม.6</dd>
+              </div>
+              <div className="border-x border-border px-5 sm:px-8">
+                <dt className="font-heading text-2xl font-semibold text-foreground">700 ข้อ</dt>
+                <dd className="mt-1 text-sm text-muted-foreground">บทละ 50 ข้อ</dd>
+              </div>
+              <div className="pl-5 sm:pl-8">
+                <dt className="font-heading text-2xl font-semibold text-foreground">98/100</dt>
+                <dd className="mt-1 text-sm text-muted-foreground">คะแนนผู้สอน</dd>
+              </div>
+            </dl>
           </div>
 
-          <div className="relative animate-fade-slide-in" style={{ animationDelay: '100ms' }}>
-            <div className="absolute -inset-5 -z-10 rounded-[2.5rem] bg-primary/10 blur-3xl" />
-            <div className="rounded-[2rem] border border-primary/15 bg-card/90 p-6 shadow-2xl shadow-primary/10 backdrop-blur md:p-8">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold text-primary">A-LEVEL MATH 1</p>
-                  <p className="mt-2 text-sm text-muted-foreground">คะแนนสอบจริงของผู้สอน</p>
-                </div>
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cta/15 text-cta"><Target className="w-5 h-5" /></div>
+          <div className={styles.heroStage} aria-label="ตัวอย่างประสบการณ์เรียนใน MathPrep">
+            <div className={styles.scoreCard}>
+              <div className="flex items-center justify-between gap-3 text-sm font-semibold text-white/80">
+                <span>A-LEVEL MATH 1</span>
+                <span>คะแนนผู้สอน</span>
               </div>
-              <div className="mt-7 flex items-end gap-3">
-                <span className="text-7xl font-heading font-bold tracking-tighter text-foreground">98</span>
-                <span className="mb-2 text-xl font-semibold text-muted-foreground">/100</span>
+              <div className="mt-3 flex items-baseline gap-2">
+                <strong className="font-heading text-[5.6rem] font-semibold leading-none tracking-[-0.04em]">98</strong>
+                <span className="font-heading text-2xl text-white/65">/100</span>
               </div>
-              <div className="mt-6 h-3 overflow-hidden rounded-full bg-muted"><div className="h-full w-[98%] rounded-full bg-gradient-to-r from-primary to-[#8f7cff]" /></div>
-              <p className="mt-3 text-sm font-medium text-muted-foreground">เป้าหมายไม่ใช่ทำข้อสอบให้หมด แต่คือเก็บคะแนนให้คุ้มทุกนาที</p>
+              <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/20">
+                <div className="h-full w-[98%] rounded-full bg-[oklch(0.78_0.15_45)]" />
+              </div>
+              <p className="mt-3 text-sm leading-6 text-white/85">พี่สอนให้มองโจทย์แบบเดียวกับตอนอยู่ในห้องสอบจริง</p>
+            </div>
 
-              <div className="mt-8 rounded-2xl border border-border bg-background/70 p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground"><GraduationCap className="w-5 h-5" /></div>
-                  <div>
-                    <p className="font-heading font-semibold text-foreground">เรียนกับคนที่ผ่านสนามจริง</p>
-                    <p className="text-sm text-muted-foreground">A-Level Math 1 98/100</p>
+            <div className={styles.questionCard}>
+              <div className="flex items-center justify-between gap-3 text-xs font-bold">
+                <span className="text-primary">ตัวอย่างโจทย์ · แคลคูลัส</span>
+                <span className="text-muted-foreground">ข้อ 1 จาก 50</span>
+              </div>
+              <p className="mt-5 text-lg leading-8 text-foreground">
+                จงหา <span className="font-math text-2xl italic">lim</span><sub className="font-math">x→2</sub>{' '}
+                <span className="inline-flex flex-col align-middle font-math text-xl italic leading-tight">
+                  <span className="border-b border-foreground px-1">x² − 4</span><span className="px-1 text-center">x − 2</span>
+                </span>
+              </p>
+              <div className="mt-5 grid grid-cols-4 gap-2 font-math">
+                {['0', '2', '4', 'ไม่มีลิมิต'].map((choice) => (
+                  <span key={choice} className={choice === '4' ? styles.correctChoice : styles.choice}>{choice}</span>
+                ))}
+              </div>
+              <p className="mt-4 rounded-xl bg-[oklch(0.96_0.03_60)] px-4 py-3 text-sm leading-6 text-[oklch(0.45_0.13_45)]">
+                <strong>จุดหลอก:</strong> ได้ 0/0 ไม่ได้แปลว่าไม่มีลิมิต — ลองแยกตัวประกอบก่อน
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1280px] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className="max-w-3xl">
+          <h2 className="text-balance font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">ทุกเครื่องมือที่ต้องใช้ ตั้งแต่ข้อแรกจนถึงวันสอบ</h2>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">เลือกเริ่มจากสิ่งที่ต้องการวันนี้ แล้วระบบจะเก็บผลการฝึกไว้ให้กลับมาดูต่อได้</p>
+        </div>
+
+        <div className={styles.featureGrid}>
+          <Link href="/practice" className={`${styles.featurePanel} ${styles.practicePanel}`}>
+            <div className="flex items-center justify-between gap-4">
+              <span className={styles.panelLabel}><BookOpenCheck className="size-4" /> ฝึกโจทย์แยกบท</span>
+              <span className="font-mono text-sm text-white/70">14 × 50</span>
+            </div>
+            <h3 className="mt-8 max-w-md font-heading text-3xl font-semibold leading-tight text-white">ฝึกเฉพาะบทที่ยังไม่แม่นได้เลย</h3>
+            <p className="mt-3 max-w-xl leading-7 text-white/75">เลือกหัวข้อ ม.4–ม.6 ทำโจทย์พร้อมเฉลย และกลับมาทำต่อจากจุดเดิมได้</p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {practiceTopics.map(([topic, progress]) => (
+                <div key={topic} className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm text-white">
+                  <span>{topic}</span><span className="font-mono text-white/65">{progress}</span>
+                </div>
+              ))}
+            </div>
+            <span className="mt-7 inline-flex items-center gap-2 font-semibold text-[oklch(0.85_0.12_45)]">เลือกบทที่อยากฝึก <ArrowRight className="size-4" /></span>
+          </Link>
+
+          <Link href="/exam" className={`${styles.featurePanel} ${styles.examPanel}`}>
+            <div className="flex items-center justify-between gap-4">
+              <span className="flex items-center gap-2 text-sm font-semibold text-white/80"><Clock3 className="size-4" /> สอบจำลอง</span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">จับเวลาจริง</span>
+            </div>
+            <div className="mt-10 font-mono text-5xl font-semibold tabular-nums text-[oklch(0.78_0.15_45)]">90:00</div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full w-[72%] rounded-full bg-[oklch(0.7_0.19_45)]" /></div>
+            <h3 className="mt-9 font-heading text-2xl font-semibold text-white">ซ้อมก่อนลงสนามจริง</h3>
+            <p className="mt-2 leading-7 text-white/65">ทำข้อสอบตามเวลา ส่งคำตอบ แล้วดูผลแยกตามหัวข้อเพื่อรู้ว่าควรกลับไปเติมตรงไหน</p>
+          </Link>
+
+          <Link href="/dashboard" className={`${styles.featurePanel} ${styles.dashboardPanel}`}>
+            <div className="flex items-center justify-between">
+              <span className={styles.darkLabel}><BarChart3 className="size-4" /> Dashboard</span>
+              <ChevronRight className="size-5 text-primary" />
+            </div>
+            <h3 className="mt-7 font-heading text-2xl font-semibold text-foreground">เห็นพัฒนาการ ไม่ต้องเดา</h3>
+            <p className="mt-2 leading-7 text-muted-foreground">เก็บจำนวนข้อ ความแม่นยำ หัวข้อที่ควรฝึกเพิ่ม และประวัติการสอบไว้ในหน้าเดียว</p>
+            <div className="mt-7 grid h-28 grid-cols-7 items-end gap-2 border-b border-border pb-1" aria-label="ตัวอย่างกราฟความแม่นยำ">
+              {[34, 52, 45, 66, 58, 76, 84].map((height, index) => (
+                <span key={index} className="rounded-t-md bg-primary/80" style={{ height: `${height}%` }} />
+              ))}
+            </div>
+            <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>7 วันที่ผ่านมา</span><span className="font-mono font-semibold text-[oklch(0.47_0.13_150)]">84% วันนี้</span></div>
+          </Link>
+
+          <Link href="/courses" className={`${styles.featurePanel} ${styles.libraryPanel}`}>
+            <LibraryBig className="size-6 text-primary" />
+            <h3 className="mt-8 font-heading text-2xl font-semibold text-foreground">คอร์สของฉัน</h3>
+            <p className="mt-2 leading-7 text-muted-foreground">คอร์สที่ชำระและยืนยันแล้วจะมาอยู่ในคลังส่วนตัว พร้อมลิงก์เข้าเรียนและรายละเอียดเนื้อหา</p>
+            <span className="mt-8 inline-flex items-center gap-2 font-semibold text-primary">เปิดคลังคอร์ส <ArrowRight className="size-4" /></span>
+          </Link>
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-card">
+        <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div>
+              <h2 className="font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">คอร์สที่เปิดเรียนแล้ว</h2>
+              <p className="mt-3 text-lg text-muted-foreground">เลือกซื้อเป็นบท หรือเริ่มจากคอร์สตะลุยโจทย์ A-Level Math 1</p>
+            </div>
+            <Link href="/pricing" className="inline-flex items-center gap-2 font-semibold text-primary hover:underline hover:underline-offset-4">ดูคอร์สทั้งหมด <ArrowRight className="size-4" /></Link>
+          </div>
+
+          <div className={styles.courseGrid}>
+            {availableCourses.map((course, index) => {
+              const lessonCount = course.curriculum?.reduce((sum, section) => sum + section.items.length, 0) ?? 0
+              return (
+                <Link key={course.id} href="/pricing" className={styles.courseCard}>
+                  <div className={styles.courseCover} style={{ backgroundColor: courseColors[index % courseColors.length] }}>
+                    <span className={styles.courseMark}>{courseMarks[course.id] ?? '∑'}</span>
+                    <span className={styles.zoneChip}>{ZONE_LABELS[course.zone]}</span>
                   </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="font-heading text-lg font-semibold leading-snug text-foreground">{course.name}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">{course.desc}</p>
+                    <div className="mt-auto flex items-end justify-between gap-4 border-t border-border pt-4">
+                      <strong className="font-heading text-xl font-semibold text-[oklch(0.56_0.18_45)]">฿{(course.price ?? 390).toLocaleString('th-TH')}</strong>
+                      <span className="text-xs text-muted-foreground">{lessonCount > 0 ? `${lessonCount} หัวข้อ` : 'ดูรายละเอียด'}</span>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1280px] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
+        <div className={styles.purchasePanel}>
+          <div className="p-7 sm:p-10 lg:p-12">
+            <h2 className="max-w-lg font-heading text-3xl font-semibold leading-tight text-foreground sm:text-4xl">ซื้อคอร์สง่าย และรู้ว่าหลักฐานถึงพี่แล้ว</h2>
+            <p className="mt-4 max-w-xl text-lg leading-8 text-muted-foreground">เลือกคอร์ส โอนเงิน แล้วอัปโหลดสลิปในเว็บ เมื่อพี่ยืนยัน ระบบจะเปิดคอร์สไว้ใน “คอร์สของฉัน”</p>
+            <div className="mt-8 grid gap-3">
+              {[
+                ['เลือกคอร์ส', 'ดูราคาและเนื้อหาก่อนตัดสินใจ', Target],
+                ['ส่งหลักฐาน', 'อัปโหลดสลิปจากหน้า Checkout', ReceiptText],
+                ['รับสิทธิ์เข้าเรียน', 'พี่ยืนยันแล้วคอร์สจะเข้าคลังของคุณ', ShieldCheck],
+              ].map(([title, description, Icon], index) => (
+                <div key={String(title)} className="grid grid-cols-[42px_1fr] items-start gap-3 rounded-2xl bg-background p-4">
+                  <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="size-5" /></span>
+                  <div><p className="font-semibold text-foreground">{index + 1}. {String(title)}</p><p className="mt-0.5 text-sm text-muted-foreground">{String(description)}</p></div>
                 </div>
-              </div>
+              ))}
             </div>
+            <Link href="/pricing" className={`${styles.primaryButton} mt-8`}>เลือกคอร์ส <ArrowRight className="size-4" /></Link>
+          </div>
+
+          <div className={styles.teacherPanel}>
+            <div>
+              <p className="text-sm font-semibold text-white/70">เรียนกับคนที่ผ่านสนามจริง</p>
+              <p className="mt-4 font-heading text-5xl font-semibold tracking-[-0.03em] text-white">98/100</p>
+              <p className="mt-2 text-white/75">A-Level Math 1</p>
+            </div>
+            <div className="space-y-3">
+              {['สอนให้เริ่มคิดเมื่อเจอโจทย์ไม่คุ้น', 'ชี้ Keyword และจุดหลอกที่ออกซ้ำ', 'ดูแลต่อได้ผ่าน Instagram'].map((item) => (
+                <p key={item} className="flex items-start gap-3 text-white/85"><Check className="mt-0.5 size-5 shrink-0 text-[oklch(0.78_0.15_45)]" />{item}</p>
+              ))}
+            </div>
+            <a href="https://ig.me/m/j.3ra_" target="_blank" rel="noopener noreferrer" className={styles.instagramButton}>
+              <MessageCircle className="size-5" /> ถามพี่ทาง Instagram <ArrowRight className="size-4" />
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="border-y border-border bg-card/60">
-        <div className="max-w-6xl mx-auto grid gap-6 px-6 py-7 text-center sm:grid-cols-3">
-          <div><p className="font-heading text-2xl font-bold text-foreground">15 ปี</p><p className="mt-1 text-sm text-muted-foreground">โจทย์ย้อนหลัง 55–69</p></div>
-          <div className="sm:border-x sm:border-border"><p className="font-heading text-2xl font-bold text-foreground">30+ ชม.</p><p className="mt-1 text-sm text-muted-foreground">ตะลุยโจทย์อย่างเป็นระบบ</p></div>
-          <div><p className="font-heading text-2xl font-bold text-foreground">15 ข้อ</p><p className="mt-1 text-sm text-muted-foreground">ข้อสอบจำลองให้ลองทำฟรี</p></div>
-        </div>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-6 py-20 md:py-28">
-        <div className="max-w-2xl">
-          <p className="text-sm font-bold tracking-wider text-primary">เรียนแล้วได้อะไร</p>
-          <h2 className="mt-3 text-3xl md:text-4xl font-heading font-bold tracking-tight text-foreground">ไม่ใช่แค่ดูเฉลย แต่ต้องกลับไปทำเองได้</h2>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {tools.map(({ icon: Icon, title, description }, index) => (
-            <article key={title} style={{ animationDelay: `${index * 80}ms` }} className="animate-fade-slide-in rounded-3xl border border-border bg-card p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-lg">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Icon className="w-5 h-5" /></div>
-              <h3 className="mt-5 font-heading text-lg font-semibold text-foreground">{title}</h3>
-              <p className="mt-2 leading-relaxed text-sm text-muted-foreground">{description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="grid overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="bg-primary p-8 text-primary-foreground md:p-10">
-            <h2 className="text-3xl font-heading font-bold leading-tight">เข้าใจโจทย์<br />ก่อนรีบหาคำตอบ</h2>
-            <p className="mt-5 max-w-sm leading-relaxed text-primary-foreground/80">ก่อนจะหาคำตอบ เราต้องเข้าใจก่อนว่าโจทย์อยากทดสอบอะไร และคนออกข้อสอบกำลังอยาก Challenge เราตรงไหน</p>
+      <section className="px-5 pb-20 sm:px-8 lg:px-14 lg:pb-28">
+        <div className="mx-auto flex max-w-[1168px] flex-col items-start justify-between gap-8 rounded-[2rem] bg-[oklch(0.22_0.08_280)] px-7 py-10 text-white sm:px-10 lg:flex-row lg:items-center lg:px-14 lg:py-12">
+          <div>
+            <h2 className="font-heading text-3xl font-semibold sm:text-4xl">เริ่มจากข้อเดียวก็ได้</h2>
+            <p className="mt-3 max-w-2xl text-lg leading-8 text-white/65">เลือกบทที่ยังไม่มั่นใจ หรือเข้าห้องสอบจำลองเพื่อดูว่าควรกลับไปเติมตรงไหนก่อน</p>
           </div>
-          <div className="p-8 md:p-10">
-            <div className="flex items-center gap-3 text-primary"><GraduationCap className="w-5 h-5" /><span className="text-sm font-bold">PROFILE</span></div>
-            <h3 className="mt-4 text-2xl font-heading font-bold text-foreground">A-Level Math 1 98/100</h3>
-            <p className="mt-2 text-muted-foreground">ศิษย์เก่า <span className="font-semibold text-foreground">คณะพาณิชยศาสตร์และการบัญชี<br />จุฬาลงกรณ์มหาวิทยาลัย</span></p>
-            <ul className="mt-6 space-y-3">
-              {learningPoints.map(point => <li key={point} className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{point}</li>)}
-            </ul>
-            <Link href="/pricing" className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-primary transition-all hover:gap-3">ดูรายละเอียดคอร์ส <ArrowRight className="w-4 h-4" /></Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 pb-28">
-        <div className="max-w-4xl mx-auto rounded-[2rem] bg-foreground px-7 py-12 text-center text-background md:px-12">
-          <Clock3 className="mx-auto h-6 w-6 text-cta" />
-          <h2 className="mt-4 text-3xl font-heading font-bold">เริ่มจากข้อเดียวก็ได้</h2>
-          <p className="mt-3 text-background/70">ลองทำข้อสอบจำลอง 15 ข้อ แล้วดูว่าโจทย์แบบไหนที่คุณควรเริ่มเก็บคะแนนก่อน</p>
-          <Link href="/exam" className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-cta px-6 py-3.5 text-sm font-bold text-cta-foreground transition-transform hover:-translate-y-0.5">เริ่มทำข้อสอบฟรี <ArrowRight className="w-4 h-4" /></Link>
+          <Link href="/practice" className={styles.orangeButton}>เริ่มฝึกฟรี <ArrowRight className="size-4" /></Link>
         </div>
       </section>
     </main>

@@ -1,0 +1,324 @@
+.page {
+  --home-shadow: 0 18px 32px -18px oklch(0.22 0.08 280 / 0.35);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    linear-gradient(oklch(0.51 0.22 275 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.51 0.22 275 / 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.hero::after {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  height: 32%;
+  content: '';
+  background: linear-gradient(to bottom, transparent, var(--background));
+}
+
+.leadLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.leadLine::before {
+  width: 28px;
+  height: 2px;
+  content: '';
+  background: currentColor;
+}
+
+.primaryButton,
+.secondaryButton,
+.orangeButton,
+.instagramButton {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: 14px;
+  padding: 0 22px;
+  font-weight: 700;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, background-color 180ms ease-out;
+}
+
+.primaryButton {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 1px 0 oklch(0.4 0.2 275), 0 8px 20px -8px oklch(0.51 0.22 275 / 0.6);
+}
+
+.secondaryButton {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--foreground);
+}
+
+.primaryButton:hover,
+.secondaryButton:hover,
+.orangeButton:hover,
+.instagramButton:hover {
+  transform: translateY(-2px);
+}
+
+.heroStage {
+  position: relative;
+  min-height: 540px;
+}
+
+.scoreCard {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(410px, 88%);
+  border-radius: 24px;
+  padding: 28px 30px;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 24px 48px -24px oklch(0.4 0.2 275 / 0.6);
+}
+
+.questionCard {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: min(455px, 94%);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px 26px;
+  background: white;
+  box-shadow: 0 20px 40px -20px oklch(0.22 0.08 280 / 0.25);
+}
+
+.choice,
+.correctChoice {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.correctChoice {
+  border-color: var(--primary);
+  background: oklch(0.94 0.04 280);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 18px;
+  margin-top: 38px;
+}
+
+.featurePanel {
+  min-height: 330px;
+  border-radius: 24px;
+  padding: 28px;
+  transition: transform 220ms ease-out, box-shadow 220ms ease-out;
+}
+
+.featurePanel:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--home-shadow);
+}
+
+.featurePanel:focus-visible,
+.courseCard:focus-visible,
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.orangeButton:focus-visible,
+.instagramButton:focus-visible {
+  outline: 3px solid oklch(0.51 0.22 275 / 0.35);
+  outline-offset: 3px;
+}
+
+.practicePanel {
+  background: var(--primary);
+  color: white;
+}
+
+.examPanel {
+  background: oklch(0.22 0.08 280);
+  color: white;
+}
+
+.dashboardPanel,
+.libraryPanel {
+  border: 1px solid var(--border);
+  background: white;
+}
+
+.panelLabel,
+.darkLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.panelLabel { color: white; }
+.darkLabel { color: var(--primary); }
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 36px;
+}
+
+.courseCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: white;
+  transition: transform 220ms ease-out, box-shadow 220ms ease-out;
+}
+
+.courseCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--home-shadow);
+}
+
+.courseCover {
+  position: relative;
+  display: flex;
+  aspect-ratio: 16 / 9;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    linear-gradient(oklch(1 0 0 / 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.courseMark {
+  color: white;
+  font-family: var(--font-math);
+  font-size: 66px;
+  line-height: 1;
+}
+
+.zoneChip {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: oklch(1 0 0 / 0.92);
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.purchasePanel {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: white;
+}
+
+.teacherPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 34px;
+  padding: 48px;
+  background: var(--primary);
+}
+
+.instagramButton {
+  align-self: flex-start;
+  background: white;
+  color: var(--primary);
+}
+
+.orangeButton {
+  flex: none;
+  background: var(--cta);
+  color: white;
+}
+
+@media (max-width: 1023px) {
+  .heroStage {
+    min-height: 510px;
+  }
+
+  .courseGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .heroStage {
+    display: grid;
+    min-height: auto;
+    gap: 14px;
+  }
+
+  .scoreCard,
+  .questionCard {
+    position: relative;
+    width: 100%;
+  }
+
+  .featureGrid,
+  .purchasePanel {
+    grid-template-columns: 1fr;
+  }
+
+  .featurePanel {
+    min-height: 300px;
+  }
+
+  .teacherPanel {
+    padding: 32px 28px;
+  }
+}
+
+@media (max-width: 639px) {
+  .courseGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .questionCard {
+    padding: 21px 18px;
+  }
+
+  .scoreCard {
+    padding: 24px;
+  }
+
+  .featurePanel {
+    padding: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featurePanel,
+  .courseCard,
+  .primaryButton,
+  .secondaryButton,
+  .orangeButton,
+  .instagramButton {
+    transition: none;
+  }
+}
