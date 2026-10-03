@@ -131,7 +131,7 @@ export default async function DashboardPage() {
           <div className="flex gap-3">
             {isAdminEmail(user.email) && (
               <Link
-                href="/admin/bank-transfers"
+                href="/admin/students"
                 className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4" aria-hidden="true" />

@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdminEmail } from '@/lib/payment-config'
@@ -34,7 +35,10 @@ export default async function AdminBankTransfersPage() {
   return (
     <main className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-heading font-bold text-foreground mb-6">รายการโอนเงินรอตรวจสอบ</h1>
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-heading font-bold text-foreground">รายการโอนเงินรอตรวจสอบ</h1>
+          <Link href="/admin/students" className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent">ดูข้อมูลนักเรียน</Link>
+        </div>
 
         {withUrls.length === 0 ? (
           <p className="text-sm text-muted-foreground">ไม่มีรายการรอตรวจสอบ</p>
