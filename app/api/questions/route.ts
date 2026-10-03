@@ -10,6 +10,7 @@ import { exponentialLogarithmChallengeQuestions } from '@/lib/content/exponentia
 import { analyticGeometryConicsChallengeQuestions } from '@/lib/content/analytic-geometry-conics-challenge'
 import { trigonometryChallengeQuestions } from '@/lib/content/trigonometry-challenge'
 import { matrixChallengeQuestions } from '@/lib/content/matrix-challenge'
+import { vectorChallengeQuestions } from '@/lib/content/vector-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -49,6 +50,8 @@ export async function GET(request: NextRequest) {
                   ? trigonometryChallengeQuestions
                   : topicId === 'matrix'
                     ? matrixChallengeQuestions
+                    : topicId === 'vector'
+                      ? vectorChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
