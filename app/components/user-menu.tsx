@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
 
 type Props = {
   name: string
@@ -14,7 +12,6 @@ type Props = {
 export default function UserMenu({ name, email, avatarUrl }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const router = useRouter()
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -25,13 +22,6 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  async function signOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
-  }
 
   const initials = name
     .split(' ')
@@ -83,12 +73,14 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
           >
             แก้ไขข้อมูลของฉัน
           </Link>
-          <button
-            onClick={signOut}
-            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-accent transition-colors cursor-pointer"
-          >
-            ออกจากระบบ
-          </button>
+          <form action="/auth/signout" method="post">
+            <button
+              type="submit"
+              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-accent transition-colors cursor-pointer"
+            >
+              ออกจากระบบ
+            </button>
+          </form>
         </div>
       )}
     </div>
