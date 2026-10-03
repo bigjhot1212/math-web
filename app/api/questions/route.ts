@@ -7,6 +7,7 @@ import { logicChallengeQuestions } from '@/lib/content/logic-challenge'
 import { realNumbersChallengeQuestions } from '@/lib/content/real-numbers-challenge'
 import { relationsFunctionsChallengeQuestions } from '@/lib/content/relations-functions-challenge'
 import { exponentialLogarithmChallengeQuestions } from '@/lib/content/exponential-logarithm-challenge'
+import { analyticGeometryConicsChallengeQuestions } from '@/lib/content/analytic-geometry-conics-challenge'
 import fs from 'fs'
 import path from 'path'
 
@@ -40,6 +41,8 @@ export async function GET(request: NextRequest) {
             ? relationsFunctionsChallengeQuestions
             : topicId === 'exponential-logarithm'
               ? exponentialLogarithmChallengeQuestions
+              : topicId === 'analytic-geometry-conics'
+                ? analyticGeometryConicsChallengeQuestions
         : [
           ...originalPracticeQuestions.filter(question => question.topicId === topicId),
           ...(JSON.parse(fileContent) as Question[]),
