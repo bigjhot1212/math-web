@@ -1,28 +1,31 @@
 type ArtworkConfig = {
   background: string
+  backgroundEnd: string
   accent: string
   secondary: string
   label: string
   kind: string
+  arcana: string
+  numeral: string
 }
 
 const ARTWORKS: Record<string, ArtworkConfig> = {
-  'foundation-high-school': { background: '#171a3b', accent: '#f5a65b', secondary: '#8dd9c4', label: 'FOUNDATION', kind: 'foundation' },
-  'a-level-math-1-intensive': { background: '#28133d', accent: '#ff8a5b', secondary: '#b6a2ff', label: 'A-LEVEL 1', kind: 'intensive' },
-  set: { background: '#12264a', accent: '#6fb7ff', secondary: '#c3a6ff', label: 'SET THEORY', kind: 'set' },
-  logic: { background: '#21173d', accent: '#b6a2ff', secondary: '#70d5c1', label: 'LOGIC', kind: 'logic' },
-  'real-numbers': { background: '#173145', accent: '#70d5c1', secondary: '#f5c768', label: 'REAL NUMBERS', kind: 'numbers' },
-  'relations-functions': { background: '#172554', accent: '#7cb5ff', secondary: '#f59e7a', label: 'FUNCTIONS', kind: 'function' },
-  'exponential-logarithm': { background: '#331a3f', accent: '#e49cff', secondary: '#ffad66', label: 'EXP · LOG', kind: 'exponential' },
-  'analytic-geometry-conics': { background: '#173349', accent: '#79d9c5', secondary: '#75a9ff', label: 'CONICS', kind: 'conics' },
-  trigonometry: { background: '#1e2450', accent: '#ffad66', secondary: '#8eb8ff', label: 'TRIGONOMETRY', kind: 'trigonometry' },
-  matrix: { background: '#231b46', accent: '#a99cff', secondary: '#76d8c3', label: 'MATRIX', kind: 'matrix' },
-  vector: { background: '#12324a', accent: '#70d5c1', secondary: '#ffb36b', label: 'VECTORS', kind: 'vector' },
-  'complex-numbers': { background: '#27204c', accent: '#b6a2ff', secondary: '#6fb7ff', label: 'COMPLEX', kind: 'complex' },
-  'counting-probability': { background: '#3a2034', accent: '#ff9b75', secondary: '#f4d37b', label: 'COUNTING', kind: 'counting' },
-  'sequences-series': { background: '#183044', accent: '#75d7c4', secondary: '#f1c76a', label: 'SEQUENCES', kind: 'sequence' },
-  calculus: { background: '#181e49', accent: '#7caeff', secondary: '#ff956d', label: 'CALCULUS', kind: 'calculus' },
-  'statistics-distributions': { background: '#263044', accent: '#f0c86d', secondary: '#78d3c0', label: 'STATISTICS', kind: 'statistics' },
+  'foundation-high-school': { background: '#6D28D9', backgroundEnd: '#281057', accent: '#FFD166', secondary: '#5EEAD4', label: 'FOUNDATION', kind: 'foundation', arcana: 'THE FOOL', numeral: '0' },
+  'a-level-math-1-intensive': { background: '#E11D48', backgroundEnd: '#59122D', accent: '#FFE066', secondary: '#67E8F9', label: 'A-LEVEL 1', kind: 'intensive', arcana: 'THE CHARIOT', numeral: 'VII' },
+  set: { background: '#0284C7', backgroundEnd: '#173A75', accent: '#FDE047', secondary: '#F0ABFC', label: 'SET THEORY', kind: 'set', arcana: 'THE LOVERS', numeral: 'VI' },
+  logic: { background: '#7C3AED', backgroundEnd: '#2E1065', accent: '#FDE68A', secondary: '#6EE7B7', label: 'LOGIC', kind: 'logic', arcana: 'JUSTICE', numeral: 'XI' },
+  'real-numbers': { background: '#059669', backgroundEnd: '#064E3B', accent: '#FDE047', secondary: '#93C5FD', label: 'REAL NUMBERS', kind: 'numbers', arcana: 'THE WORLD', numeral: 'XXI' },
+  'relations-functions': { background: '#2563EB', backgroundEnd: '#312E81', accent: '#FBBF24', secondary: '#FB7185', label: 'FUNCTIONS', kind: 'function', arcana: 'THE EMPRESS', numeral: 'III' },
+  'exponential-logarithm': { background: '#C026D3', backgroundEnd: '#581C87', accent: '#FDE047', secondary: '#FDBA74', label: 'EXP · LOG', kind: 'exponential', arcana: 'THE TOWER', numeral: 'XVI' },
+  'analytic-geometry-conics': { background: '#0891B2', backgroundEnd: '#164E63', accent: '#FDE68A', secondary: '#C4B5FD', label: 'CONICS', kind: 'conics', arcana: 'THE STAR', numeral: 'XVII' },
+  trigonometry: { background: '#F97316', backgroundEnd: '#9A3412', accent: '#FEF08A', secondary: '#7DD3FC', label: 'TRIGONOMETRY', kind: 'trigonometry', arcana: 'THE SUN', numeral: 'XIX' },
+  matrix: { background: '#4F46E5', backgroundEnd: '#312E81', accent: '#F9A8D4', secondary: '#5EEAD4', label: 'MATRIX', kind: 'matrix', arcana: 'THE HIGH PRIESTESS', numeral: 'II' },
+  vector: { background: '#0D9488', backgroundEnd: '#134E4A', accent: '#FDE047', secondary: '#FDA4AF', label: 'VECTORS', kind: 'vector', arcana: 'THE EMPEROR', numeral: 'IV' },
+  'complex-numbers': { background: '#7E22CE', backgroundEnd: '#3B0764', accent: '#FDE68A', secondary: '#60A5FA', label: 'COMPLEX', kind: 'complex', arcana: 'THE MOON', numeral: 'XVIII' },
+  'counting-probability': { background: '#DB2777', backgroundEnd: '#831843', accent: '#FDE047', secondary: '#FDBA74', label: 'COUNTING', kind: 'counting', arcana: 'WHEEL OF FORTUNE', numeral: 'X' },
+  'sequences-series': { background: '#16A34A', backgroundEnd: '#14532D', accent: '#FDE047', secondary: '#7DD3FC', label: 'SEQUENCES', kind: 'sequence', arcana: 'TEMPERANCE', numeral: 'XIV' },
+  calculus: { background: '#4F46E5', backgroundEnd: '#1E1B4B', accent: '#FBBF24', secondary: '#FB7185', label: 'CALCULUS', kind: 'calculus', arcana: 'THE MAGICIAN', numeral: 'I' },
+  'statistics-distributions': { background: '#EA580C', backgroundEnd: '#7C2D12', accent: '#FEF08A', secondary: '#5EEAD4', label: 'STATISTICS', kind: 'statistics', arcana: 'THE HERMIT', numeral: 'IX' },
 }
 
 function Diagram({ kind, accent, secondary }: Pick<ArtworkConfig, 'kind' | 'accent' | 'secondary'>) {
@@ -159,22 +162,48 @@ function Diagram({ kind, accent, secondary }: Pick<ArtworkConfig, 'kind' | 'acce
 export default function CourseArtwork({ courseId, courseName }: { courseId: string; courseName: string }) {
   const artwork = ARTWORKS[courseId] ?? ARTWORKS['relations-functions']
   const gridId = `course-grid-${courseId}`
+  const gradientId = `course-gradient-${courseId}`
+  const glowId = `course-glow-${courseId}`
 
   return (
     <div className="relative h-full w-full overflow-hidden" role="img" aria-label={`ภาพประกอบคอร์ส${courseName}`}>
-      <svg viewBox="0 0 320 220" className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.025]" aria-hidden="true">
+      <svg viewBox="0 0 320 420" className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.025]" aria-hidden="true">
         <defs>
-          <pattern id={gridId} width="24" height="24" patternUnits="userSpaceOnUse">
-            <path d="M24 0H0V24" fill="none" stroke="white" strokeOpacity=".055" strokeWidth="1" />
+          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+            <stop stopColor={artwork.background} />
+            <stop offset="1" stopColor={artwork.backgroundEnd} />
+          </linearGradient>
+          <radialGradient id={glowId} cx="50%" cy="42%" r="58%">
+            <stop stopColor={artwork.accent} stopOpacity=".28" />
+            <stop offset="1" stopColor={artwork.accent} stopOpacity="0" />
+          </radialGradient>
+          <pattern id={gridId} width="32" height="32" patternUnits="userSpaceOnUse">
+            <path d="M32 0H0V32" fill="none" stroke="white" strokeOpacity=".045" strokeWidth="1" />
           </pattern>
         </defs>
-        <rect width="320" height="220" fill={artwork.background} />
-        <rect width="320" height="220" fill={`url(#${gridId})`} />
-        <circle cx="278" cy="-6" r="82" fill={artwork.accent} fillOpacity=".08" />
-        <circle cx="24" cy="218" r="72" fill={artwork.secondary} fillOpacity=".07" />
-        <Diagram kind={artwork.kind} accent={artwork.accent} secondary={artwork.secondary} />
-        <text x="18" y="204" fill="white" fillOpacity=".55" fontSize="10" fontWeight="700" letterSpacing="2.2">{artwork.label}</text>
-        <path d="M18 190H52" stroke={artwork.accent} strokeWidth="3" strokeLinecap="round" />
+        <rect width="320" height="420" fill={`url(#${gradientId})`} />
+        <rect width="320" height="420" fill={`url(#${gridId})`} />
+        <rect width="320" height="420" fill={`url(#${glowId})`} />
+
+        <rect x="12" y="12" width="296" height="396" rx="18" fill="none" stroke={artwork.accent} strokeWidth="3" />
+        <rect x="21" y="21" width="278" height="378" rx="13" fill="none" stroke="white" strokeOpacity=".5" />
+        <path d="M21 72H67L83 56H237L253 72H299M21 340H67L83 356H237L253 340H299" fill="none" stroke={artwork.accent} strokeWidth="2" />
+        <path d="M32 42L39 49L32 56L25 49ZM288 42L295 49L288 56L281 49ZM32 364L39 371L32 378L25 371ZM288 364L295 371L288 378L281 371Z" fill={artwork.secondary} />
+
+        <circle cx="160" cy="52" r="24" fill={artwork.backgroundEnd} stroke={artwork.accent} strokeWidth="2" />
+        <path d="M160 31V73M139 52H181M145 37L175 67M175 37L145 67" stroke={artwork.accent} strokeOpacity=".5" strokeWidth="1" />
+        <text x="160" y="57" fill="white" fontSize="14" fontWeight="800" textAnchor="middle" letterSpacing="1">{artwork.numeral}</text>
+
+        <ellipse cx="160" cy="202" rx="126" ry="119" fill={artwork.backgroundEnd} fillOpacity=".34" stroke="white" strokeOpacity=".22" strokeWidth="2" />
+        <circle cx="160" cy="202" r="105" fill="none" stroke={artwork.accent} strokeOpacity=".3" strokeWidth="1" strokeDasharray="3 8" />
+        <g transform="translate(0 91)">
+          <Diagram kind={artwork.kind} accent={artwork.accent} secondary={artwork.secondary} />
+        </g>
+
+        <path d="M72 327H248" stroke="white" strokeOpacity=".3" />
+        <text x="160" y="354" fill={artwork.accent} fontSize="17" fontWeight="800" textAnchor="middle" letterSpacing="2.6">{artwork.arcana}</text>
+        <text x="160" y="379" fill="white" fillOpacity=".88" fontSize="10" fontWeight="700" textAnchor="middle" letterSpacing="2.4">{artwork.label}</text>
+        <circle cx="126" cy="393" r="2.5" fill={artwork.secondary} /><path d="M136 393H184" stroke="white" strokeOpacity=".4" /><circle cx="194" cy="393" r="2.5" fill={artwork.secondary} />
       </svg>
     </div>
   )
