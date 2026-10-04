@@ -90,14 +90,14 @@ export default async function CoursesPage() {
         </header>
 
         {pendingIds.length > 0 && (
-          <section className="mb-8 rounded-3xl border border-amber-300/60 bg-amber-50/70 p-5 text-amber-950">
+          <section className="mb-8 rounded-3xl border border-cta/35 bg-cta/10 p-5 text-foreground">
             <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cta/15 text-cta">
                 <Clock3 className="h-4 w-4" aria-hidden="true" />
               </span>
               <div>
                 <h2 className="font-heading text-sm font-semibold">กำลังตรวจสอบหลักฐานการโอน</h2>
-                <p className="mt-1 text-xs leading-5 text-amber-800">
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">
                   {pendingIds.map((id) => COURSES[id].name).join(', ')} — เมื่อแอดมินยืนยันแล้ว คอร์สจะย้ายมาอยู่ในรายการพร้อมเรียนอัตโนมัติ
                 </p>
               </div>
@@ -138,10 +138,10 @@ export default async function CoursesPage() {
                   style={{ animationDelay: `${index * 60}ms` }}
                   className="animate-fade-slide-in group overflow-hidden rounded-3xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
-                  <div className="relative flex min-h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-primary to-[#211c62]">
+                  <div className="relative flex min-h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[oklch(0.31_0.11_275)] via-[oklch(0.24_0.08_260)] to-[oklch(0.17_0.055_235)]">
                     <span className="select-none font-heading text-6xl font-bold text-white/95 drop-shadow-lg" aria-hidden="true">{mark}</span>
                     <span className="absolute -bottom-14 -right-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
-                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-primary">
+                    <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-[oklch(0.16_0.04_265/.9)] px-2.5 py-1 text-[11px] font-semibold text-primary">
                       <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                       พร้อมเรียน
                     </span>

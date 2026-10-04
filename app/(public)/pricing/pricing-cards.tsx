@@ -91,13 +91,13 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
         <CourseArtwork courseId={id} courseName={course.name} featured={isSpecial} />
 
         {owned && (
-          <span className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-white/90 text-primary">
+          <span className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full border border-white/10 bg-[oklch(0.17_0.04_265/.9)] text-primary">
             <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
             เป็นเจ้าของแล้ว
           </span>
         )}
         {available && !owned && (
-          <span className="absolute top-3 right-3 text-[10px] font-medium px-2 py-1 rounded-full bg-white/85 text-foreground backdrop-blur-sm">
+          <span className="absolute top-3 right-3 text-[10px] font-medium px-2 py-1 rounded-full border border-white/10 bg-[oklch(0.17_0.04_265/.88)] text-white/85 backdrop-blur-sm">
             มีเฉลยละเอียด
           </span>
         )}

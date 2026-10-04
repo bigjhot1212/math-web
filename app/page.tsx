@@ -29,12 +29,12 @@ const courseMarks: Record<string, string> = {
 }
 
 const courseColors = [
-  'oklch(0.51 0.22 275)',
-  'oklch(0.24 0.08 280)',
-  'oklch(0.67 0.18 45)',
-  'oklch(0.55 0.16 195)',
-  'oklch(0.56 0.16 145)',
-  'oklch(0.55 0.18 335)',
+  'oklch(0.27 0.09 275)',
+  'oklch(0.22 0.07 255)',
+  'oklch(0.24 0.07 225)',
+  'oklch(0.22 0.065 195)',
+  'oklch(0.235 0.07 285)',
+  'oklch(0.23 0.06 245)',
 ]
 
 const practiceTopics = [
@@ -93,7 +93,7 @@ export default function Home() {
                 <span className="font-heading text-2xl text-white/65">/100</span>
               </div>
               <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/20">
-                <div className="h-full w-[98%] rounded-full bg-[oklch(0.78_0.15_45)]" />
+                <div className="h-full w-[98%] rounded-full bg-[oklch(0.76_0.13_220)]" />
               </div>
               <p className="mt-3 text-sm leading-6 text-white/85">พี่สอนให้มองโจทย์แบบเดียวกับตอนอยู่ในห้องสอบจริง</p>
             </div>
@@ -114,7 +114,7 @@ export default function Home() {
                   <span key={choice} className={choice === '4' ? styles.correctChoice : styles.choice}>{choice}</span>
                 ))}
               </div>
-              <p className="mt-4 rounded-xl bg-[oklch(0.96_0.03_60)] px-4 py-3 text-sm leading-6 text-[oklch(0.45_0.13_45)]">
+              <p className="mt-4 rounded-xl bg-accent px-4 py-3 text-sm leading-6 text-accent-foreground">
                 <strong>จุดหลอก:</strong> ได้ 0/0 ไม่ได้แปลว่าไม่มีลิมิต — ลองแยกตัวประกอบก่อน
               </p>
             </div>
@@ -143,7 +143,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <span className="mt-7 inline-flex items-center gap-2 font-semibold text-[oklch(0.85_0.12_45)]">เลือกบทที่อยากฝึก <ArrowRight className="size-4" /></span>
+            <span className="mt-7 inline-flex items-center gap-2 font-semibold text-[oklch(0.82_0.1_220)]">เลือกบทที่อยากฝึก <ArrowRight className="size-4" /></span>
           </Link>
 
           <Link href="/exam" className={`${styles.featurePanel} ${styles.examPanel}`}>
@@ -151,8 +151,8 @@ export default function Home() {
               <span className="flex items-center gap-2 text-sm font-semibold text-white/80"><Clock3 className="size-4" /> สอบจำลอง</span>
               <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">จับเวลาจริง</span>
             </div>
-            <div className="mt-10 font-mono text-5xl font-semibold tabular-nums text-[oklch(0.78_0.15_45)]">90:00</div>
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full w-[72%] rounded-full bg-[oklch(0.7_0.19_45)]" /></div>
+            <div className="mt-10 font-mono text-5xl font-semibold tabular-nums text-[oklch(0.8_0.11_220)]">90:00</div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full w-[72%] rounded-full bg-[oklch(0.72_0.14_220)]" /></div>
             <h3 className="mt-9 font-heading text-2xl font-semibold text-white">ซ้อมก่อนลงสนามจริง</h3>
             <p className="mt-2 leading-7 text-white/65">ทำข้อสอบตามเวลา ส่งคำตอบ แล้วดูผลแยกตามหัวข้อเพื่อรู้ว่าควรกลับไปเติมตรงไหน</p>
           </Link>
@@ -169,7 +169,7 @@ export default function Home() {
                 <span key={index} className="rounded-t-md bg-primary/80" style={{ height: `${height}%` }} />
               ))}
             </div>
-            <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>7 วันที่ผ่านมา</span><span className="font-mono font-semibold text-[oklch(0.47_0.13_150)]">84% วันนี้</span></div>
+            <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>7 วันที่ผ่านมา</span><span className="font-mono font-semibold text-[oklch(0.75_0.11_195)]">84% วันนี้</span></div>
           </Link>
 
           <Link href="/courses" className={`${styles.featurePanel} ${styles.libraryPanel}`}>
@@ -204,7 +204,7 @@ export default function Home() {
                     <h3 className="font-heading text-lg font-semibold leading-snug text-foreground">{course.name}</h3>
                     <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">{course.desc}</p>
                     <div className="mt-auto flex items-end justify-between gap-4 border-t border-border pt-4">
-                      <strong className="font-heading text-xl font-semibold text-[oklch(0.56_0.18_45)]">฿{(course.price ?? 390).toLocaleString('th-TH')}</strong>
+                      <strong className="font-heading text-xl font-semibold text-cta">฿{(course.price ?? 390).toLocaleString('th-TH')}</strong>
                       <span className="text-xs text-muted-foreground">{lessonCount > 0 ? `${lessonCount} หัวข้อ` : 'ดูรายละเอียด'}</span>
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export default function Home() {
             </div>
             <div className="space-y-3">
               {['สอนให้เริ่มคิดเมื่อเจอโจทย์ไม่คุ้น', 'ชี้ Keyword และจุดหลอกที่ออกซ้ำ', 'ดูแลต่อได้ผ่าน Instagram'].map((item) => (
-                <p key={item} className="flex items-start gap-3 text-white/85"><Check className="mt-0.5 size-5 shrink-0 text-[oklch(0.78_0.15_45)]" />{item}</p>
+                <p key={item} className="flex items-start gap-3 text-white/85"><Check className="mt-0.5 size-5 shrink-0 text-[oklch(0.78_0.12_220)]" />{item}</p>
               ))}
             </div>
             <a href="https://ig.me/m/j.3ra_" target="_blank" rel="noopener noreferrer" className={styles.instagramButton}>

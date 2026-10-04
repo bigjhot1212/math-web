@@ -10,7 +10,7 @@ const EXAMS = [
     type: 'A-Level-1-free',
     subject: 'คณิตศาสตร์ 1',
     tier: 'ฟรี',
-    tierStyle: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
+    tierStyle: 'bg-cta/15 text-cta',
     topics: 'ชุดคัดสรร: ฟังก์ชัน · เซต · ตรรกะ · ลอการิทึม · เรขาคณิต · แคลคูลัส',
     questionCount: 15,
     durationMinutes: 45,
@@ -20,7 +20,7 @@ const EXAMS = [
     type: 'A-Level-1-paid',
     subject: 'คณิตศาสตร์ 1',
     tier: 'Premium',
-    tierStyle: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+    tierStyle: 'bg-primary/15 text-primary',
     topics: 'เซต · ตรรกศาสตร์ · จำนวนจริง · ฟังก์ชัน · เอกซ์โพเนนเชียล · เรขาคณิตวิเคราะห์',
     questionCount: 30,
     durationMinutes: 90,
@@ -31,7 +31,7 @@ const EXAMS = [
     type: 'A-Level-2-free',
     subject: 'คณิตศาสตร์ 2',
     tier: 'ฟรี',
-    tierStyle: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300',
+    tierStyle: 'bg-cta/15 text-cta',
     topics: 'ตรีโกณมิติ · เมทริกซ์ · เวกเตอร์ · จำนวนเชิงซ้อน · หลักการนับ · ลำดับ · แคลคูลัส · สถิติ',
     questionCount: 10,
     durationMinutes: 30,
@@ -41,7 +41,7 @@ const EXAMS = [
     type: 'A-Level-2-paid',
     subject: 'คณิตศาสตร์ 2',
     tier: 'Premium',
-    tierStyle: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+    tierStyle: 'bg-primary/15 text-primary',
     topics: 'ตรีโกณมิติ · เมทริกซ์ · เวกเตอร์ · จำนวนเชิงซ้อน · หลักการนับ · ลำดับ · แคลคูลัส · สถิติ',
     questionCount: 30,
     durationMinutes: 90,
@@ -105,7 +105,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                 style={{ animationDelay: `${i * 60}ms` }}
                 className={`animate-fade-slide-in p-6 rounded-3xl border-2 bg-card/70 backdrop-blur-xl transition-all duration-300 ${
                   locked
-                    ? 'border-amber-200 dark:border-amber-900 opacity-75'
+                    ? 'border-primary/35 opacity-75'
                     : 'border-primary/30 hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_0_28px_-8px_var(--primary)]'
                 }`}
               >
@@ -130,7 +130,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                   <button
                     type="button"
                     disabled
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 rounded-xl text-sm font-medium opacity-80 cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-primary/50 text-primary rounded-xl text-sm font-medium opacity-80 cursor-not-allowed"
                   >
                     <Lock className="w-4 h-4" aria-hidden="true" />
                     ยังไม่เปิดใช้งาน
@@ -138,7 +138,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                 ) : locked ? (
                   <Link
                     href="/pricing"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 rounded-xl text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-950 transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-primary/50 text-primary rounded-xl text-sm font-medium hover:bg-primary/10 transition-colors cursor-pointer"
                   >
                     <Lock className="w-4 h-4" aria-hidden="true" />
                     อัปเกรดเป็น Premium

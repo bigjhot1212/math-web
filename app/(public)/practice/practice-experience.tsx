@@ -166,7 +166,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
   const pickedTopic = TOPICS.find((topic) => topic.id === pickedId)
 
   return (
-    <main className="practice-dark-theme min-h-screen bg-background px-5 py-10 sm:px-8 sm:py-12 lg:px-14 lg:py-14">
+    <main className="min-h-screen bg-background px-5 py-10 sm:px-8 sm:py-12 lg:px-14 lg:py-14">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-7">
         <header className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
