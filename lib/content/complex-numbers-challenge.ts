@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `complex-numbers-challenge-${String(id).padStart(2, '0')}`, topicId: 'complex-numbers', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 3)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 2 + 3) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const arithmetic: Question[] = [
@@ -44,16 +50,16 @@ const equations: Question[] = [
 ]
 
 const polarRoots: Question[] = [
-  q(21, 'argument', 'medium', 'อาร์กิวเมนต์หลักของ $1+i$ คือข้อใด', { a: '$45^\\circ$', b: '$30^\\circ$', c: '$60^\\circ$', d: '$135^\\circ$', e: '$315^\\circ$' }, 'a', 'จุด $(1,1)$ อยู่ในควอดแรนต์ที่ 1', ['$\\tan\\theta=1$ จึง $\\theta=45^\\circ$']),
-  q(22, 'polar-form', 'medium', 'จำนวน $-\\sqrt3+i$ มีโมดูลัสและอาร์กิวเมนต์หลักข้อใด', { a: '$2,150^\\circ$', b: '$2,30^\\circ$', c: '$4,150^\\circ$', d: '$2,210^\\circ$', e: '$\\sqrt2,135^\\circ$' }, 'a', 'พิจารณาขนาดและควอดแรนต์แยกกัน', ['$r=\\sqrt{3+1}=2$', 'อยู่ควอดแรนต์ที่ 2 และมุมอ้างอิง $30^\\circ$ จึงได้ $150^\\circ$']),
-  q(23, 'rectangular-form', 'medium', '$2(\\cos60^\\circ+i\\sin60^\\circ)$ เท่ากับข้อใด', { a: '$1+\\sqrt3i$', b: '$\\sqrt3+i$', c: '$1-\\sqrt3i$', d: '$2+2i$', e: '$\\sqrt3- i$' }, 'a', 'แทนค่า sine และ cosine ของ $60^\\circ$', ['$2(\\frac12+i\\frac{\\sqrt3}{2})=1+\\sqrt3i$']),
+  q(21, 'argument', 'medium', 'อาร์กิวเมนต์หลักของ $1+i$ คือข้อใด', { a: '$45^\\circ$', b: '$30^\\circ$', c: '$60^\\circ$', d: '$135^\\circ$', e: '$315^\\circ$' }, 'a', 'จุด $(1,1)$ อยู่ในจตุภาคที่ 1', ['$\\tan\\theta=1$ จึง $\\theta=45^\\circ$']),
+  q(22, 'polar-form', 'medium', 'จำนวน $-\\sqrt3+i$ มีโมดูลัสและอาร์กิวเมนต์หลักข้อใด', { a: '$2,150^\\circ$', b: '$2,30^\\circ$', c: '$4,150^\\circ$', d: '$2,210^\\circ$', e: '$\\sqrt2,135^\\circ$' }, 'a', 'พิจารณาขนาดและจตุภาคแยกกัน', ['$r=\\sqrt{3+1}=2$', 'อยู่จตุภาคที่ 2 และมุมอ้างอิง $30^\\circ$ จึงได้ $150^\\circ$']),
+  q(23, 'rectangular-form', 'medium', '$2(\\cos60^\\circ+i\\sin60^\\circ)$ เท่ากับข้อใด', { a: '$1+\\sqrt3i$', b: '$\\sqrt3+i$', c: '$1-\\sqrt3i$', d: '$2+2i$', e: '$\\sqrt3- i$' }, 'a', 'แทนค่าไซน์และโคไซน์ของ $60^\\circ$', ['$2(\\frac12+i\\frac{\\sqrt3}{2})=1+\\sqrt3i$']),
   q(24, 'polar-multiplication', 'medium', 'ถ้า $z_1=2(\\cos20^\\circ+i\\sin20^\\circ)$ และ $z_2=3(\\cos40^\\circ+i\\sin40^\\circ)$ แล้ว $z_1z_2$ คือข้อใด', { a: '$6(\\cos60^\\circ+i\\sin60^\\circ)$', b: '$5(\\cos60^\\circ+i\\sin60^\\circ)$', c: '$6(\\cos20^\\circ+i\\sin20^\\circ)$', d: '$6(\\cos80^\\circ+i\\sin80^\\circ)$', e: '$\\frac23(\\cos60^\\circ+i\\sin60^\\circ)$' }, 'a', 'คูณโมดูลัสและบวกอาร์กิวเมนต์', ['$2(3)=6$ และ $20^\\circ+40^\\circ=60^\\circ$']),
   q(25, 'polar-division', 'hard', 'ถ้า $z_1=6(\\cos100^\\circ+i\\sin100^\\circ)$ และ $z_2=2(\\cos40^\\circ+i\\sin40^\\circ)$ แล้ว $z_1/z_2$ คือข้อใด', { a: '$3(\\cos60^\\circ+i\\sin60^\\circ)$', b: '$3(\\cos140^\\circ+i\\sin140^\\circ)$', c: '$4(\\cos60^\\circ+i\\sin60^\\circ)$', d: '$3(\\cos40^\\circ+i\\sin40^\\circ)$', e: '$12(\\cos60^\\circ+i\\sin60^\\circ)$' }, 'a', 'หารโมดูลัสและลบอาร์กิวเมนต์', ['$6/2=3$ และ $100^\\circ-40^\\circ=60^\\circ$']),
   q(26, 'de-moivre', 'hard', '$(\\cos20^\\circ+i\\sin20^\\circ)^9$ เท่ากับข้อใด', { a: '$-1$', b: '$1$', c: '$i$', d: '$-i$', e: '$\\frac12+\\frac{\\sqrt3}{2}i$' }, 'a', 'ใช้ทฤษฎีบทของเดอมัวฟร์คูณมุมด้วยเลขชี้กำลัง', ['$9(20^\\circ)=180^\\circ$', '$\\cos180^\\circ+i\\sin180^\\circ=-1$']),
   numeric(27, 'de-moivre', 'hard', 'ส่วนจริงของ $(1+i)^4$ เท่ากับเท่าใด', -4, [-2, 0, 2, 4], 'ยกกำลังทีละขั้นหรือใช้รูปเชิงขั้ว', ['$(1+i)^2=2i$', '$(1+i)^4=(2i)^2=-4$']),
   q(28, 'nth-roots', 'medium', 'ข้อใดเป็นรากที่สามค่าหนึ่งของ 8', { a: '$2$', b: '$4$', c: '$-2$', d: '$2i$', e: '$8i$' }, 'a', 'ตรวจโดยยกกำลังสาม', ['$2^3=8$']),
   numeric(29, 'number-of-roots', 'medium', 'สมการ $z^4=16$ มีรากเชิงซ้อนที่แตกต่างกันทั้งหมดกี่ราก', 4, [1, 2, 3, 8], 'สมการ $z^n=w$ เมื่อ $w\\ne0$ มีรากต่างกัน $n$ ราก', ['เลขชี้กำลังเป็น 4 จึงมี 4 ราก']),
-  q(30, 'nth-roots', 'hard', 'ข้อใดเป็นรากหนึ่งของสมการ $z^3=8i$', { a: '$\\sqrt3+i$', b: '$2i$', c: '$1+i$', d: '$-\\sqrt3+i$', e: '$2$' }, 'a', '$8i$ มีโมดูลัส 8 และอาร์กิวเมนต์ $90^\\circ$', ['รากมีโมดูลัส 2 และมุมหนึ่งคือ $30^\\circ$', '$2(\\cos30^\\circ+i\\sin30^\\circ)=\\sqrt3+i$']),
+  q(30, 'nth-roots', 'hard', 'ข้อใดเป็นรากหนึ่งของสมการ $z^3=8i$', { a: '$\\sqrt3+i$', b: '$2i$', c: '$1+i$', d: '$\\sqrt3-i$', e: '$2$' }, 'a', '$8i$ มีโมดูลัส 8 และอาร์กิวเมนต์ $90^\\circ$', ['รากมีโมดูลัส 2 และมุมหนึ่งคือ $30^\\circ$', '$2(\\cos30^\\circ+i\\sin30^\\circ)=\\sqrt3+i$']),
 ]
 
 const geometry: Question[] = [
@@ -61,7 +67,7 @@ const geometry: Question[] = [
   numeric(32, 'distance', 'medium', 'ระยะระหว่างจำนวนเชิงซ้อน $1+2i$ และ $4+6i$ เท่ากับเท่าใด', 5, [3, 4, 6, 7], 'ระยะคือโมดูลัสของผลต่าง', ['$|(4+6i)-(1+2i)|=|3+4i|=5$']),
   q(33, 'circle-locus', 'medium', 'สมการ $|z-(2-i)|=3$ แทนวงกลมที่มีศูนย์กลางและรัศมีข้อใด', { a: 'ศูนย์กลาง $(2,-1)$ รัศมี 3', b: 'ศูนย์กลาง $(-2,1)$ รัศมี 3', c: 'ศูนย์กลาง $(2,1)$ รัศมี 9', d: 'ศูนย์กลาง $(3,0)$ รัศมี 2', e: 'ศูนย์กลาง $(0,0)$ รัศมี 3' }, 'a', 'เทียบกับรูป $|z-z_0|=r$', ['$z_0=2-i$ และ $r=3$']),
   q(34, 'perpendicular-bisector', 'medium', 'เซตคำตอบของ $|z-1|=|z+1|$ คือเส้นใด', { a: 'แกนจินตภาพ', b: 'แกนจริง', c: '$x=1$', d: '$y=1$', e: 'วงกลมหนึ่งหน่วย' }, 'a', 'จุดต้องอยู่ห่างจาก 1 และ -1 เท่ากัน', ['เส้นตั้งฉากแบ่งครึ่งส่วนจาก $(-1,0)$ ถึง $(1,0)$ คือ $x=0$', 'ดังนั้นเป็นแกนจินตภาพ']),
-  q(35, 'argument-locus', 'hard', 'เงื่อนไข $\\arg z=45^\\circ$ และ $z\\ne0$ แทนเซตจุดใด', { a: 'รังสี $y=x$ ในควอดแรนต์ที่ 1', b: 'เส้นตรง $y=x$ ทั้งเส้น', c: 'รังสีแกน $x$ บวก', d: 'วงกลมหนึ่งหน่วย', e: 'รังสี $y=-x$ ในควอดแรนต์ที่ 4' }, 'a', 'อาร์กิวเมนต์กำหนดทิศจากจุดกำเนิด', ['$45^\\circ$ ให้ $y=x$ โดย $x>0$']),
+  q(35, 'argument-locus', 'hard', 'เงื่อนไข $\\arg z=45^\\circ$ และ $z\\ne0$ แทนเซตจุดใด', { a: 'รังสี $y=x$ ในจตุภาคที่ 1', b: 'เส้นตรง $y=x$ ทั้งเส้น', c: 'รังสีแกน $x$ บวก', d: 'วงกลมหนึ่งหน่วย', e: 'รังสี $y=-x$ ในจตุภาคที่ 4' }, 'a', 'อาร์กิวเมนต์กำหนดทิศจากจุดกำเนิด', ['$45^\\circ$ ให้ $y=x$ โดย $x>0$']),
   numeric(36, 'triangle-area', 'hard', 'จุดแทน $0$, $4$ และ $1+3i$ เป็นจุดยอดของสามเหลี่ยม พื้นที่เท่ากับเท่าใด', 6, [3, 4, 8, 12], 'ใช้ส่วนบนแกนจริงเป็นฐานและส่วนจินตภาพเป็นความสูง', ['ฐานยาว 4 และสูง 3', 'พื้นที่ $=\\frac12(4)(3)=6$']),
   q(37, 'rotation', 'medium', 'การคูณจำนวนเชิงซ้อน $z$ ด้วย $i$ ทำให้จุดแทน $z$ เปลี่ยนอย่างไร', { a: 'หมุนทวนเข็มนาฬิกา $90^\\circ$', b: 'หมุนตามเข็มนาฬิกา $90^\\circ$', c: 'สะท้อนในแกนจริง', d: 'ขยาย 2 เท่า', e: 'เลื่อนไปทางขวา 1 หน่วย' }, 'a', '$i$ มีโมดูลัส 1 และอาร์กิวเมนต์ $90^\\circ$', ['โมดูลัสคงเดิมและอาร์กิวเมนต์เพิ่ม $90^\\circ$']),
   q(38, 'reflection', 'medium', 'การเปลี่ยนจาก $z$ เป็น $\\bar z$ บนระนาบเชิงซ้อนตรงกับการแปลงใด', { a: 'สะท้อนในแกนจริง', b: 'สะท้อนในแกนจินตภาพ', c: 'หมุน $90^\\circ$', d: 'หมุน $180^\\circ$', e: 'ขยาย 2 เท่า' }, 'a', 'สังยุคเปลี่ยนเครื่องหมายพิกัดแนวตั้ง', ['$(x,y)\\mapsto(x,-y)$']),

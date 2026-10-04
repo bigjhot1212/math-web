@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `vector-challenge-${String(id).padStart(2, '0')}`, topicId: 'vector', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 0)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 3 + 2) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const basics: Question[] = [
@@ -32,14 +38,14 @@ const basics: Question[] = [
 
 const dotProducts: Question[] = [
   numeric(11, 'dot-product', 'medium', 'ถ้า $\\vec{u}=(2,-1,3)$ และ $\\vec{v}=(4,2,-2)$ แล้ว $\\vec{u}\\cdot\\vec{v}$ เท่ากับเท่าใด', 0, [-4, 2, 6, 16], 'คูณพิกัดตำแหน่งเดียวกันแล้วบวก', ['$2(4)+(-1)(2)+3(-2)=8-2-6=0$']),
-  q(12, 'perpendicular-vectors', 'medium', 'เวกเตอร์ใดตั้งฉากกับ $(3,-4)$', { a: '$(4,3)$', b: '$(3,4)$', c: '$(-4,3)$', d: '$(6,-8)$', e: '$(1,1)$' }, 'a', 'เวกเตอร์ตั้งฉากมี dot product เป็นศูนย์', ['$(3,-4)\\cdot(4,3)=12-12=0$']),
-  numeric(13, 'dot-product-parameter', 'medium', 'ถ้า $(k,2)$ ตั้งฉากกับ $(4,-6)$ แล้ว $k$ เท่ากับเท่าใด', 3, [-3, 2, 4, 12], 'ตั้ง dot product เท่ากับศูนย์', ['$4k+2(-6)=0$', '$4k=12$ จึง $k=3$']),
+  q(12, 'perpendicular-vectors', 'medium', 'เวกเตอร์ใดตั้งฉากกับ $(3,-4)$', { a: '$(4,3)$', b: '$(3,4)$', c: '$(-4,3)$', d: '$(6,-8)$', e: '$(1,1)$' }, 'a', 'เวกเตอร์ตั้งฉากมีผลคูณเชิงสเกลาร์เป็นศูนย์', ['$(3,-4)\\cdot(4,3)=12-12=0$']),
+  numeric(13, 'dot-product-parameter', 'medium', 'ถ้า $(k,2)$ ตั้งฉากกับ $(4,-6)$ แล้ว $k$ เท่ากับเท่าใด', 3, [-3, 2, 4, 12], 'ตั้งผลคูณเชิงสเกลาร์เท่ากับศูนย์', ['$4k+2(-6)=0$', '$4k=12$ จึง $k=3$']),
   q(14, 'angle-between-vectors', 'medium', 'มุมระหว่าง $(1,0)$ และ $(1,1)$ เท่ากับเท่าใด', { a: '$45^\\circ$', b: '$30^\\circ$', c: '$60^\\circ$', d: '$90^\\circ$', e: '$135^\\circ$' }, 'a', 'ใช้ $\\cos\\theta=\\frac{\\vec{u}\\cdot\\vec{v}}{|\\vec{u}||\\vec{v}|}$', ['$\\cos\\theta=\\frac1{\\sqrt2}$', '$\\theta=45^\\circ$']),
-  q(15, 'angle-type', 'medium', 'ถ้า $\\vec{u}\\cdot\\vec{v}<0$ และเวกเตอร์ทั้งสองไม่ขนานกัน มุมระหว่างเวกเตอร์เป็นมุมชนิดใด', { a: 'มุมป้าน', b: 'มุมแหลม', c: 'มุมฉาก', d: 'มุมศูนย์', e: 'สรุปไม่ได้' }, 'a', 'เครื่องหมายของ dot product ตรงกับเครื่องหมายของ $\\cos\\theta$', ['$\\cos\\theta<0$ เมื่อ $90^\\circ<\\theta\\le180^\\circ$']),
+  q(15, 'angle-type', 'medium', 'ถ้า $\\vec{u}\\cdot\\vec{v}<0$ และเวกเตอร์ทั้งสองไม่ขนานกัน มุมระหว่างเวกเตอร์เป็นมุมชนิดใด', { a: 'มุมป้าน', b: 'มุมแหลม', c: 'มุมฉาก', d: 'มุมศูนย์', e: 'สรุปไม่ได้' }, 'a', 'เครื่องหมายของผลคูณเชิงสเกลาร์ตรงกับเครื่องหมายของ $\\cos\\theta$', ['$\\cos\\theta<0$ เมื่อ $90^\\circ<\\theta\\le180^\\circ$']),
   numeric(16, 'projection', 'medium', 'ความยาวของภาพฉายของ $(6,2)$ บนแกน $x$ เท่ากับเท่าใด', 6, [2, 4, 8, 40], 'ภาพฉายบนแกน $x$ ใช้ค่าสัมบูรณ์ของพิกัด $x$', ['ความยาวภาพฉายคือ $|6|=6$']),
   q(17, 'vector-projection', 'hard', 'ภาพฉายเชิงเวกเตอร์ของ $\\vec{u}=(3,4)$ บน $\\vec{v}=(1,1)$ คือข้อใด', { a: '$(\\frac72,\\frac72)$', b: '$(3,4)$', c: '$(7,7)$', d: '$(\\frac12,\\frac12)$', e: '$(-\\frac72,-\\frac72)$' }, 'a', 'ใช้ $\\operatorname{proj}_{\\vec v}\\vec u=\\frac{\\vec u\\cdot\\vec v}{\\vec v\\cdot\\vec v}\\vec v$', ['$\\frac{3+4}{1+1}(1,1)$', '$=(\\frac72,\\frac72)$']),
-  numeric(18, 'work', 'medium', 'แรง $\\vec{F}=(5,2)$ นิวตันทำให้วัตถุเคลื่อนที่ $\\vec{s}=(3,-1)$ เมตร งานที่เกิดขึ้นเท่ากับกี่จูล', 13, [7, 12, 15, 17], 'งานคือ dot product ของแรงกับการกระจัด', ['$W=\\vec F\\cdot\\vec s=5(3)+2(-1)=13$']),
-  q(19, 'cauchy-schwarz', 'hard', 'ถ้า $|\\vec{u}|=3$, $|\\vec{v}|=5$ ค่ามากที่สุดของ $\\vec{u}\\cdot\\vec{v}$ คือเท่าใด', { a: '15', b: '8', c: '2', d: '$\\sqrt{15}$', e: '0' }, 'a', 'dot product มากสุดเมื่อเวกเตอร์ทิศเดียวกัน', ['$\\vec u\\cdot\\vec v=|\\vec u||\\vec v|\\cos\\theta$', 'มากสุดเมื่อ $\\cos\\theta=1$ จึงได้ 15']),
+  numeric(18, 'work', 'medium', 'แรง $\\vec{F}=(5,2)$ นิวตันทำให้วัตถุเคลื่อนที่ $\\vec{s}=(3,-1)$ เมตร งานที่เกิดขึ้นเท่ากับกี่จูล', 13, [7, 12, 15, 17], 'งานคือผลคูณเชิงสเกลาร์ของแรงกับการกระจัด', ['$W=\\vec F\\cdot\\vec s=5(3)+2(-1)=13$']),
+  q(19, 'cauchy-schwarz', 'hard', 'ถ้า $|\\vec{u}|=3$, $|\\vec{v}|=5$ ค่ามากที่สุดของ $\\vec{u}\\cdot\\vec{v}$ คือเท่าใด', { a: '15', b: '8', c: '2', d: '$\\sqrt{15}$', e: '0' }, 'a', 'ผลคูณเชิงสเกลาร์มากสุดเมื่อเวกเตอร์ทิศเดียวกัน', ['$\\vec u\\cdot\\vec v=|\\vec u||\\vec v|\\cos\\theta$', 'มากสุดเมื่อ $\\cos\\theta=1$ จึงได้ 15']),
   numeric(20, 'dot-product-identity', 'hard', 'ถ้า $|\\vec{u}|=5$, $|\\vec{v}|=3$ และ $|\\vec{u}-\\vec{v}|=4$ แล้ว $\\vec{u}\\cdot\\vec{v}$ เท่ากับเท่าใด', 9, [0, 7, 8, 12], 'ขยายกำลังสองของผลต่างเวกเตอร์', ['$|\\vec u-\\vec v|^2=|\\vec u|^2+|\\vec v|^2-2\\vec u\\cdot\\vec v$', '$16=25+9-2\\vec u\\cdot\\vec v$', '$\\vec u\\cdot\\vec v=9$']),
 ]
 
@@ -48,23 +54,23 @@ const threeDimensions: Question[] = [
   q(22, 'cross-product', 'medium', '$\\mathbf{i}\\times\\mathbf{j}$ เท่ากับข้อใด', { a: '$\\mathbf{k}$', b: '$-\\mathbf{k}$', c: '$\\mathbf{i}$', d: '$\\mathbf{j}$', e: '$0$' }, 'a', 'จำลำดับวน $\\mathbf{i},\\mathbf{j},\\mathbf{k}$', ['$\\mathbf{i}\\times\\mathbf{j}=\\mathbf{k}$']),
   q(23, 'cross-product', 'medium', 'ถ้า $\\vec{u}=(1,0,0)$ และ $\\vec{v}=(0,2,0)$ แล้ว $\\vec{u}\\times\\vec{v}$ คือข้อใด', { a: '$(0,0,2)$', b: '$(0,0,-2)$', c: '$(2,0,0)$', d: '$(0,2,0)$', e: '$(0,0,0)$' }, 'a', 'ใช้ $\\mathbf{i}\\times\\mathbf{j}=\\mathbf{k}$', ['$\\mathbf i\\times2\\mathbf j=2\\mathbf k=(0,0,2)$']),
   numeric(24, 'cross-product-magnitude', 'medium', 'เวกเตอร์สองเวกเตอร์มีขนาด 4 และ 5 และทำมุม $30^\\circ$ กัน แล้ว $|\\vec{u}\\times\\vec{v}|$ เท่ากับเท่าใด', 10, [5, 9, 20, 40], 'ใช้ $|\\vec u\\times\\vec v|=|\\vec u||\\vec v|\\sin\\theta$', ['$4(5)\\sin30^\\circ=20(\\frac12)=10$']),
-  numeric(25, 'parallelogram-area', 'hard', 'สี่เหลี่ยมด้านขนานที่มีด้านประชิดเป็น $(1,2,0)$ และ $(2,0,0)$ มีพื้นที่เท่าใด', 4, [2, 3, 5, 8], 'พื้นที่คือขนาดของ cross product', ['$(1,2,0)\\times(2,0,0)=(0,0,-4)$', 'พื้นที่เท่ากับ 4']),
-  numeric(26, 'triangle-area', 'hard', 'สามเหลี่ยมที่มีจุดยอด $O(0,0,0)$, $A(2,0,0)$ และ $B(0,3,0)$ มีพื้นที่เท่าใด', 3, [2, 5, 6, 12], 'พื้นที่สามเหลี่ยมเป็นครึ่งหนึ่งของขนาด cross product', ['$|\\overrightarrow{OA}\\times\\overrightarrow{OB}|=6$', 'พื้นที่เท่ากับ $\\frac12(6)=3$']),
-  q(27, 'normal-vector', 'medium', 'เวกเตอร์ใดเป็นเวกเตอร์ตั้งฉากกับทั้ง $(1,0,1)$ และ $(0,1,1)$', { a: '$(-1,-1,1)$', b: '$(1,1,1)$', c: '$(1,-1,0)$', d: '$(0,0,1)$', e: '$(1,1,0)$' }, 'a', 'หา cross product หรือทดสอบ dot product ทั้งสองครั้ง', ['$(-1,-1,1)\\cdot(1,0,1)=0$', '$(-1,-1,1)\\cdot(0,1,1)=0$']),
-  numeric(28, 'scalar-triple-product', 'hard', 'กำหนด $\\vec a=(1,0,0)$, $\\vec b=(0,2,0)$ และ $\\vec c=(0,0,3)$ แล้ว $\\vec a\\cdot(\\vec b\\times\\vec c)$ เท่ากับเท่าใด', 6, [0, 2, 3, 5], 'scalar triple product เท่ากับ determinant ของเวกเตอร์ทั้งสาม', ['$\\vec b\\times\\vec c=(6,0,0)$', '$\\vec a\\cdot(6,0,0)=6$']),
+  numeric(25, 'parallelogram-area', 'hard', 'สี่เหลี่ยมด้านขนานที่มีด้านประชิดเป็น $(1,2,0)$ และ $(2,0,0)$ มีพื้นที่เท่าใด', 4, [2, 3, 5, 8], 'พื้นที่คือขนาดของผลคูณเชิงเวกเตอร์', ['$(1,2,0)\\times(2,0,0)=(0,0,-4)$', 'พื้นที่เท่ากับ 4']),
+  numeric(26, 'triangle-area', 'hard', 'สามเหลี่ยมที่มีจุดยอด $O(0,0,0)$, $A(2,0,0)$ และ $B(0,3,0)$ มีพื้นที่เท่าใด', 3, [2, 5, 6, 12], 'พื้นที่สามเหลี่ยมเป็นครึ่งหนึ่งของขนาดผลคูณเชิงเวกเตอร์', ['$|\\overrightarrow{OA}\\times\\overrightarrow{OB}|=6$', 'พื้นที่เท่ากับ $\\frac12(6)=3$']),
+  q(27, 'normal-vector', 'medium', 'เวกเตอร์ใดเป็นเวกเตอร์ตั้งฉากกับทั้ง $(1,0,1)$ และ $(0,1,1)$', { a: '$(-1,-1,1)$', b: '$(1,1,1)$', c: '$(1,-1,0)$', d: '$(0,0,1)$', e: '$(1,1,0)$' }, 'a', 'หาผลคูณเชิงเวกเตอร์หรือทดสอบผลคูณเชิงสเกลาร์ทั้งสองครั้ง', ['$(-1,-1,1)\\cdot(1,0,1)=0$', '$(-1,-1,1)\\cdot(0,1,1)=0$']),
+  numeric(28, 'scalar-triple-product', 'hard', 'กำหนด $\\vec a=(1,0,0)$, $\\vec b=(0,2,0)$ และ $\\vec c=(0,0,3)$ แล้ว $\\vec a\\cdot(\\vec b\\times\\vec c)$ เท่ากับเท่าใด', 6, [0, 2, 3, 5], 'ผลคูณสามชั้นเชิงสเกลาร์เท่ากับดีเทอร์มิแนนต์ของเวกเตอร์ทั้งสาม', ['$\\vec b\\times\\vec c=(6,0,0)$', '$\\vec a\\cdot(6,0,0)=6$']),
   q(29, 'coplanar-vectors', 'hard', 'เวกเตอร์สามเวกเตอร์อยู่ในระนาบเดียวกันเมื่อเงื่อนไขใดเป็นจริง', { a: '$\\vec a\\cdot(\\vec b\\times\\vec c)=0$', b: '$\\vec a\\cdot\\vec b=1$', c: '$\\vec a\\times\\vec b=\\vec c$ เสมอ', d: '$|\\vec a|+|\\vec b|=|\\vec c|$', e: '$\\vec a+\\vec b+\\vec c=0$ เท่านั้น' }, 'a', 'ปริมาตรทรงสี่เหลี่ยมด้านขนานต้องเป็นศูนย์', ['ปริมาตรคือ $|\\vec a\\cdot(\\vec b\\times\\vec c)|$', 'อยู่ระนาบเดียวกันเมื่อค่านี้เป็นศูนย์']),
-  numeric(30, 'tetrahedron-volume', 'hard', 'ทรงสี่หน้าที่มีเวกเตอร์ขอบจากจุดยอดเดียวกันเป็น $(2,0,0)$, $(0,3,0)$ และ $(0,0,4)$ มีปริมาตรเท่าใด', 4, [12, 18, 24, 48], 'ปริมาตรทรงสี่หน้าเป็นหนึ่งในหกของ scalar triple product', ['$|2(3)(4)|=24$', 'ปริมาตรเท่ากับ $24/6=4$']),
+  numeric(30, 'tetrahedron-volume', 'hard', 'ทรงสี่หน้าที่มีเวกเตอร์ขอบจากจุดยอดเดียวกันเป็น $(2,0,0)$, $(0,3,0)$ และ $(0,0,4)$ มีปริมาตรเท่าใด', 4, [12, 18, 24, 48], 'ปริมาตรทรงสี่หน้าเป็นหนึ่งในหกของผลคูณสามชั้นเชิงสเกลาร์', ['$|2(3)(4)|=24$', 'ปริมาตรเท่ากับ $24/6=4$']),
 ]
 
 const geometry: Question[] = [
   q(31, 'line-vector-equation', 'medium', 'สมการเวกเตอร์ของเส้นตรงผ่าน $(1,2)$ และมีเวกเตอร์ทิศทาง $(3,-1)$ คือข้อใด', { a: '$(x,y)=(1,2)+t(3,-1)$', b: '$(x,y)=(3,-1)+t(1,2)$', c: '$(x,y)=t(1,2)$', d: '$3x-y=0$', e: '$(x,y)=(1,2)+t(-1,3)$' }, 'a', 'เส้นตรงเขียนเป็นจุดหนึ่งจุดบวกพารามิเตอร์คูณเวกเตอร์ทิศทาง', ['$(x,y)=(1,2)+t(3,-1)$']),
   q(32, 'line-membership', 'medium', 'จุดใดอยู่บนเส้นตรง $(x,y)=(2,-1)+t(1,3)$', { a: '$(4,5)$', b: '$(3,5)$', c: '$(4,6)$', d: '$(0,-4)$', e: '$(1,1)$' }, 'a', 'แทนค่า $t$ จากพิกัดใดพิกัดหนึ่งแล้วตรวจอีกพิกัด', ['เมื่อ $t=2$ ได้ $(x,y)=(4,5)$']),
   q(33, 'parallel-lines', 'medium', 'เส้นตรงที่มีเวกเตอร์ทิศทาง $(2,-3)$ ขนานกับเส้นตรงที่มีเวกเตอร์ทิศทางใด', { a: '$(-4,6)$', b: '$(3,2)$', c: '$(4,6)$', d: '$(-3,2)$', e: '$(1,1)$' }, 'a', 'เวกเตอร์ทิศทางต้องเป็นสเกลาร์เท่าของกัน', ['$(-4,6)=-2(2,-3)$']),
-  numeric(34, 'distance-point-line', 'hard', 'ระยะจากจุด $(3,4)$ ถึงเส้นตรงแกน $x$ เท่ากับเท่าใด', 4, [3, 5, 7, 12], 'ระยะถึงแกน $x$ คือค่าสัมบูรณ์ของพิกัด $y$', ['$|4|=4$']),
+  numeric(34, 'distance-point-line', 'hard', 'ระยะจากจุด $(3,4)$ ถึงแกน $x$ เท่ากับเท่าใด', 4, [3, 5, 7, 12], 'ระยะถึงแกน $x$ คือค่าสัมบูรณ์ของพิกัด $y$', ['$|4|=4$']),
   q(35, 'plane-equation', 'medium', 'ระนาบผ่านจุด $(1,2,3)$ และมีเวกเตอร์ปกติ $(2,-1,1)$ มีสมการใด', { a: '$2x-y+z=3$', b: '$2x-y+z=0$', c: '$x+2y+3z=3$', d: '$2x+y-z=1$', e: '$x-y+z=2$' }, 'a', 'ใช้ $\\vec n\\cdot((x,y,z)-P)=0$', ['$2(x-1)-(y-2)+(z-3)=0$', '$2x-y+z=3$']),
   q(36, 'point-plane', 'medium', 'จุดใดอยู่บนระนาบ $x+2y-z=4$', { a: '$(2,1,0)$', b: '$(1,1,1)$', c: '$(4,1,0)$', d: '$(0,1,0)$', e: '$(2,0,1)$' }, 'a', 'แทนพิกัดลงในสมการระนาบ', ['$2+2(1)-0=4$']),
   numeric(37, 'distance-origin-plane', 'hard', 'ระยะจากจุดกำเนิดถึงระนาบ $2x-2y+z=6$ เท่ากับเท่าใด', 2, [1, 3, 4, 6], 'ใช้สูตรระยะจากจุดถึงระนาบ', ['$d=\\frac{|0-6|}{\\sqrt{2^2+(-2)^2+1^2}}$', '$=6/3=2$']),
-  q(38, 'angle-lines', 'hard', 'เส้นตรงสองเส้นมีเวกเตอร์ทิศทาง $(1,1,0)$ และ $(1,0,1)$ มุมแหลมระหว่างเส้นเป็นเท่าใด', { a: '$60^\\circ$', b: '$30^\\circ$', c: '$45^\\circ$', d: '$90^\\circ$', e: '$120^\\circ$' }, 'a', '$\\cos\\theta$ ใช้ค่าสัมบูรณ์ของ dot product เมื่อถามมุมระหว่างเส้น', ['$\\cos\\theta=\\frac{1}{\\sqrt2\\sqrt2}=\\frac12$', '$\\theta=60^\\circ$']),
+  q(38, 'angle-lines', 'hard', 'เส้นตรงสองเส้นมีเวกเตอร์ทิศทาง $(1,1,0)$ และ $(1,0,1)$ มุมแหลมระหว่างเส้นเป็นเท่าใด', { a: '$60^\\circ$', b: '$30^\\circ$', c: '$45^\\circ$', d: '$90^\\circ$', e: '$120^\\circ$' }, 'a', '$\\cos\\theta$ ใช้ค่าสัมบูรณ์ของผลคูณเชิงสเกลาร์เมื่อถามมุมระหว่างเส้น', ['$\\cos\\theta=\\frac{1}{\\sqrt2\\sqrt2}=\\frac12$', '$\\theta=60^\\circ$']),
   numeric(39, 'centroid-vector', 'medium', 'จุดศูนย์ถ่วงของสามเหลี่ยมที่มีจุดยอด $(0,0)$, $(6,0)$ และ $(0,3)$ มีผลบวกพิกัดเท่าใด', 3, [2, 4, 6, 9], 'จุดศูนย์ถ่วงคือค่าเฉลี่ยพิกัดของจุดยอดทั้งสาม', ['$G=(2,1)$', 'ผลบวกพิกัดเท่ากับ 3']),
   q(40, 'parallelogram-vertex', 'hard', 'กำหนด $A(1,1)$, $B(4,2)$ และ $C(2,5)$ เป็นจุดยอดสามจุดเรียงกันของสี่เหลี่ยมด้านขนาน $ABCD$ แล้ว $D$ คือข้อใด', { a: '$(-1,4)$', b: '$(5,6)$', c: '$(3,4)$', d: '$(7,6)$', e: '$(-2,3)$' }, 'a', 'สำหรับจุดเรียงกัน $D=A+C-B$', ['$D=(1,1)+(2,5)-(4,2)$', '$=(-1,4)$']),
 ]

@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `exponential-logarithm-challenge-${String(id).padStart(2, '0')}`, topicId: 'exponential-logarithm', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 0)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 2 + 3) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const powers: Question[] = [
@@ -48,7 +54,7 @@ const logProperties: Question[] = [
   q(22, 'log-definition', 'medium', '$\\log_{1/3}27$ มีค่าเท่าใด', { a: '$-3$', b: '$-\\dfrac13$', c: '$3$', d: '$\\dfrac13$', e: '$9$' }, 'a', 'แก้ $(1/3)^x=27$', ['$3^{-x}=3^3$', '$-x=3$ จึง $x=-3$']),
   numeric(23, 'log-properties', 'medium', '$\\log_3 9+\\log_3 27$ มีค่าเท่าใด', 5, [3, 4, 6, 9], 'คำนวณแต่ละพจน์หรือรวมเป็น log ของผลคูณ', ['$\\log_3 9=2$ และ $\\log_3 27=3$', 'ผลบวกเท่ากับ 5']),
   numeric(24, 'log-properties', 'medium', '$\\log_2 40-\\log_2 5$ มีค่าเท่าใด', 3, [2, 4, 5, 8], 'ผลต่างของ log เท่ากับ log ของผลหาร', ['$\\log_2(40/5)=\\log_2 8$', '$=3$']),
-  q(25, 'log-properties', 'hard', '$2\\log_a x-\\log_a y$ เท่ากับข้อใด', { a: '$\\log_a\\dfrac{x^2}{y}$', b: '$\\log_a(2x-y)$', c: '$\\log_a\\dfrac{2x}{y}$', d: '$\\log_a(x^2-y)$', e: '$\\log_a(xy^2)$' }, 'a', 'สัมประสิทธิ์หน้า log ย้ายเป็นเลขชี้กำลัง', ['$2\\log_a x=\\log_a x^2$', 'ลบ log เท่ากับหารจำนวนจริงภายใน จึงได้ $\\log_a\\dfrac{x^2}{y}$']),
+  q(25, 'log-properties', 'hard', '$2\\log_a x-\\log_a y$ เท่ากับข้อใด', { a: '$\\log_a\\dfrac{x^2}{y}$', b: '$\\log_a(2x-y)$', c: '$\\log_a\\dfrac{2x}{y}$', d: '$\\log_a(x^2-y)$', e: '$\\log_a(xy^2)$' }, 'a', 'สัมประสิทธิ์หน้า log ย้ายเป็นเลขชี้กำลัง', ['$2\\log_a x=\\log_a x^2$', 'ผลต่างของ log เท่ากับ log ของผลหาร จึงได้ $\\log_a\\dfrac{x^2}{y}$']),
   q(26, 'change-of-base', 'hard', 'ถ้า $\\log_2 3=a$ แล้ว $\\log_8 9$ เท่ากับข้อใด', { a: '$\\dfrac{2a}{3}$', b: '$\\dfrac{3a}{2}$', c: '$2a$', d: '$3a$', e: '$a^2$' }, 'a', 'เปลี่ยนฐานเป็น 2', ['$\\log_8 9=\\dfrac{\\log_2 9}{\\log_2 8}$', '$=\\dfrac{2a}{3}$']),
   q(27, 'change-of-base', 'hard', 'ถ้า $\\log_a b=2$ แล้ว $\\log_b a$ เท่ากับข้อใด', { a: '$\\dfrac12$', b: '$2$', c: '$-2$', d: '$\\dfrac1a$', e: '$\\dfrac1b$' }, 'a', 'ใช้สมบัติกลับฐาน', ['$\\log_b a=\\dfrac1{\\log_a b}$', '$=\\dfrac12$']),
   numeric(28, 'log-properties', 'hard', 'ถ้า $\\log 2=0.3010$ แล้ว $\\log 50$ มีค่าประมาณเท่าใด', 1.699, [0.699, 1.301, 2.301, 2.699], 'เขียน $50=100/2$', ['$\\log50=\\log100-\\log2$', '$=2-0.3010=1.6990$']),

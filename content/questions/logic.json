@@ -127,7 +127,7 @@
     "difficulty": "medium",
     "type": "multiple-choice",
     "content": {
-      "text": "ประพจน์ \"ถ้าฝนตก แล้วถนนเปียก\" มีประพจน์บทกลับผกผัน (contrapositive) คือข้อใด",
+      "text": "ประพจน์ \"ถ้าฝนตก แล้วถนนเปียก\" มีประพจน์บทกลับทางนิเสธ คือข้อใด",
       "choices": {
         "a": "ถ้าถนนเปียก แล้วฝนตก",
         "b": "ถ้าฝนไม่ตก แล้วถนนไม่เปียก",
@@ -137,14 +137,14 @@
       }
     },
     "answer": "c",
-    "hint": "บทกลับผกผันของ $p \\rightarrow q$ คือ $\\lnot q \\rightarrow \\lnot p$",
+    "hint": "บทกลับทางนิเสธของ $p \\rightarrow q$ คือ $\\lnot q \\rightarrow \\lnot p$",
     "solution": {
       "steps": [
         "ประพจน์เดิม: ถ้า $p$ แล้ว $q$ ($p$ = ฝนตก, $q$ = ถนนเปียก)",
-        "บทกลับผกผัน (Contrapositive): ถ้า $\\lnot q$ แล้ว $\\lnot p$",
+        "บทกลับทางนิเสธ: ถ้า $\\lnot q$ แล้ว $\\lnot p$",
         "แปลว่า ถ้าถนนไม่เปียก แล้วฝนไม่ตก"
       ],
-      "keyFormula": "Contrapositive ของ $p \\rightarrow q$ คือ $\\lnot q \\rightarrow \\lnot p$"
+      "keyFormula": "บทกลับทางนิเสธของ $p \\rightarrow q$ คือ $\\lnot q \\rightarrow \\lnot p$"
     },
     "tags": ["contrapositive", "implication"],
     "source": "A-Level 2565"

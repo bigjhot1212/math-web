@@ -1,16 +1,22 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return {
     id: `real-numbers-challenge-${String(id).padStart(2, '0')}`,
     topicId: 'real-numbers', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice',
     content: { text, choices }, answer, hint, solution: { steps },
     tags: ['original', 'challenge'], source: 'MathPrep original',
   }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 2)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -23,7 +29,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   const index = (id * 2 + 1) % 5
   values.splice(index, 0, correct)
   const choices = Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices
-  return q(id, subtopic, difficulty, text, choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, choices, keys[index], hint, steps)
 }
 
 const structure: Question[] = [
@@ -47,15 +53,15 @@ const polynomials: Question[] = [
   numeric(15, 'remainder-theorem', 'hard', 'พหุนาม $P(x)$ หารด้วย $x-1$ เหลือเศษ 3 และหารด้วย $x+1$ เหลือเศษ 7 ถ้า $P(x)$ หารด้วย $x^2-1$ เหลือเศษ $ax+b$ แล้ว $a+b$ เท่ากับเท่าใด', 3, [-5, -2, 5, 7], 'แทน $x=1,-1$ ในเศษ $ax+b$', ['$a+b=P(1)=3$', 'จึงตอบได้ทันทีว่า $a+b=3$']),
   numeric(16, 'factor-theorem', 'hard', 'ถ้า $x+2$ เป็นตัวประกอบของ $2x^3-3x^2+kx+10$ แล้ว $k$ เท่ากับเท่าใด', -9, [-19, -7, 7, 9], 'ใช้ $P(-2)=0$', ['$2(-8)-3(4)-2k+10=0$', '$-18-2k=0$ จึง $k=-9$']),
   numeric(17, 'vieta', 'hard', 'ถ้า $\\alpha,\\beta$ เป็นรากของ $x^2-6x+2=0$ แล้ว $\\alpha^2+\\beta^2$ เท่ากับเท่าใด', 32, [28, 30, 34, 36], 'ใช้ผลบวกและผลคูณของราก', ['$\\alpha+\\beta=6$ และ $\\alpha\\beta=2$', '$\\alpha^2+\\beta^2=6^2-2(2)=32$']),
-  q(18, 'vieta', 'hard', 'ถ้า $\\alpha,\\beta$ เป็นรากของ $2x^2-5x+1=0$ แล้ว $\\dfrac1\\alpha+\\dfrac1\\beta$ เท่ากับเท่าใด', { a: '$\\dfrac25$', b: '$\\dfrac52$', c: '$5$', d: '$1$', e: '$-5$' }, 'c', 'รวมเศษส่วนแล้วใช้ Vieta', ['$\\dfrac1\\alpha+\\dfrac1\\beta=\\dfrac{\\alpha+\\beta}{\\alpha\\beta}$', '$=\\dfrac{5/2}{1/2}=5$']),
-  numeric(19, 'discriminant', 'medium', 'สมการ $x^2-4x+k=0$ มีรากจริงซ้ำกันเมื่อ $k$ เท่ากับเท่าใด', 4, [0, 2, 8, 16], 'รากซ้ำเกิดเมื่อ discriminant เป็นศูนย์', ['$(-4)^2-4(1)k=0$', '$16-4k=0$ จึง $k=4$']),
+  q(18, 'vieta', 'hard', 'ถ้า $\\alpha,\\beta$ เป็นรากของ $2x^2-5x+1=0$ แล้ว $\\dfrac1\\alpha+\\dfrac1\\beta$ เท่ากับเท่าใด', { a: '$\\dfrac25$', b: '$\\dfrac52$', c: '$5$', d: '$1$', e: '$-5$' }, 'c', 'รวมเศษส่วนแล้วใช้ผลบวกและผลคูณของราก', ['$\\dfrac1\\alpha+\\dfrac1\\beta=\\dfrac{\\alpha+\\beta}{\\alpha\\beta}$', '$=\\dfrac{5/2}{1/2}=5$']),
+  numeric(19, 'discriminant', 'medium', 'สมการ $x^2-4x+k=0$ มีรากจริงซ้ำกันเมื่อ $k$ เท่ากับเท่าใด', 4, [0, 2, 8, 16], 'รากซ้ำเกิดเมื่อดิสคริมิแนนต์เป็นศูนย์', ['$(-4)^2-4(1)k=0$', '$16-4k=0$ จึง $k=4$']),
   numeric(20, 'polynomial-roots', 'hard', 'สมการ $x^4-5x^2+4=0$ มีรากจริงที่แตกต่างกันกี่ราก', 4, [0, 1, 2, 3], 'แทน $u=x^2$ แล้วแก้สมการกำลังสอง', ['$(x^2-1)(x^2-4)=0$', '$x=\\pm1,\\pm2$ รวม 4 ราก']),
 ]
 
 const inequalities: Question[] = [
   q(21, 'inequality', 'medium', 'เซตคำตอบของ $(x-2)(x+3)>0$ คือข้อใด', { a: '$(-3,2)$', b: '$(-\\infty,-3)\\cup(2,\\infty)$', c: '$[-3,2]$', d: '$(-\\infty,2)$', e: '$(-3,\\infty)$' }, 'b', 'พหุนามกำลังสองสัมประสิทธิ์นำเป็นบวก', ['จุดเปลี่ยนเครื่องหมายคือ $-3,2$', 'ผลคูณเป็นบวกนอกช่วงราก']),
   q(22, 'inequality', 'medium', 'เซตคำตอบของ $x^2-5x+6\\le0$ คือข้อใด', { a: '$(-\\infty,2]$', b: '$[2,3]$', c: '$[3,\\infty)$', d: '$(-\\infty,2]\\cup[3,\\infty)$', e: '$(2,3)$' }, 'b', 'แยกเป็น $(x-2)(x-3)$', ['พาราโบลาหงายและต้องการค่าไม่เกินศูนย์', 'จึงได้ $2\\le x\\le3$']),
-  q(23, 'inequality', 'hard', 'เซตคำตอบของ $\\dfrac{x-1}{x+2}<0$ คือข้อใด', { a: '$(-\\infty,-2)$', b: '$(-2,1)$', c: '$(1,\\infty)$', d: '$(-\\infty,-2)\\cup(1,\\infty)$', e: '$[-2,1]$' }, 'b', 'ทำตารางเครื่องหมายที่ $x=-2,1$', ['เศษและส่วนมีเครื่องหมายต่างกันในช่วง $(-2,1)$', '$x=-2$ ใช้ไม่ได้และ $x=1$ ไม่ผ่านเครื่องหมายเข้ม']),
+  q(23, 'inequality', 'hard', 'เซตคำตอบของ $\\dfrac{x-1}{x+2}<0$ คือข้อใด', { a: '$(-\\infty,-2)$', b: '$(-2,1)$', c: '$(1,\\infty)$', d: '$(-\\infty,-2)\\cup(1,\\infty)$', e: '$[-2,1]$' }, 'b', 'ทำตารางเครื่องหมายที่ $x=-2,1$', ['เศษและส่วนมีเครื่องหมายต่างกันในช่วง $(-2,1)$', '$x=-2$ ทำให้ส่วนเป็นศูนย์ และ $x=1$ ทำให้ค่าเป็น 0 ซึ่งไม่น้อยกว่า 0 จึงไม่รวมปลายทั้งสอง']),
   q(24, 'inequality', 'hard', 'เซตคำตอบของ $\\dfrac{x+1}{x-3}\\ge1$ คือข้อใด', { a: '$(-\\infty,3)$', b: '$(3,\\infty)$', c: '$(-\\infty,-1]$', d: '$[-1,3)$', e: 'จำนวนจริงทุกจำนวนยกเว้น 3' }, 'b', 'ย้าย 1 มารวมเป็นเศษส่วนเดียวก่อน', ['$\\dfrac{x+1}{x-3}-1=\\dfrac4{x-3}\\ge0$', 'เศษเป็นบวก จึงต้อง $x-3>0$ หรือ $x>3$']),
   numeric(25, 'inequality', 'hard', 'จำนวนเต็มที่สอดคล้องกับ $-2<\\dfrac{3x-1}{2}\\le7$ มีทั้งหมดกี่จำนวน', 6, [5, 7, 8, 9], 'แก้อสมการประกอบแล้วนับจำนวนเต็ม', ['$-4<3x-1\\le14$ จึง $-3<3x\\le15$', '$-1<x\\le5$ ให้ $x=0,1,2,3,4,5$ รวม 6 จำนวน']),
   q(26, 'intervals', 'medium', 'ถ้า $A=[-2,4)$ และ $B=(1,6]$ แล้ว $A\\cap B$ เท่ากับข้อใด', { a: '$[-2,6]$', b: '$(1,4)$', c: '$[1,4]$', d: '$(1,6]$', e: '$[-2,1]$' }, 'b', 'ส่วนร่วมต้องอยู่ในทั้งสองช่วงพร้อมกัน', ['ขอบซ้ายต้องมากกว่า 1 และขอบขวาต้องน้อยกว่า 4', 'ปลายทั้งสองไม่รวม จึงได้ $(1,4)$']),

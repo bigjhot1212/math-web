@@ -134,7 +134,8 @@ function cloneQuestion(question: Question, setNumber: number, index: number, sho
     ...question,
     id: prefix,
     type: 'short-answer',
-    content: { text: question.content.text, image: question.content.image },
+    // Short-answer items have no choices, so "…ข้อใด" must read "…เท่าใด"
+    content: { text: question.content.text.replace(/(เท่ากับ|คือ)ข้อใด/g, '$1เท่าใด'), image: question.content.image },
     answer: normalizeNumericAnswer(correctText),
     tags: [...question.tags, 'mock-exam', 'numeric-response'],
   }

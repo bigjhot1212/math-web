@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `sequences-series-challenge-${String(id).padStart(2, '0')}`, topicId: 'sequences-series', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 2)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 3 + 1) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const foundations: Question[] = [
@@ -39,7 +45,7 @@ const arithmetic: Question[] = [
   numeric(16, 'arithmetic-sum', 'hard', 'ผลบวก 20 พจน์แรกของลำดับ $2,5,8,11,\\ldots$ เท่ากับเท่าใด', 610, [570, 590, 620, 1220], 'ใช้ $S_n=n[2a_1+(n-1)d]/2$', ['$S_{20}=10[4+19(3)]$', '$=10(61)=610$']),
   numeric(17, 'arithmetic-sum', 'medium', 'ผลบวก $1+3+5+\\cdots+39$ เท่ากับเท่าใด', 400, [200, 380, 420, 800], 'มีจำนวนคี่ตั้งแต่ 1 ถึง 39 ทั้งหมด 20 จำนวน', ['$S=20(1+39)/2=400$']),
   numeric(18, 'arithmetic-three-terms', 'hard', 'จำนวนบวกสามจำนวนเรียงเป็นลำดับเลขคณิต มีผลบวก 24 และผลคูณของพจน์แรกกับพจน์ที่สามเท่ากับ 55 ผลต่างร่วมเป็นบวกเท่ากับเท่าใด', 3, [1, 2, 4, 5], 'เขียนสามพจน์เป็น $8-d,8,8+d$', ['$(8-d)(8+d)=55$', '$64-d^2=55$ จึง $d=3$']),
-  q(19, 'arithmetic-means', 'hard', 'แทรกจำนวน 4 จำนวนระหว่าง 4 และ 20 ให้ทั้งหกจำนวนเป็นลำดับเลขคณิต ผลต่างร่วมเท่ากับข้อใด', { a: '$\\frac{16}{5}$', b: '$4$', c: '$\\frac83$', d: '$3$', e: '$\\frac{20}{6}$' }, 'a', 'จากพจน์แรกถึงพจน์ที่หกมี 5 ช่วง', ['$d=(20-4)/5=16/5$']),
+  q(19, 'arithmetic-means', 'hard', 'แทรกจำนวน 4 จำนวนระหว่าง 4 และ 20 ให้ทั้งหกจำนวนเป็นลำดับเลขคณิต ผลต่างร่วมเท่ากับข้อใด', { a: '$\\frac{16}{5}$', b: '$4$', c: '$\\frac83$', d: '$3$', e: '$\\frac{20}{3}$' }, 'a', 'จากพจน์แรกถึงพจน์ที่หกมี 5 ช่วง', ['$d=(20-4)/5=16/5$']),
   numeric(20, 'partial-arithmetic-sum', 'hard', 'กำหนด $a_n=2n+1$ แล้ว $a_{10}+a_{11}+\\cdots+a_{20}$ เท่ากับเท่าใด', 341, [310, 320, 330, 351], 'มี 11 พจน์และใช้ค่าเฉลี่ยของพจน์แรกกับพจน์สุดท้าย', ['$a_{10}=21$, $a_{20}=41$', '$S=11(21+41)/2=341$']),
 ]
 
@@ -57,7 +63,7 @@ const geometric: Question[] = [
 ]
 
 const series: Question[] = [
-  numeric(31, 'sigma-arithmetic', 'medium', '$\\sum_{k=1}^{20}(2k-1)$ เท่ากับเท่าใด', 400, [200, 380, 420, 800], 'นี่คือผลบวกจำนวนคี่ 20 จำนวนแรก', ['$20^2=400$']),
+  numeric(31, 'sigma-arithmetic', 'medium', '$\\sum_{k=1}^{15}(2k+1)$ เท่ากับเท่าใด', 255, [225, 240, 256, 270], 'แยกเป็น $2\\sum k+\\sum 1$', ['$2\\cdot\\dfrac{15(16)}{2}+15$', '$=240+15=255$']),
   numeric(32, 'sum-squares', 'medium', '$\\sum_{k=1}^{10}k^2$ เท่ากับเท่าใด', 385, [55, 285, 365, 405], 'ใช้สูตร $n(n+1)(2n+1)/6$', ['$10(11)(21)/6=385$']),
   numeric(33, 'sigma-polynomial', 'hard', '$\\sum_{k=1}^{5}k(k+1)$ เท่ากับเท่าใด', 70, [40, 55, 65, 85], 'แยกเป็นผลบวกกำลังสองและผลบวกจำนวนเต็ม', ['$\\sum(k^2+k)=55+15=70$']),
   q(34, 'finite-alternating', 'hard', '$1-\\frac12+\\frac14-\\frac18$ เท่ากับข้อใด', { a: '$\\frac58$', b: '$\\frac38$', c: '$\\frac12$', d: '$\\frac78$', e: '$\\frac98$' }, 'a', 'ทำส่วนให้เท่ากันหรือใช้ผลบวกเรขาคณิต 4 พจน์', ['$8/8-4/8+2/8-1/8=5/8$']),

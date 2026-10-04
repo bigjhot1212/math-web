@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `calculus-challenge-${String(id).padStart(2, '0')}`, topicId: 'calculus', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 2)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 2 + 1) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const limits: Question[] = [
@@ -45,10 +51,10 @@ const derivatives: Question[] = [
 
 const derivativeApplications: Question[] = [
   q(21, 'tangent-line', 'medium', 'สมการเส้นสัมผัสกราฟ $y=x^2$ ที่ $x=1$ คือข้อใด', { a: '$y=2x-1$', b: '$y=x+1$', c: '$y=2x+1$', d: '$y=x-1$', e: '$y=1$' }, 'a', 'หาจุดบนกราฟและความชันจากอนุพันธ์', ['จุดคือ $(1,1)$ และความชัน $2x=2$', '$y-1=2(x-1)$ จึง $y=2x-1$']),
-  q(22, 'normal-line', 'hard', 'เส้นปกติของกราฟ $y=x^2$ ที่ $x=1$ มีความชันเท่าใด', { a: '$-\\frac12$', b: '$2$', c: '$\\frac12$', d: '$-2$', e: '$0$' }, 'a', 'ความชันเส้นปกติเป็นลบส่วนกลับของความชันเส้นสัมผัส', ['ความชันสัมผัสเท่ากับ 2', 'ความชันปกติเท่ากับ $-1/2$']),
+  q(22, 'normal-line', 'hard', 'เส้นตรงที่ตั้งฉากกับเส้นสัมผัสกราฟ $y=x^2$ ที่ $x=1$ มีความชันเท่าใด', { a: '$-\\frac12$', b: '$2$', c: '$\\frac12$', d: '$-2$', e: '$0$' }, 'a', 'ความชันของเส้นตั้งฉากเป็นลบส่วนกลับของความชันเส้นสัมผัส', ['ความชันสัมผัสเท่ากับ 2', 'ความชันของเส้นตั้งฉากเท่ากับ $-1/2$']),
   numeric(23, 'critical-point', 'medium', 'ฟังก์ชัน $f(x)=x^2-4x+1$ มีจุดวิกฤตที่ $x$ เท่ากับเท่าใด', 2, [0, 1, 3, 4], 'ตั้งอนุพันธ์เท่ากับศูนย์', ['$f\'(x)=2x-4=0$', '$x=2$']),
   numeric(24, 'minimum-value', 'medium', 'ค่าต่ำสุดของ $f(x)=x^2-4x+1$ เท่ากับเท่าใด', -3, [-4, -2, 2, 3], 'เขียนเป็นกำลังสองสมบูรณ์หรือแทนจุดวิกฤต', ['$f(x)=(x-2)^2-3$', 'ค่าต่ำสุดคือ $-3$']),
-  q(25, 'increasing-interval', 'hard', 'ฟังก์ชัน $f(x)=x^3-3x$ เพิ่มบนช่วงใด', { a: '$(-\\infty,-1)\\cup(1,\\infty)$', b: '$(-1,1)$', c: '$(-\\infty,1)$', d: '$(0,\\infty)$', e: 'ทุกจำนวนจริง' }, 'a', '$f\'(x)=3(x^2-1)$ และเพิ่มเมื่ออนุพันธ์เป็นบวก', ['$3(x-1)(x+1)>0$ เมื่อ $x<-1$ หรือ $x>1$']),
+  q(25, 'increasing-interval', 'hard', 'ฟังก์ชัน $f(x)=x^3-3x$ เป็นฟังก์ชันเพิ่มบนช่วงใด', { a: '$(-\\infty,-1)$ และ $(1,\\infty)$', b: '$(-1,1)$', c: '$(-\\infty,1)$', d: '$(0,\\infty)$', e: 'ทุกจำนวนจริง' }, 'a', '$f\'(x)=3(x^2-1)$ และเพิ่มเมื่ออนุพันธ์เป็นบวก', ['$3(x-1)(x+1)>0$ เมื่อ $x<-1$ หรือ $x>1$']),
   numeric(26, 'maximum-value', 'medium', 'ค่าสูงสุดของ $f(x)=-x^2+6x-5$ เท่ากับเท่าใด', 4, [3, 5, 6, 9], 'พาราโบลาคว่ำมีค่าสูงสุดที่จุดยอด', ['$x=-b/(2a)=3$', '$f(3)=-9+18-5=4$']),
   numeric(27, 'optimization', 'hard', 'สี่เหลี่ยมผืนผ้ามีเส้นรอบรูป 20 หน่วย จะมีพื้นที่มากที่สุดกี่ตารางหน่วย', 25, [20, 24, 40, 100], 'เมื่อผลบวกด้านคงที่ ผลคูณมากสุดเมื่อด้านเท่ากัน', ['$2(x+y)=20$ จึง $x+y=10$', 'พื้นที่มากสุดเมื่อ $x=y=5$ เท่ากับ 25']),
   numeric(28, 'velocity', 'medium', 'ตำแหน่งของวัตถุคือ $s(t)=t^3-6t^2+9t$ ความเร็วเมื่อ $t=2$ เท่ากับเท่าใด', -3, [-6, 0, 3, 6], 'ความเร็วคืออนุพันธ์ของตำแหน่ง', ['$v(t)=3t^2-12t+9$', '$v(2)=12-24+9=-3$']),
@@ -73,9 +79,9 @@ const mixed: Question[] = [
   q(41, 'fundamental-theorem', 'medium', '$\\dfrac{d}{dx}\\int_0^x(t^2+1)\\,dt$ เท่ากับข้อใด', { a: '$x^2+1$', b: '$2x$', c: '$x^3/3+x$', d: '$t^2+1$', e: '$1$' }, 'a', 'ใช้ทฤษฎีบทมูลฐานของแคลคูลัส', ['อนุพันธ์ของปริพันธ์ที่ขอบบนเป็น $x$ เท่ากับค่าฟังก์ชันที่ $x$']),
   numeric(42, 'derivative-sign', 'medium', 'ถ้า $f\'(x)=2x-4$ แล้ว $f$ เปลี่ยนจากลดเป็นเพิ่มที่ $x$ เท่ากับเท่าใด', 2, [0, 1, 3, 4], 'หาจุดที่อนุพันธ์เปลี่ยนจากลบเป็นบวก', ['$2x-4=0$ ให้ $x=2$']),
   numeric(43, 'absolute-area', 'hard', '$\\int_{-1}^{1}|x|\\,dx$ เท่ากับเท่าใด', 1, [0, 2, 3, 4], 'ใช้ความสมมาตรหรือแยกช่วงที่ศูนย์', ['$2\\int_0^1x dx=2(1/2)=1$']),
-  numeric(44, 'total-distance', 'hard', 'วัตถุมีความเร็ว $v(t)=3t^2-6t$ เมื่อ $0\\le t\\le3$ ระยะทางรวมเท่ากับเท่าใด', 8, [0, 4, 6, 9], 'ความเร็วเปลี่ยนเครื่องหมายที่ $t=2$ จึงต้องคิดค่าสัมบูรณ์', ['ปริพันธ์ตำแหน่งเปลี่ยนคือ $F(t)=t^3-3t^2$', 'จาก 0 ถึง 2 เดินทาง 4 หน่วย และจาก 2 ถึง 3 อีก 4 หน่วย', 'รวม 8 หน่วย']),
+  numeric(44, 'total-distance', 'hard', 'วัตถุมีความเร็ว $v(t)=3t^2-6t$ เมื่อ $0\\le t\\le3$ ระยะทางรวมเท่ากับเท่าใด', 8, [0, 4, 6, 9], 'ความเร็วเปลี่ยนเครื่องหมายที่ $t=2$ จึงต้องคิดค่าสัมบูรณ์', ['ให้ $s(t)=t^3-3t^2$ เป็นปฏิยานุพันธ์ของ $v(t)$ ได้ $s(0)=0$, $s(2)=-4$, $s(3)=0$', 'จาก 0 ถึง 2 เดินทาง 4 หน่วย และจาก 2 ถึง 3 อีก 4 หน่วย', 'รวม 8 หน่วย']),
   numeric(45, 'optimization', 'medium', 'จำนวนบวกสองจำนวนมีผลบวก 10 ผลคูณมากที่สุดเท่ากับเท่าใด', 25, [20, 24, 30, 50], 'ให้จำนวนหนึ่งเป็น $x$ อีกจำนวนเป็น $10-x$', ['$P=x(10-x)=-x^2+10x$', 'จุดยอดที่ $x=5$ ให้ผลคูณ 25']),
-  q(46, 'increasing-interval', 'hard', 'ถ้า $f\'(x)=(x-1)(x+2)$ แล้ว $f$ เพิ่มบนช่วงใด', { a: '$(-\\infty,-2)\\cup(1,\\infty)$', b: '$(-2,1)$', c: '$(-\\infty,1)$', d: '$(-2,\\infty)$', e: 'ทุกจำนวนจริง' }, 'a', 'ทำตารางเครื่องหมายของอนุพันธ์', ['ผลคูณเป็นบวกนอกช่วงระหว่างราก', 'จึงเพิ่มเมื่อ $x<-2$ หรือ $x>1$']),
+  q(46, 'increasing-interval', 'hard', 'ถ้า $f\'(x)=(x-1)(x+2)$ แล้ว $f$ เป็นฟังก์ชันเพิ่มบนช่วงใด', { a: '$(-\\infty,-2)$ และ $(1,\\infty)$', b: '$(-2,1)$', c: '$(-\\infty,1)$', d: '$(-2,\\infty)$', e: 'ทุกจำนวนจริง' }, 'a', 'ทำตารางเครื่องหมายของอนุพันธ์', ['ผลคูณเป็นบวกนอกช่วงระหว่างราก', 'จึงเพิ่มเมื่อ $x<-2$ หรือ $x>1$']),
   numeric(47, 'inflection-point', 'hard', 'ถ้า $f(x)=x^3-3x^2$ จุดเปลี่ยนเว้าเกิดที่ $x$ เท่ากับเท่าใด', 1, [0, 2, 3, 6], 'หาอนุพันธ์อันดับสองและตรวจการเปลี่ยนเครื่องหมาย', ['$f\'\'(x)=6x-6$', '$f\'\'(x)=0$ เมื่อ $x=1$ และมีการเปลี่ยนเครื่องหมาย']),
   numeric(48, 'horizontal-tangent', 'hard', 'กราฟ $y=x^3-3x$ มีจุดที่เส้นสัมผัสขนานแกน $x$ ทั้งหมดกี่จุด', 2, [0, 1, 3, 4], 'เส้นสัมผัสแนวนอนเมื่ออนุพันธ์เป็นศูนย์', ['$3x^2-3=0$', '$x=\\pm1$ จึงมี 2 จุด']),
   numeric(49, 'integral-parameter', 'hard', 'ถ้า $\\int_0^1(ax+1)\\,dx=3$ แล้ว $a$ เท่ากับเท่าใด', 4, [1, 2, 3, 5], 'อินทิเกรตแล้วตั้งสมการ', ['$a/2+1=3$', '$a=4$']),

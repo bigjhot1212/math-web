@@ -94,11 +94,11 @@ const subsetQuestions = subsetSpecs.map(([id, a, b, mode]) => {
   if (mode === 'inclusive') {
     correct = 2 ** gap; condition = '$A\\subseteq X\\subseteq B$'; explanation = `เลือกสมาชิกจาก $B-A$ ได้อิสระ ${gap} ตัว`
   } else if (mode === 'strictBoth') {
-    correct = 2 ** gap - 2; condition = '$A\\subset X\\subset B$'; explanation = 'ตัดกรณี $X=A$ และ $X=B$ ออก'
+    correct = 2 ** gap - 2; condition = '$A\\subsetneq X\\subsetneq B$'; explanation = 'ตัดกรณี $X=A$ และ $X=B$ ออก'
   } else if (mode === 'excludeLower') {
-    correct = 2 ** gap - 1; condition = '$A\\subset X\\subseteq B$'; explanation = 'ตัดกรณี $X=A$ ออกหนึ่งกรณี'
+    correct = 2 ** gap - 1; condition = '$A\\subsetneq X\\subseteq B$'; explanation = 'ตัดกรณี $X=A$ ออกหนึ่งกรณี'
   } else if (mode === 'excludeUpper') {
-    correct = 2 ** gap - 1; condition = '$A\\subseteq X\\subset B$'; explanation = 'ตัดกรณี $X=B$ ออกหนึ่งกรณี'
+    correct = 2 ** gap - 1; condition = '$A\\subseteq X\\subsetneq B$'; explanation = 'ตัดกรณี $X=B$ ออกหนึ่งกรณี'
   } else if (mode === 'disjoint') {
     correct = 2 ** gap; condition = '$X\\subseteq B$ และ $X\\cap A=\\emptyset$'; explanation = `เลือกได้เฉพาะสมาชิก ${gap} ตัวใน $B-A$`
   } else {
@@ -124,13 +124,13 @@ function combination(n: number, r: number) {
 }
 
 const powerQuestions = powerSpecs.map(([id, mode, p, q]) => {
-  if (mode === 'powerGiven') return numericQuestion({ id, subtopic: 'power-set', difficulty: 'medium', text: `ถ้า $n(\\mathcal P(A))=${p}$ แล้ว $n(A)$ เท่ากับเท่าใด`, correct: q, hint: 'ใช้ $n(\\mathcal P(A))=2^{n(A)}$', steps: [`${p}=2^{${q}}`, `ดังนั้น $n(A)=${q}$`] })
-  if (mode === 'properGiven') return numericQuestion({ id, subtopic: 'proper-subsets', difficulty: 'medium', text: `ถ้าเซต $A$ มีสับเซตแท้ ${p} เซต แล้ว $n(A)$ เท่ากับเท่าใด`, correct: q, hint: 'จำนวนสับเซตแท้คือ $2^n-1$', steps: [`${p}=2^n-1$`, `$2^n=${p + 1}=2^{${q}}$`, `ดังนั้น $n(A)=${q}$`] })
+  if (mode === 'powerGiven') return numericQuestion({ id, subtopic: 'power-set', difficulty: 'medium', text: `ถ้า $n(\\mathcal P(A))=${p}$ แล้ว $n(A)$ เท่ากับเท่าใด`, correct: q, hint: 'ใช้ $n(\\mathcal P(A))=2^{n(A)}$', steps: [`$${p}=2^{${q}}$`, `ดังนั้น $n(A)=${q}$`] })
+  if (mode === 'properGiven') return numericQuestion({ id, subtopic: 'proper-subsets', difficulty: 'medium', text: `ถ้าเซต $A$ มีสับเซตแท้ ${p} เซต แล้ว $n(A)$ เท่ากับเท่าใด`, correct: q, hint: 'จำนวนสับเซตแท้คือ $2^n-1$', steps: [`$${p}=2^n-1$`, `$2^n=${p + 1}=2^{${q}}$`, `ดังนั้น $n(A)=${q}$`] })
   if (mode === 'choose') {
     const correct = combination(p, q)
     return numericQuestion({ id, subtopic: 'fixed-size-subsets', difficulty: 'hard', text: `เซต $A$ มีสมาชิก ${p} ตัว จำนวนสับเซตของ $A$ ที่มีสมาชิก ${q} ตัวพอดีเท่ากับเท่าใด`, correct, hint: 'เป็นการเลือกสมาชิกโดยไม่สนใจลำดับ', steps: [`จำนวนที่ต้องการคือ $\\binom{${p}}{${q}}$`, `$\\binom{${p}}{${q}}=${correct}$`] })
   }
-  if (mode === 'doublePower') return numericQuestion({ id, subtopic: 'nested-power-set', difficulty: 'hard', text: `ถ้า $n(\\mathcal P(\\mathcal P(A)))=${p}$ แล้ว $n(A)$ เท่ากับเท่าใด`, correct: q, hint: 'ใช้สูตรเพาเวอร์เซตสองครั้ง', steps: [`$n(\\mathcal P(\\mathcal P(A)))=2^{2^{n(A)}}$`, `${p}=2^{2^{${q}}}$`, `ดังนั้น $n(A)=${q}$`] })
+  if (mode === 'doublePower') return numericQuestion({ id, subtopic: 'nested-power-set', difficulty: 'hard', text: `ถ้า $n(\\mathcal P(\\mathcal P(A)))=${p}$ แล้ว $n(A)$ เท่ากับเท่าใด`, correct: q, hint: 'ใช้สูตรเพาเวอร์เซตสองครั้ง', steps: [`$n(\\mathcal P(\\mathcal P(A)))=2^{2^{n(A)}}$`, `$${p}=2^{2^{${q}}}$`, `ดังนั้น $n(A)=${q}$`] })
   if (mode === 'powerIntersection') return numericQuestion({ id, subtopic: 'power-set-operations', difficulty: 'hard', text: `ถ้า $n(A\\cap B)=${p}$ แล้ว $n(\\mathcal P(A)\\cap\\mathcal P(B))$ เท่ากับเท่าใด`, correct: q, hint: 'ใช้เอกลักษณ์ $\\mathcal P(A)\\cap\\mathcal P(B)=\\mathcal P(A\\cap B)$', steps: ['$\\mathcal P(A)\\cap\\mathcal P(B)=\\mathcal P(A\\cap B)$', `$n=2^{${p}}=${q}$`] })
   const correct = 2 ** p + 2 ** q - 2 ** 2
   return numericQuestion({ id, subtopic: 'power-set-operations', difficulty: 'hard', text: `กำหนด $n(A)=${p}$, $n(B)=${q}$ และ $n(A\\cap B)=2$ แล้ว $n(\\mathcal P(A)\\cup\\mathcal P(B))$ เท่ากับเท่าใด`, correct, hint: 'ใช้หลักบวกลบรวมกับเพาเวอร์เซต', steps: [`$n(\\mathcal P(A))=2^{${p}}$ และ $n(\\mathcal P(B))=2^{${q}}$`, '$\\mathcal P(A)\\cap\\mathcal P(B)=\\mathcal P(A\\cap B)$ มี 4 สมาชิก', `ผลลัพธ์คือ $2^{${p}}+2^{${q}}-4=${correct}$`] })
@@ -141,7 +141,7 @@ const algebraQuestions: Question[] = [
   manualQuestion(32, 'set-algebra', 'hard', '$(A\\cup B)-(A\\cap B)$ ตรงกับข้อใด', { a: '$(A-B)\\cup(B-A)$', b: '$A\\cap B$', c: '$A-B$', d: '$B-A$', e: '$A\\cup B$' }, 'a', 'ส่วนนี้คือสมาชิกที่อยู่เพียงเซตเดียว', ['ตัดส่วนร่วมออกจากยูเนียน', 'เหลือส่วนที่อยู่ใน $A$ อย่างเดียวหรือ $B$ อย่างเดียว คือ $(A-B)\\cup(B-A)$']),
   manualQuestion(33, 'set-algebra', 'hard', '$(A\\cap B\')\\cup(A\'\\cap B)$ เป็นเซตใด', { a: 'ส่วนที่อยู่ในทั้งสองเซต', b: 'ส่วนที่ไม่อยู่ในทั้งสองเซต', c: 'ส่วนที่อยู่ในเซตใดเซตหนึ่งเพียงเซตเดียว', d: '$A\'\\cap B\'$', e: '$A\\cap B$' }, 'c', 'แปลแต่ละอินเตอร์เซกชันเป็นเงื่อนไขคำพูด', ['$A\\cap B\'$ คืออยู่ใน $A$ แต่ไม่อยู่ใน $B$', '$A\'\\cap B$ คืออยู่ใน $B$ แต่ไม่อยู่ใน $A$', 'ยูเนียนจึงเป็นส่วนที่อยู่เพียงเซตเดียว']),
   manualQuestion(34, 'set-algebra', 'hard', '$[A-(B\\cup C)]\'$ เท่ากับข้อใด', { a: '$A\'\\cap B\\cap C$', b: '$A\'\\cup B\\cup C$', c: '$A\\cap B\'\\cap C\'$', d: '$A\\cup(B\\cap C)$', e: '$A\'-(B\\cup C)$' }, 'b', 'เขียนผลต่างเป็นอินเตอร์เซกชันกับคอมพลีเมนต์แล้วใช้ดีมอร์แกน', ['$A-(B\\cup C)=A\\cap(B\\cup C)\'$', 'นำคอมพลีเมนต์ทั้งก้อนได้ $A\'\\cup(B\\cup C)$', 'จึงเป็น $A\'\\cup B\\cup C$']),
-  manualQuestion(35, 'set-algebra', 'hard', 'ถ้า $A\\cap B=A\\cup B$ แล้วข้อใดต้องเป็นจริง', { a: '$A\\cap B=\\emptyset$', b: '$A=B$', c: '$A\\subset B$', d: '$B\\subset A$', e: '$A\\cup B=U$' }, 'b', 'อินเตอร์เซกชันไม่ใหญ่กว่าสองเซต ส่วนยูเนียนไม่เล็กกว่าสองเซต', ['$A\\cap B\\subseteq A\\subseteq A\\cup B$', 'ถ้าปลายทั้งสองเท่ากัน จะได้ $A=B$']),
+  manualQuestion(35, 'set-algebra', 'hard', 'ถ้า $A\\cap B=A\\cup B$ แล้วข้อใดต้องเป็นจริง', { a: '$A\\cap B=\\emptyset$', b: '$A=B$', c: '$A\\subsetneq B$', d: '$B\\subsetneq A$', e: '$A\\cup B=U$' }, 'b', 'อินเตอร์เซกชันไม่ใหญ่กว่าสองเซต ส่วนยูเนียนไม่เล็กกว่าสองเซต', ['$A\\cap B\\subseteq A\\subseteq A\\cup B$', 'ถ้าปลายทั้งสองเท่ากัน จะได้ $A=B$']),
   manualQuestion(36, 'set-algebra', 'hard', 'ถ้า $A-B=\\emptyset$ แล้วข้อใดสรุปได้แน่นอน', { a: '$A=B$', b: '$B\\subseteq A$', c: '$A\\subseteq B$', d: '$A\\cap B=\\emptyset$', e: '$A\\cup B=U$' }, 'c', 'ไม่มีสมาชิกของ $A$ ที่อยู่นอก $B$', ['$A-B=\\emptyset$ หมายถึงสมาชิกทุกตัวของ $A$ อยู่ใน $B$', 'ดังนั้น $A\\subseteq B$']),
   manualQuestion(37, 'set-algebra', 'hard', '$A\\cap(A\'\\cup B)$ เท่ากับข้อใด', { a: '$A$', b: '$B$', c: '$A\\cap B$', d: '$A\\cup B$', e: '$\\emptyset$' }, 'c', 'แจกแจงอินเตอร์เซกชันเข้าไปในวงเล็บ', ['$A\\cap(A\'\\cup B)=(A\\cap A\')\\cup(A\\cap B)$', '$=\\emptyset\\cup(A\\cap B)=A\\cap B$']),
   manualQuestion(38, 'set-algebra', 'hard', '$(A\\cup B)\\cap(A\\cup B\')$ เท่ากับข้อใด', { a: '$A$', b: '$B$', c: '$A\\cap B$', d: '$A\\cup B$', e: '$U$' }, 'a', 'ใช้กฎ $(X\\cup Y)\\cap(X\\cup Z)=X\\cup(Y\\cap Z)$', ['$=A\\cup(B\\cap B\')$', '$=A\\cup\\emptyset=A$']),
@@ -157,7 +157,7 @@ const twoSetSpecs = [
 const twoSetQuestions = twoSetSpecs.map(([id, total, a, b, both, ask]) => {
   const union = a + b - both
   const values = { neither: total - union, onlyA: a - both, onlyB: b - both, exactlyOne: a + b - 2 * both, union }
-  const labels = { neither: 'ไม่อยู่ในทั้งสองเซต', onlyA: 'อยู่ใน $A$ เท่านั้น', onlyB: 'อยู่ใน $B$ เท่านั้น', exactlyOne: 'อยู่ในเพียงหนึ่งเซต', union: 'อยู่ในอย่างน้อยหนึ่งเซต' }
+  const labels = { neither: 'ไม่อยู่ในเซตใดเลย', onlyA: 'อยู่ใน $A$ เท่านั้น', onlyB: 'อยู่ใน $B$ เท่านั้น', exactlyOne: 'อยู่ในเพียงหนึ่งเซต', union: 'อยู่ในอย่างน้อยหนึ่งเซต' }
   const correct = values[ask]
   return numericQuestion({ id, subtopic: 'two-set-venn', difficulty: id < 44 ? 'medium' : 'hard', text: `ในเอกภพที่มีสมาชิก ${total} ตัว กำหนด $n(A)=${a}$, $n(B)=${b}$ และ $n(A\\cap B)=${both}$ จำนวนสมาชิกที่${labels[ask]}เท่ากับเท่าใด`, correct, hint: 'แยกส่วนร่วม ส่วนที่อยู่เซตเดียว และส่วนนอกยูเนียนให้ครบ', steps: [`$n(A\\cup B)=${a}+${b}-${both}=${union}$`, `จำนวนที่${labels[ask]}เท่ากับ ${correct}`] })
 })
@@ -177,7 +177,7 @@ const threeSetQuestions = threeSetSpecs.map(spec => {
   const exactlyTwo = ab + ac + bc - 3 * abc
   const atLeastTwo = ab + ac + bc - 2 * abc
   const values = { union, none: total - union, exactlyOne, exactlyTwo, atLeastTwo }
-  const labels = { union: 'อยู่ในอย่างน้อยหนึ่งเซต', none: 'ไม่อยู่ในทั้งสามเซต', exactlyOne: 'อยู่ในเพียงหนึ่งเซต', exactlyTwo: 'อยู่ในสองเซตพอดี', atLeastTwo: 'อยู่ในอย่างน้อยสองเซต' }
+  const labels = { union: 'อยู่ในอย่างน้อยหนึ่งเซต', none: 'ไม่อยู่ในเซตใดเลย', exactlyOne: 'อยู่ในเพียงหนึ่งเซต', exactlyTwo: 'อยู่ในสองเซตพอดี', atLeastTwo: 'อยู่ในอย่างน้อยสองเซต' }
   const correct = values[ask]
   return numericQuestion({ id, subtopic: 'three-set-venn', difficulty: 'hard', text: `${total ? `เอกภพมีสมาชิก ${total} ตัว ` : ''}กำหนด $n(A)=${a}$, $n(B)=${b}$, $n(C)=${c}$, $n(A\\cap B)=${ab}$, $n(A\\cap C)=${ac}$, $n(B\\cap C)=${bc}$ และ $n(A\\cap B\\cap C)=${abc}$ จำนวนสมาชิกที่${labels[ask]}เท่ากับเท่าใด`, correct, hint: 'ระวังว่าส่วนร่วมทีละคู่รวมสมาชิกในส่วนร่วมสามเซตไว้แล้ว', steps: [`คำนวณ $n(A\\cup B\\cup C)=${a}+${b}+${c}-${ab}-${ac}-${bc}+${abc}=${union}$`, `จัดส่วนตามเงื่อนไข “${labels[ask]}” ได้ ${correct}`] })
 })

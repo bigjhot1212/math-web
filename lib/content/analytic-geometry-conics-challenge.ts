@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `analytic-geometry-conics-challenge-${String(id).padStart(2, '0')}`, topicId: 'analytic-geometry-conics', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 1)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 3 + 1) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const coordinateGeometry: Question[] = [
@@ -48,7 +54,7 @@ const parabolas: Question[] = [
   q(22, 'parabola', 'medium', 'โฟกัสของพาราโบลา $x^2=-12y$ คือข้อใด', { a: '$(0,-3)$', b: '$(-3,0)$', c: '$(0,3)$', d: '$(3,0)$', e: '$(0,-6)$' }, 'a', 'เทียบกับ $x^2=4ay$', ['$4a=-12$ จึง $a=-3$', 'โฟกัสคือ $(0,a)=(0,-3)$']),
   q(23, 'parabola-directrix', 'medium', 'ไดเรกตริกซ์ของพาราโบลา $y^2=-16x$ คือข้อใด', { a: '$x=4$', b: '$x=-4$', c: '$y=4$', d: '$y=-4$', e: '$x=8$' }, 'a', '$4a=-16$ และไดเรกตริกซ์คือ $x=-a$', ['$a=-4$', 'ไดเรกตริกซ์คือ $x=4$']),
   q(24, 'parabola-equation', 'medium', 'พาราโบลามีจุดยอด $(0,0)$ โฟกัส $(0,3)$ มีสมการใด', { a: '$x^2=12y$', b: '$y^2=12x$', c: '$x^2=-12y$', d: '$y^2=-12x$', e: '$x^2=6y$' }, 'a', 'โฟกัสอยู่เหนือจุดยอดจึงเปิดขึ้น', ['$a=3$', '$x^2=4ay=12y$']),
-  numeric(25, 'latus-rectum', 'hard', 'ความยาวเลตัสเรกตัมของพาราโบลา $y^2=20x$ เท่ากับเท่าใด', 20, [5, 10, 40, 80], 'ความยาวเลตัสเรกตัมเท่ากับ $|4a|$', ['$4a=20$', 'ความยาวจึงเท่ากับ 20']),
+  numeric(25, 'latus-rectum', 'hard', 'ความยาวลาตัสเรกตัมของพาราโบลา $y^2=20x$ เท่ากับเท่าใด', 20, [5, 10, 40, 80], 'ความยาวลาตัสเรกตัมเท่ากับ $|4a|$', ['$4a=20$', 'ความยาวจึงเท่ากับ 20']),
   q(26, 'translated-parabola', 'hard', 'พาราโบลา $(x-2)^2=-8(y+1)$ มีจุดยอดและโฟกัสตามข้อใด', { a: 'จุดยอด $(2,-1)$ โฟกัส $(2,-3)$', b: 'จุดยอด $(-2,1)$ โฟกัส $(-2,-1)$', c: 'จุดยอด $(2,1)$ โฟกัส $(2,-1)$', d: 'จุดยอด $(2,-1)$ โฟกัส $(4,-1)$', e: 'จุดยอด $(-2,-1)$ โฟกัส $(-2,-3)$' }, 'a', 'เทียบกับ $(x-h)^2=4a(y-k)$', ['$h=2,k=-1$ และ $4a=-8$ จึง $a=-2$', 'โฟกัส $(h,k+a)=(2,-3)$']),
   q(27, 'parabola-tangent', 'hard', 'เส้นสัมผัสพาราโบลา $y^2=8x$ ที่จุด $(2,4)$ คือข้อใด', { a: '$y=x+2$', b: '$y=2x$', c: '$y=-x+6$', d: '$x=2$', e: '$y=x-2$' }, 'a', 'ใช้ $yy_1=2a(x+x_1)$ เมื่อ $y^2=4ax$', ['$a=2$', '$4y=4(x+2)$', 'จึง $y=x+2$']),
   numeric(28, 'parabola-intersection', 'medium', 'กราฟ $y=x^2$ และ $y=2x+3$ ตัดกันกี่จุด', 2, [0, 1, 3, 4], 'ตั้งสมการทั้งสองให้เท่ากัน', ['$x^2=2x+3$ จึง $(x-3)(x+1)=0$', 'มีรากต่างกัน 2 ค่า จึงตัดกัน 2 จุด']),
@@ -59,7 +65,7 @@ const parabolas: Question[] = [
 const ellipses: Question[] = [
   q(31, 'ellipse', 'medium', 'จุดยอดบนแกนเอกของวงรี $\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1$ คือข้อใด', { a: '$(\\pm5,0)$', b: '$(0,\\pm5)$', c: '$(\\pm3,0)$', d: '$(0,\\pm3)$', e: '$(\\pm4,0)$' }, 'a', 'ตัวส่วนใหญ่กว่าอยู่ใต้ตัวแปรของแกนเอก', ['$a^2=25$ จึง $a=5$', 'แกนเอกเป็นแนวนอน จุดยอดคือ $(\\pm5,0)$']),
   q(32, 'ellipse-foci', 'medium', 'โฟกัสของวงรี $\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1$ คือข้อใด', { a: '$(\\pm4,0)$', b: '$(0,\\pm4)$', c: '$(\\pm5,0)$', d: '$(\\pm3,0)$', e: '$(0,\\pm5)$' }, 'a', 'วงรีมี $c^2=a^2-b^2$', ['$c^2=25-9=16$ จึง $c=4$', 'โฟกัสอยู่บนแกนเอกที่ $(\\pm4,0)$']),
-  q(33, 'ellipse-eccentricity', 'hard', 'ความเยื้องศูนย์ของวงรี $\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1$ เท่ากับเท่าใด', { a: '$\\dfrac45$', b: '$\\dfrac35$', c: '$\\dfrac54$', d: '$\\dfrac34$', e: '$\\dfrac25$' }, 'a', '$e=c/a$', ['$c=4$ และ $a=5$', '$e=\\dfrac45$']),
+  q(33, 'ellipse-eccentricity', 'hard', 'ความเยื้องศูนย์กลางของวงรี $\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1$ เท่ากับเท่าใด', { a: '$\\dfrac45$', b: '$\\dfrac35$', c: '$\\dfrac54$', d: '$\\dfrac34$', e: '$\\dfrac25$' }, 'a', '$e=c/a$', ['$c=4$ และ $a=5$', '$e=\\dfrac45$']),
   q(34, 'ellipse-axes', 'medium', 'วงรี $4x^2+9y^2=36$ มีความยาวแกนเอกและแกนโทเท่าใด', { a: '6 และ 4', b: '9 และ 4', c: '3 และ 2', d: '12 และ 8', e: '18 และ 8' }, 'a', 'หารทั้งสมการด้วย 36 ก่อน', ['$\\dfrac{x^2}{9}+\\dfrac{y^2}{4}=1$', 'กึ่งแกนคือ 3 และ 2 จึงแกนเต็มยาว 6 และ 4']),
   q(35, 'ellipse-equation', 'medium', 'วงรีมีจุดยอด $(\\pm4,0)$ และจุดปลายแกนโท $(0,\\pm3)$ มีสมการใด', { a: '$\\dfrac{x^2}{16}+\\dfrac{y^2}{9}=1$', b: '$\\dfrac{x^2}{9}+\\dfrac{y^2}{16}=1$', c: '$\\dfrac{x^2}{4}+\\dfrac{y^2}{3}=1$', d: '$16x^2+9y^2=1$', e: '$x^2+y^2=25$' }, 'a', 'กึ่งแกนเอกคือ 4 และกึ่งแกนโทคือ 3', ['$a^2=16,b^2=9$', 'สมการคือ $x^2/16+y^2/9=1$']),
   q(36, 'translated-ellipse', 'medium', 'จุดศูนย์กลางของวงรี $\\dfrac{(x-2)^2}{16}+\\dfrac{(y+1)^2}{4}=1$ คือข้อใด', { a: '$(2,-1)$', b: '$(-2,1)$', c: '$(2,1)$', d: '$(-2,-1)$', e: '$(16,4)$' }, 'a', 'เทียบกับ $(x-h)^2/a^2+(y-k)^2/b^2=1$', ['$h=2,k=-1$', 'จุดศูนย์กลางคือ $(2,-1)$']),
@@ -74,7 +80,7 @@ const hyperbolas: Question[] = [
   q(42, 'hyperbola-asymptotes', 'medium', 'เส้นกำกับของ $\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1$ คือข้อใด', { a: '$y=\\pm\\dfrac34x$', b: '$y=\\pm\\dfrac43x$', c: '$y=\\pm5x$', d: '$x=\\pm4$', e: '$y=\\pm3$' }, 'a', 'รูปแกนนอนมีเส้นกำกับ $y=\\pm(b/a)x$', ['$a=4,b=3$', 'จึง $y=\\pm\\dfrac34x$']),
   numeric(43, 'hyperbola-axes', 'medium', 'ความยาวแกนตามขวางของ $\\dfrac{y^2}{25}-\\dfrac{x^2}{11}=1$ เท่ากับเท่าใด', 10, [5, 11, 22, 50], 'ความยาวแกนตามขวางคือ $2a$', ['$a^2=25$ จึง $a=5$', '$2a=10$']),
   q(44, 'hyperbola-equation', 'hard', 'ไฮเพอร์โบลามีจุดยอด $(\\pm3,0)$ และโฟกัส $(\\pm5,0)$ มีสมการใด', { a: '$\\dfrac{x^2}{9}-\\dfrac{y^2}{16}=1$', b: '$\\dfrac{x^2}{25}-\\dfrac{y^2}{16}=1$', c: '$\\dfrac{y^2}{9}-\\dfrac{x^2}{16}=1$', d: '$\\dfrac{x^2}{9}+\\dfrac{y^2}{16}=1$', e: '$\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1$' }, 'a', '$a=3,c=5$ และ $b^2=c^2-a^2$', ['$a^2=9,c^2=25$', '$b^2=25-9=16$', 'สมการคือ $x^2/9-y^2/16=1$']),
-  q(45, 'hyperbola-eccentricity', 'hard', 'ความเยื้องศูนย์ของไฮเพอร์โบลา $\\dfrac{x^2}{9}-\\dfrac{y^2}{16}=1$ เท่ากับเท่าใด', { a: '$\\dfrac53$', b: '$\\dfrac35$', c: '$\\dfrac43$', d: '$\\dfrac54$', e: '$\\dfrac73$' }, 'a', '$e=c/a$ และ $c^2=a^2+b^2$', ['$c=5,a=3$', '$e=\\dfrac53$']),
+  q(45, 'hyperbola-eccentricity', 'hard', 'ความเยื้องศูนย์กลางของไฮเพอร์โบลา $\\dfrac{x^2}{9}-\\dfrac{y^2}{16}=1$ เท่ากับเท่าใด', { a: '$\\dfrac53$', b: '$\\dfrac35$', c: '$\\dfrac43$', d: '$\\dfrac54$', e: '$\\dfrac73$' }, 'a', '$e=c/a$ และ $c^2=a^2+b^2$', ['$c=5,a=3$', '$e=\\dfrac53$']),
   q(46, 'translated-hyperbola', 'medium', 'จุดศูนย์กลางของ $\\dfrac{(x-2)^2}{9}-\\dfrac{(y+1)^2}{4}=1$ คือข้อใด', { a: '$(2,-1)$', b: '$(-2,1)$', c: '$(2,1)$', d: '$(-2,-1)$', e: '$(3,2)$' }, 'a', 'อ่านค่า $h,k$ จากรูปมาตรฐาน', ['$h=2,k=-1$', 'จุดศูนย์กลางคือ $(2,-1)$']),
   q(47, 'rectangular-hyperbola', 'medium', 'เส้นกำกับของไฮเพอร์โบลา $xy=12$ คือข้อใด', { a: '$x=0$ และ $y=0$', b: '$y=\\pm x$', c: '$x=\\pm12$', d: '$y=\\pm12$', e: '$x+y=12$' }, 'a', 'เมื่อ $|x|$ หรือ $|y|$ โต กราฟเข้าใกล้แกนพิกัด', ['สมการเขียนเป็น $y=12/x$', 'เส้นกำกับคือแกน $x$ และแกน $y$']),
   q(48, 'conic-classification', 'medium', 'สมการ $9x^2+16y^2-144=0$ เป็นกราฟชนิดใด', { a: 'วงรี', b: 'วงกลม', c: 'พาราโบลา', d: 'ไฮเพอร์โบลา', e: 'เส้นตรงคู่' }, 'a', 'พจน์กำลังสองมีเครื่องหมายเดียวกันแต่สัมประสิทธิ์ต่างกัน', ['$9x^2+16y^2=144$', '$x^2/16+y^2/9=1$ เป็นวงรี']),

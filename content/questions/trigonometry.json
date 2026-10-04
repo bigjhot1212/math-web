@@ -46,10 +46,10 @@
       }
     },
     "answer": "b",
-    "hint": "นี่คืออัตลักษณ์ตรีโกณมิติที่สำคัญที่สุด",
+    "hint": "นี่คือเอกลักษณ์ตรีโกณมิติที่สำคัญที่สุด",
     "solution": {
       "steps": [
-        "$\\sin^2\\theta + \\cos^2\\theta = 1$ เป็นอัตลักษณ์ตรีโกณมิติพื้นฐาน",
+        "$\\sin^2\\theta + \\cos^2\\theta = 1$ เป็นเอกลักษณ์ตรีโกณมิติพื้นฐาน",
         "ได้มาจากทฤษฎีบทพีทาโกรัสบนวงกลมหนึ่งหน่วย"
       ],
       "keyFormula": "$\\sin^2\\theta + \\cos^2\\theta = 1$"
@@ -102,14 +102,14 @@
       }
     },
     "answer": "d",
-    "hint": "ใช้ $\\sin^2\\theta + \\cos^2\\theta = 1$ และ $\\theta$ อยู่ Q1 ดังนั้น $\\cos\\theta > 0$",
+    "hint": "ใช้ $\\sin^2\\theta + \\cos^2\\theta = 1$ และ $\\theta$ อยู่ในจตุภาคที่ 1 ดังนั้น $\\cos\\theta > 0$",
     "solution": {
       "steps": [
         "$\\sin^2\\theta + \\cos^2\\theta = 1$",
         "$\\left(\\dfrac{3}{5}\\right)^2 + \\cos^2\\theta = 1$",
         "$\\dfrac{9}{25} + \\cos^2\\theta = 1$",
         "$\\cos^2\\theta = \\dfrac{16}{25}$",
-        "เนื่องจาก $\\theta$ ใน Q1, $\\cos\\theta > 0$ ดังนั้น $\\cos\\theta = \\dfrac{4}{5}$"
+        "เนื่องจาก $\\theta$ อยู่ในจตุภาคที่ 1 จึงได้ $\\cos\\theta > 0$ ดังนั้น $\\cos\\theta = \\dfrac{4}{5}$"
       ]
     },
     "tags": ["quadrant", "pythagorean-identity"],

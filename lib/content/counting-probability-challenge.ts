@@ -1,11 +1,17 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type Key = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 const keys: Key[] = ['a', 'b', 'c', 'd', 'e']
 
-function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+function build(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
   return { id: `counting-probability-challenge-${String(id).padStart(2, '0')}`, topicId: 'counting-probability', subtopic, level: 'A-Level', difficulty, type: 'multiple-choice', content: { text, choices }, answer, hint, solution: { steps }, tags: ['original', 'challenge'], source: 'MathPrep original' }
+}
+
+function q(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: Key, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 4)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
 }
 
 function numeric(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, correct: number, distractors: number[], hint: string, steps: string[]): Question {
@@ -14,7 +20,7 @@ function numeric(id: number, subtopic: string, difficulty: Question['difficulty'
   while (values.length < 4) { if (next !== correct && !values.includes(next)) values.push(next); next++ }
   const index = (id * 4 + 2) % 5
   values.splice(index, 0, correct)
-  return q(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
+  return build(id, subtopic, difficulty, text, Object.fromEntries(keys.map((key, i) => [key, String(values[i])])) as Choices, keys[index], hint, steps)
 }
 
 const principles: Question[] = [
@@ -25,7 +31,7 @@ const principles: Question[] = [
   numeric(5, 'binary-strings', 'medium', 'สายอักขระที่ประกอบด้วย 0 และ 1 ยาว 6 ตำแหน่งมีทั้งหมดกี่สาย', 64, [12, 32, 36, 128], 'แต่ละตำแหน่งมี 2 ทางเลือก', ['$2^6=64$']),
   numeric(6, 'inclusion-exclusion', 'medium', 'นักเรียน 40 คน ชอบคณิตศาสตร์ 25 คน ชอบภาษาอังกฤษ 20 คน และชอบทั้งสองวิชา 10 คน มีนักเรียนที่ชอบอย่างน้อยหนึ่งวิชากี่คน', 35, [30, 40, 45, 55], 'บวกสองกลุ่มแล้วลบส่วนซ้ำหนึ่งครั้ง', ['$25+20-10=35$']),
   numeric(7, 'complement-counting', 'medium', 'จากนักเรียน 50 คน ถ้ามี 35 คนที่ชอบอย่างน้อยหนึ่งวิชาจากคณิตศาสตร์หรืออังกฤษ จะมีคนที่ไม่ชอบทั้งสองวิชากี่คน', 15, [10, 20, 25, 35], 'ใช้จำนวนทั้งหมดลบจำนวนที่อยู่ในยูเนียน', ['$50-35=15$']),
-  q(8, 'pigeonhole-principle', 'medium', 'ในกลุ่มคน 13 คน ข้อใดต้องเกิดขึ้นแน่นอน', { a: 'มีอย่างน้อย 2 คนเกิดเดือนเดียวกัน', b: 'มี 2 คนเกิดวันเดียวกัน', c: 'ทุกคนเกิดคนละเดือน', d: 'มีคนเกิดเดือนมกราคม', e: 'มีอย่างน้อย 3 คนเกิดเดือนเดียวกัน' }, 'a', 'มีเดือนเพียง 12 เดือนแต่มีคน 13 คน', ['ตามหลักช่องนกพิราบ ต้องมีอย่างน้อยหนึ่งเดือนที่มีคนเกิดอย่างน้อย 2 คน']),
+  q(8, 'pigeonhole-principle', 'medium', 'ในกลุ่มคน 13 คน ข้อใดต้องเกิดขึ้นแน่นอน', { a: 'มีอย่างน้อย 2 คนเกิดเดือนเดียวกัน', b: 'มี 2 คนเกิดวันที่และเดือนเดียวกัน', c: 'ทุกคนเกิดคนละเดือน', d: 'มีคนเกิดเดือนมกราคม', e: 'มีอย่างน้อย 3 คนเกิดเดือนเดียวกัน' }, 'a', 'มีเดือนเพียง 12 เดือนแต่มีคน 13 คน', ['ตามหลักช่องนกพิราบ ต้องมีอย่างน้อยหนึ่งเดือนที่มีคนเกิดอย่างน้อย 2 คน']),
   numeric(9, 'permutation', 'medium', 'นำตัวอักษร A, B, C, D ซึ่งแตกต่างกันทั้งหมดมาเรียงเป็นแถวได้กี่แบบ', 24, [4, 8, 16, 20], 'เรียงของต่างกัน 4 สิ่งใช้ $4!$', ['$4!=24$']),
   numeric(10, 'circular-permutation', 'medium', 'คน 6 คนนั่งรอบโต๊ะกลมได้กี่แบบ โดยถือว่าแบบที่หมุนโต๊ะแล้วตรงกันเป็นแบบเดียวกัน', 120, [24, 60, 360, 720], 'ตรึงหนึ่งคนเพื่อตัดความซ้ำจากการหมุน', ['$(6-1)!=5!=120$']),
 ]
@@ -79,7 +85,7 @@ const applications: Question[] = [
   numeric(47, 'relative-order', 'medium', 'คน 5 คนเรียงแถวแบบสุ่ม จำนวนวิธีที่ A อยู่ก่อน B มีกี่วิธี', 60, [24, 48, 72, 120], 'จับคู่ทุกการเรียงกับแบบที่สลับตำแหน่ง A และ B', ['ครึ่งหนึ่งของ $5!$ มี A อยู่ก่อน B', '$5!/2=60$']),
   q(48, 'adjacent-probability', 'hard', 'คน 6 คนเรียงแถวแบบสุ่ม ความน่าจะเป็นที่ A และ B ยืนติดกันเท่ากับข้อใด', { a: '$\\frac13$', b: '$\\frac16$', c: '$\\frac25$', d: '$\\frac12$', e: '$\\frac23$' }, 'a', 'นับ A และ B เป็นหนึ่งก้อนและคำนึงถึงลำดับภายในก้อน', ['$P=\\dfrac{2(5!)}{6!}=\\frac13$']),
   q(49, 'inclusion-exclusion-probability', 'hard', 'สุ่มจำนวนเต็มหนึ่งจำนวนจาก 1 ถึง 100 ความน่าจะเป็นที่จำนวนนั้นหารด้วย 2 หรือ 5 ลงตัวเท่ากับข้อใด', { a: '$\\frac35$', b: '$\\frac12$', c: '$\\frac15$', d: '$\\frac7{10}$', e: '$\\frac45$' }, 'a', 'ใช้หลักบวกลบรวมจำนวนที่หารด้วย 10 ลงตัวซึ่งถูกนับซ้ำ', ['มี $50+20-10=60$ จำนวน', '$P=60/100=3/5$']),
-  q(50, 'pigeonhole-principle', 'medium', 'ถ้ามีคน 367 คน ข้อใดเป็นจริงแน่นอนเมื่อปีหนึ่งมี 366 วันที่เป็นไปได้รวมวันที่ 29 กุมภาพันธ์', { a: 'มีอย่างน้อย 2 คนเกิดวันเดียวกัน', b: 'มีอย่างน้อย 3 คนเกิดวันเดียวกัน', c: 'ทุกวันมีคนเกิด', d: 'ไม่มีใครเกิดวันที่ 29 กุมภาพันธ์', e: 'ทุกคนเกิดคนละวัน' }, 'a', 'จำนวนคนมากกว่าจำนวนวันเกิดที่เป็นไปได้', ['ตามหลักช่องนกพิราบ ต้องมีอย่างน้อยหนึ่งวันที่มีคนเกิดอย่างน้อย 2 คน']),
+  q(50, 'pigeonhole-principle', 'medium', 'ถ้ามีคน 367 คน ข้อใดเป็นจริงแน่นอน (วันเกิดที่เป็นไปได้มี 366 วัน รวมวันที่ 29 กุมภาพันธ์)', { a: 'มีอย่างน้อย 2 คนเกิดวันที่และเดือนเดียวกัน', b: 'มีอย่างน้อย 3 คนเกิดวันที่และเดือนเดียวกัน', c: 'ทุกวันมีคนเกิด', d: 'ไม่มีใครเกิดวันที่ 29 กุมภาพันธ์', e: 'ทุกคนเกิดคนละวัน' }, 'a', 'จำนวนคนมากกว่าจำนวนวันเกิดที่เป็นไปได้', ['ตามหลักช่องนกพิราบ ต้องมีอย่างน้อยหนึ่งวันที่มีคนเกิดอย่างน้อย 2 คน']),
 ]
 
 export const countingProbabilityChallengeQuestions: Question[] = [...principles, ...permutations, ...combinations, ...probability, ...applications]

@@ -108,7 +108,7 @@ const extraSetPracticeQuestions: Question[] = [
     const correct = 2 ** memberCount
     return numericSetQuestion({
       id: `set-exercise-${id}`, subtopic: 'power-set', difficulty: memberCount >= 5 ? 'medium' : 'easy',
-      text: `ถ้าเซต $A$ มีสมาชิก ${memberCount} ตัว แล้วเพาเวอร์เซต $\\mathcal{P}(A)$ มีสมาชิกกี่เซต`, correct, distractors: [memberCount, 2 * memberCount, correct / 2, correct + 2],
+      text: `ถ้าเซต $A$ มีสมาชิก ${memberCount} ตัว แล้วเพาเวอร์เซต $\\mathcal{P}(A)$ มีสมาชิกกี่เซต`, correct, distractors: [memberCount, 2 * memberCount, correct * 2, correct + 2],
       hint: 'เซตที่มีสมาชิก $n$ ตัว มีสับเซตทั้งหมด $2^n$ เซต',
       steps: [`$n(A)=${memberCount}$`, `$n(\\mathcal{P}(A))=2^{${memberCount}}=${correct}$`],
     })

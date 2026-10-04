@@ -1,11 +1,12 @@
 import type { Question } from '@/lib/types/question'
+import { placeAnswer } from '@/lib/content/answer-position'
 
 type ChoiceKey = 'a' | 'b' | 'c' | 'd' | 'e'
 type Choices = NonNullable<Question['content']['choices']>
 
 const keys: ChoiceKey[] = ['a', 'b', 'c', 'd', 'e']
 
-function question(
+function build(
   id: number,
   subtopic: string,
   difficulty: Question['difficulty'],
@@ -31,6 +32,11 @@ function question(
   }
 }
 
+function question(id: number, subtopic: string, difficulty: Question['difficulty'], text: string, choices: Choices, answer: ChoiceKey, hint: string, steps: string[]): Question {
+  const placed = placeAnswer(choices, answer, id, 1)
+  return build(id, subtopic, difficulty, text, placed.choices, placed.answer, hint, steps)
+}
+
 function numericQuestion(
   id: number,
   subtopic: string,
@@ -51,7 +57,7 @@ function numericQuestion(
   const values = candidates.slice(0, 4)
   values.splice(answerIndex, 0, correct)
   const choices = Object.fromEntries(keys.map((key, index) => [key, String(values[index])])) as Choices
-  return question(id, subtopic, difficulty, text, choices, keys[answerIndex], hint, steps)
+  return build(id, subtopic, difficulty, text, choices, keys[answerIndex], hint, steps)
 }
 
 const truthCountSpecs: Array<[number, string, number, string]> = [
@@ -64,7 +70,7 @@ const truthCountSpecs: Array<[number, string, number, string]> = [
   [7, '$(p\\leftrightarrow q)\\lor r$', 6, 'ถ้า $r$ จริง รูปแบบจริงทันที; ถ้า $r$ เท็จต้องมี $p=q$'],
   [8, '$(p\\land q)\\to(p\\lor r)$', 8, 'เมื่อเหตุจริง $p$ จริงอยู่แล้วจึงทำให้ผลจริง'],
   [9, '$(p\\to q)\\leftrightarrow(\\neg q\\to\\neg p)$', 4, 'สองข้างเป็นประพจน์สมมูลกันทุกกรณี'],
-  [10, '$(p\\oplus q)\\land(q\\oplus r)$', 2, 'ต้องมี $p\\ne q$ และ $q\\ne r$ พร้อมกัน'],
+  [10, '$(p\\leftrightarrow\\neg q)\\land(q\\leftrightarrow\\neg r)$', 2, 'ต้องมี $p\\ne q$ และ $q\\ne r$ พร้อมกัน'],
 ]
 
 const truthCountQuestions = truthCountSpecs.map(([id, formula, correct, reason]) =>
@@ -74,7 +80,7 @@ const truthCountQuestions = truthCountSpecs.map(([id, formula, correct, reason])
     id < 5 ? 'medium' : 'hard',
     `เมื่อ $p,q${id >= 4 && id !== 9 ? ',r' : ''}$ แทนประพจน์ รูปแบบ ${formula} เป็นจริงทั้งหมดกี่แถวในตารางค่าความจริง`,
     correct,
-    'พิจารณาเงื่อนไขที่ทำให้ตัวเชื่อมหลักเป็นจริง แทนการคำนวณแบบสุ่มทีละแถว',
+    'พิจารณาเงื่อนไขที่ทำให้ตัวเชื่อมหลักเป็นจริง แทนการไล่ตรวจทุกแถวของตาราง',
     [reason, `จึงมีแถวที่เป็นจริงทั้งหมด ${correct} แถว`],
   ),
 )
@@ -89,7 +95,7 @@ const equivalenceQuestions: Question[] = [
   question(17, 'equivalence', 'medium', 'บทกลับทางนิเสธของ $p\\to(q\\lor r)$ คือข้อใด', { a: '$\\neg q\\land\\neg r\\to\\neg p$', b: '$\\neg q\\lor\\neg r\\to\\neg p$', c: '$\\neg p\\to(\\neg q\\land\\neg r)$', d: '$(q\\lor r)\\to p$', e: '$p\\to(\\neg q\\land\\neg r)$' }, 'a', 'สลับเหตุผลแล้วนิเสธทั้งสองข้าง', ['นิเสธของ $q\\lor r$ คือ $\\neg q\\land\\neg r$', 'จึงได้ $(\\neg q\\land\\neg r)\\to\\neg p$']),
   question(18, 'equivalence', 'hard', 'ข้อใดสมมูลกับ $\\neg[(p\\lor q)\\to r]$', { a: '$(p\\lor q)\\land\\neg r$', b: '$(\\neg p\\land\\neg q)\\lor r$', c: '$\\neg p\\land\\neg q\\land r$', d: '$(p\\lor q)\\lor\\neg r$', e: '$r\\to(p\\lor q)$' }, 'a', 'นิเสธอิมพลิเคชันมีรูป “เหตุจริงและผลเท็จ”', ['$\\neg(A\\to B)=A\\land\\neg B$', 'ให้ $A=p\\lor q$ และ $B=r$ จึงได้ $(p\\lor q)\\land\\neg r$']),
   question(19, 'equivalence', 'hard', 'ข้อใดสมมูลกับ $(p\\leftrightarrow q)\\land(q\\leftrightarrow r)$', { a: 'ทั้ง $p,q,r$ มีค่าความจริงเหมือนกัน', b: 'อย่างน้อยหนึ่งประพจน์เป็นจริง', c: 'มีประพจน์จริงพอดีหนึ่งประพจน์', d: '$p$ กับ $r$ มีค่าต่างกัน', e: '$q$ เป็นจริงเสมอ' }, 'a', 'อ่านเครื่องหมายก็ต่อเมื่อเป็นเงื่อนไขว่าค่าทั้งสองด้านต้องตรงกัน', ['$p=q$ และ $q=r$', 'ดังนั้น $p=q=r$']),
-  question(20, 'equivalence', 'hard', 'รูป $\\neg p\\lor(q\\land r)$ สมมูลกับข้อใด', { a: '$(p\\to q)\\land(p\\to r)$', b: '$(q\\to p)\\land(r\\to p)$', c: '$(p\\to q)\\lor(p\\to r)$', d: '$p\\land(q\\to r)$', e: '$(q\\land r)\\to p$' }, 'a', 'แจกแจง $A\\lor(B\\land C)$', ['$\\neg p\\lor(q\\land r)=(\\neg p\\lor q)\\land(\\neg p\\lor r)$', 'จึงเป็น $(p\\to q)\\land(p\\to r)$']),
+  question(20, 'equivalence', 'hard', 'ข้อใดสมมูลกับ $p\\lor(q\\land r)$', { a: '$(p\\lor q)\\land(p\\lor r)$', b: '$(p\\land q)\\lor r$', c: '$p\\land(q\\lor r)$', d: '$(p\\lor q)\\land r$', e: '$(\\neg p\\to q)\\lor r$' }, 'a', 'ใช้กฎการแจกแจง $\\lor$ บน $\\land$', ['$p\\lor(q\\land r)=(p\\lor q)\\land(p\\lor r)$', 'ตัวเลือกอื่นมีกรณีโต้แย้ง เช่น เมื่อ $p=T,q=F,r=F$ รูป $(p\\land q)\\lor r$ เป็นเท็จ แต่รูปในโจทย์เป็นจริง']),
 ]
 
 const formQuestions: Question[] = [
@@ -112,7 +118,7 @@ const argumentQuestions: Question[] = [
   question(34, 'argument', 'hard', 'เหตุ: $p\\to q$, $q\\to r$, $\\neg r$ ข้อสรุปใดตามมา', { a: '$\\neg p\\land\\neg q$', b: '$p\\land q$', c: '$\\neg p\\land q$', d: '$p\\land\\neg q$', e: '$r$' }, 'a', 'ไล่ modus tollens ย้อนกลับจาก $\\neg r$', ['$q\\to r$ และ $\\neg r$ ให้ $\\neg q$', '$p\\to q$ และ $\\neg q$ ให้ $\\neg p$']),
   question(35, 'argument', 'hard', 'เหตุ: $p\\lor q$, $p\\to r$, $q\\to r$ ข้อสรุปใดต้องจริง', { a: '$r$', b: '$p$', c: '$q$', d: '$p\\land q$', e: '$\\neg r$' }, 'a', 'แยกกรณีตาม $p\\lor q$', ['ถ้า $p$ จริง จาก $p\\to r$ ได้ $r$', 'ถ้า $q$ จริง จาก $q\\to r$ ได้ $r$', 'ทุกกรณีจึงได้ $r$']),
   question(36, 'argument', 'hard', 'เหตุ: $p\\to(q\\land r)$ และ $\\neg r$ ข้อสรุปใดสมเหตุสมผล', { a: '$\\neg p$', b: '$p$', c: '$q$', d: '$\\neg q$', e: '$q\\land r$' }, 'a', 'หาก $p$ จริง ผลทั้งก้อนต้องจริง', ['$\\neg r$ ทำให้ $q\\land r$ เท็จ', 'ใช้ modus tollens กับ $p\\to(q\\land r)$ จึงได้ $\\neg p$']),
-  question(37, 'argument', 'hard', 'ข้อใดเป็นค่าความจริงที่แสดงว่าเหตุ $p\\to q$, $q\\to r$ ไม่เพียงพอจะสรุป $r\\to p$', { a: '$(p,q,r)=(F,F,T)$', b: '$(T,T,T)$', c: '$(F,F,F)$', d: '$(F,T,T)$', e: '$(T,F,F)$' }, 'a', 'ต้องทำให้เหตุทุกข้อจริง แต่ข้อสรุปเท็จ', ['เมื่อ $(F,F,T)$ เหตุ $p\\to q$ และ $q\\to r$ จริง', 'แต่ $r\\to p$ เป็น $T\\to F$ จึงเท็จ']),
+  question(37, 'argument', 'hard', 'ข้อใดเป็นค่าความจริงที่แสดงว่าเหตุ $p\\to q$, $q\\to r$ ไม่เพียงพอจะสรุป $r\\to p$', { a: '$(p,q,r)=(F,F,T)$', b: '$(T,T,T)$', c: '$(F,F,F)$', d: '$(T,F,T)$', e: '$(T,F,F)$' }, 'a', 'ต้องทำให้เหตุทุกข้อจริง แต่ข้อสรุปเท็จ', ['เมื่อ $(F,F,T)$ เหตุ $p\\to q$ และ $q\\to r$ จริง', 'แต่ $r\\to p$ เป็น $T\\to F$ จึงเท็จ']),
   question(38, 'argument', 'medium', 'เหตุ: นักเรียนทุกคนที่ส่งงานครบจะผ่านรายวิชา, เมย์ส่งงานครบ ข้อสรุปใดถูกต้อง', { a: 'เมย์ผ่านรายวิชา', b: 'ทุกคนผ่านรายวิชา', c: 'คนที่ผ่านทุกคนส่งงานครบ', d: 'เมย์เป็นนักเรียนเพียงคนเดียวที่ผ่าน', e: 'สรุปอะไรไม่ได้' }, 'a', 'แทนเงื่อนไขเป็นอิมพลิเคชันแล้วใช้เหตุเฉพาะบุคคล', ['ส่งงานครบ $\\to$ ผ่านรายวิชา', 'เมย์ส่งงานครบ จึงสรุปว่าเมย์ผ่านรายวิชา']),
   question(39, 'argument', 'hard', 'เหตุ: ไม่มีจำนวนคี่ใดหารด้วย 2 ลงตัว, 15 เป็นจำนวนคี่ ข้อสรุปใดตามมา', { a: '15 หารด้วย 2 ไม่ลงตัว', b: '15 เป็นจำนวนคู่', c: 'จำนวนที่หารด้วย 2 ไม่ลงตัวทุกจำนวนเป็น 15', d: 'ไม่มีจำนวนใดหารด้วย 2 ลงตัว', e: '15 หารด้วย 3 ไม่ลงตัว' }, 'a', 'นำสมาชิกเฉพาะตัวเข้าสู่กฎสากล', ['จำนวนคี่ทุกจำนวนมีสมบัติหารด้วย 2 ไม่ลงตัว', '15 เป็นจำนวนคี่ จึงมีสมบัตินั้น']),
   question(40, 'argument', 'hard', 'เหตุ: $p\\lor q$, $\\neg p\\lor r$, $\\neg q$ ข้อสรุปใดต้องจริง', { a: '$r$', b: '$\\neg r$', c: '$q$', d: '$\\neg p$', e: '$p\\land\\neg r$' }, 'a', '$\\neg q$ ช่วยตัดหนึ่งทางเลือกในเหตุแรก', ['$p\\lor q$ และ $\\neg q$ ให้ $p$', '$\\neg p\\lor r$ เทียบเท่า $p\\to r$', 'เมื่อ $p$ จริง จึงได้ $r$']),
@@ -122,12 +128,12 @@ const quantifierQuestions: Question[] = [
   question(41, 'quantifier', 'medium', 'นิเสธของ “สำหรับทุกจำนวนจริง $x$, $x^2\\ge0$” คือข้อใด', { a: 'มีจำนวนจริง $x$ บางจำนวนที่ $x^2<0$', b: 'สำหรับทุก $x$, $x^2<0$', c: 'มี $x$ บางจำนวนที่ $x^2\\le0$', d: 'สำหรับทุก $x$, $x^2>0$', e: 'ไม่มีจำนวนจริง $x$' }, 'a', 'สลับ $\\forall$ เป็น $\\exists$ และนิเสธภาคแสดง', ['$\\neg[\\forall x\\,P(x)]\\equiv\\exists x\\,\\neg P(x)$', 'นิเสธของ $x^2\\ge0$ คือ $x^2<0$']),
   question(42, 'quantifier', 'medium', 'นิเสธของ “มีจำนวนเต็ม $x$ ที่ $x^2=2$” คือข้อใด', { a: 'สำหรับทุกจำนวนเต็ม $x$, $x^2\\ne2$', b: 'มีจำนวนเต็ม $x$ ที่ $x^2\\ne2$', c: 'สำหรับทุกจำนวนเต็ม $x$, $x^2=2$', d: 'ไม่มีจำนวนจริงที่ยกกำลังสองได้ 2', e: '$x^2<2$ สำหรับทุกจำนวนเต็ม $x$' }, 'a', 'สลับ $\\exists$ เป็น $\\forall$ แล้วนิเสธสมการ', ['$\\neg[\\exists x\\,P(x)]\\equiv\\forall x\\,\\neg P(x)$', 'จึงได้ $x^2\\ne2$ สำหรับจำนวนเต็มทุกตัว']),
   question(43, 'quantifier', 'hard', 'เมื่อเอกภพสัมพัทธ์เป็นจำนวนจริง ข้อใดเป็นจริง', { a: '$\\forall x\\,\\exists y\\,(y>x)$', b: '$\\exists y\\,\\forall x\\,(y>x)$', c: '$\\forall x\\,(x^2>0)$', d: '$\\exists x\\,(x^2<0)$', e: '$\\forall x\\,(x>x-1)$ เป็นเท็จ' }, 'a', 'ระวังลำดับของตัวบ่งปริมาณ', ['สำหรับทุก $x$ เลือก $y=x+1$ ได้ จึง $y>x$', 'ไม่มีจำนวนจริงตัวเดียวที่มากกว่าจำนวนจริงทุกตัว']),
-  question(44, 'quantifier', 'hard', 'เมื่อเอกภพสัมพัทธ์เป็นจำนวนเต็ม ข้อใดเป็นเท็จ', { a: '$\\forall x\\,\\exists y\\,(x+y=0)$', b: '$\\exists x\\,\\forall y\\,(x+y=y)$', c: '$\\forall x\\,(x^2\\ge0)$', d: '$\\exists x\\,(x^2=9)$', e: '$\\forall x\\,\\exists y\\,(xy=1)$' }, 'e', 'ตรวจว่าจำนวนเต็มทุกตัวมีผกผันการคูณเป็นจำนวนเต็มหรือไม่', ['เลือก $x=2$ จะไม่มีจำนวนเต็ม $y$ ที่ทำให้ $2y=1$', 'จึงทำให้ข้อความสากลในข้อ e เป็นเท็จ']),
+  question(44, 'quantifier', 'hard', 'เมื่อเอกภพสัมพัทธ์เป็นจำนวนเต็ม ข้อใดเป็นเท็จ', { a: '$\\forall x\\,\\exists y\\,(x+y=0)$', b: '$\\exists x\\,\\forall y\\,(x+y=y)$', c: '$\\forall x\\,(x^2\\ge0)$', d: '$\\exists x\\,(x^2=9)$', e: '$\\forall x\\,\\exists y\\,(xy=1)$' }, 'e', 'ตรวจว่าจำนวนเต็มทุกตัวมีผกผันการคูณเป็นจำนวนเต็มหรือไม่', ['เลือก $x=2$ จะไม่มีจำนวนเต็ม $y$ ที่ทำให้ $2y=1$', 'จึงทำให้ข้อความ $\forall x\,\exists y\,(xy=1)$ เป็นเท็จ']),
   question(45, 'quantifier', 'hard', 'นิเสธของ $\\forall x\\,[P(x)\\to Q(x)]$ คือข้อใด', { a: '$\\exists x\\,[P(x)\\land\\neg Q(x)]$', b: '$\\forall x\\,[P(x)\\land\\neg Q(x)]$', c: '$\\exists x\\,[\\neg P(x)\\land Q(x)]$', d: '$\\exists x\\,[P(x)\\to\\neg Q(x)]$', e: '$\\forall x\\,[\\neg P(x)\\lor Q(x)]$' }, 'a', 'นิเสธทั้งตัวบ่งปริมาณและอิมพลิเคชัน', ['$\\neg(P\\to Q)=P\\land\\neg Q$', 'จึงได้ $\\exists x\\,[P(x)\\land\\neg Q(x)]$']),
   question(46, 'quantifier', 'hard', 'ประโยค “นักเรียนทุกคนอ่านหนังสือบางเล่ม” เขียนได้ตรงที่สุดเป็นข้อใด เมื่อ $S(x)$ แปลว่า $x$ เป็นนักเรียน และ $R(x,y)$ แปลว่า $x$ อ่านหนังสือ $y$', { a: '$\\forall x\\,[S(x)\\to\\exists y\\,R(x,y)]$', b: '$\\exists y\\,\\forall x\\,[S(x)\\to R(x,y)]$', c: '$\\exists x\\,[S(x)\\land\\forall y\\,R(x,y)]$', d: '$\\forall y\\,\\exists x\\,[S(x)\\land R(x,y)]$', e: '$\\forall x\\forall y\\,[S(x)\\to R(x,y)]$' }, 'a', 'หนังสือที่แต่ละคนอ่านอาจเป็นคนละเล่มกัน', ['เริ่มด้วยนักเรียนแต่ละคน $\\forall x$', 'ภายในต้องมีหนังสืออย่างน้อยหนึ่งเล่ม $\\exists y$ ที่คนนั้นอ่าน']),
   question(47, 'quantifier', 'hard', 'ข้อใดอธิบายความต่างระหว่าง $\\forall x\\exists y\\,P(x,y)$ กับ $\\exists y\\forall x\\,P(x,y)$ ได้ถูกต้อง', { a: 'แบบแรก $y$ เปลี่ยนตาม $x$ ได้ แต่แบบหลังต้องมี $y$ ตัวเดียวใช้ได้กับทุก $x$', b: 'สองข้อความสมมูลกันเสมอ', c: 'แบบแรกเข้มกว่าแบบหลังเสมอ', d: 'แบบหลังให้ $y$ เปลี่ยนตาม $x$ ได้', e: 'ต่างกันเฉพาะเมื่อเอกภพว่าง' }, 'a', 'อ่านตัวบ่งปริมาณจากซ้ายไปขวาและดูว่าตัวแปรใดเลือกก่อน', ['ใน $\\forall x\\exists y$ เราเลือก $y$ หลังรู้ค่า $x$', 'ใน $\\exists y\\forall x$ ต้องเลือก $y$ หนึ่งตัวก่อน แล้วใช้กับทุก $x$']),
-  question(48, 'quantifier', 'hard', 'เมื่อเอกภพเป็น $\\{1,2,3,4\\}$ และ $P(x)$ แปลว่า “$x$ เป็นจำนวนคู่” ข้อใดมีค่าความจริงเป็นจริง', { a: '$\\exists x\\,P(x)\\land\\exists x\\,\\neg P(x)$', b: '$\\forall x\\,P(x)$', c: '$\\forall x\\,\\neg P(x)$', d: '$\\neg\\exists x\\,P(x)$', e: '$\\exists x\\,[P(x)\\land\\neg P(x)]$' }, 'a', 'เอกภพมีทั้งสมาชิกคู่และสมาชิกคี่', ['$2,4$ ทำให้ $P(x)$ จริงได้', '$1,3$ ทำให้ $\\neg P(x)$ จริงได้ จึงข้อความประกอบในข้อ a เป็นจริง']),
-  question(49, 'quantifier', 'hard', 'ให้ $P(x,y)$ แปลว่า $x<y$ บนเอกภพจำนวนจริง นิเสธของ $\\exists x\\forall y\\,P(x,y)$ คือข้อใด', { a: '$\\forall x\\exists y\\,(x\\ge y)$', b: '$\\exists x\\forall y\\,(x\\ge y)$', c: '$\\forall x\\forall y\\,(x\\ge y)$', d: '$\\exists x\\exists y\\,(x<y)$', e: '$\\forall x\\exists y\\,(x<y)$' }, 'a', 'สลับตัวบ่งปริมาณทุกชั้นตามลำดับ แล้วนิเสบภาคแสดง', ['$\\neg\\exists x\\forall y\\,P(x,y)\\equiv\\forall x\\exists y\\,\\neg P(x,y)$', 'นิเสธของ $x<y$ คือ $x\\ge y$']),
+  question(48, 'quantifier', 'hard', 'เมื่อเอกภพเป็น $\\{1,2,3,4\\}$ และ $P(x)$ แปลว่า “$x$ เป็นจำนวนคู่” ข้อใดมีค่าความจริงเป็นจริง', { a: '$\\exists x\\,P(x)\\land\\exists x\\,\\neg P(x)$', b: '$\\forall x\\,P(x)$', c: '$\\forall x\\,\\neg P(x)$', d: '$\\neg\\exists x\\,P(x)$', e: '$\\exists x\\,[P(x)\\land\\neg P(x)]$' }, 'a', 'เอกภพมีทั้งสมาชิกคู่และสมาชิกคี่', ['$2,4$ ทำให้ $P(x)$ จริงได้', '$1,3$ ทำให้ $\\neg P(x)$ จริงได้ จึงข้อความ $\exists x\,P(x)\land\exists x\,\neg P(x)$ เป็นจริง']),
+  question(49, 'quantifier', 'hard', 'ให้ $P(x,y)$ แปลว่า $x<y$ บนเอกภพจำนวนจริง นิเสธของ $\\exists x\\forall y\\,P(x,y)$ คือข้อใด', { a: '$\\forall x\\exists y\\,(x\\ge y)$', b: '$\\exists x\\forall y\\,(x\\ge y)$', c: '$\\forall x\\forall y\\,(x\\ge y)$', d: '$\\exists x\\exists y\\,(x<y)$', e: '$\\forall x\\exists y\\,(x<y)$' }, 'a', 'สลับตัวบ่งปริมาณทุกชั้นตามลำดับ แล้วนิเสธภาคแสดง', ['$\\neg\\exists x\\forall y\\,P(x,y)\\equiv\\forall x\\exists y\\,\\neg P(x,y)$', 'นิเสธของ $x<y$ คือ $x\\ge y$']),
   question(50, 'quantifier', 'hard', 'เมื่อเอกภพเป็นจำนวนจริง ข้อใดมีค่าความจริงเหมือน $\\neg\\forall x\\,(x^2+x\\ge0)$', { a: 'มีจำนวนจริง $x$ ที่ $x^2+x<0$', b: 'ทุกจำนวนจริงทำให้ $x^2+x<0$', c: 'มีจำนวนจริง $x$ ที่ $x^2+x\\le0$', d: 'ไม่มีจำนวนจริง $x$ ที่ $x^2+x<0$', e: 'ทุกจำนวนจริงทำให้ $x^2+x>0$' }, 'a', 'นิเสธ $\\forall$ เป็น $\\exists$ และนิเสธ $\\ge$ เป็น $<$', ['$\\neg\\forall x\\,(x^2+x\\ge0)\\equiv\\exists x\\,(x^2+x<0)$', 'เช่น $x=-\\tfrac12$ ทำให้ค่าเป็น $-\\tfrac14<0$']),
 ]
 
