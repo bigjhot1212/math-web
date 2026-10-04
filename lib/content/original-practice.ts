@@ -41,7 +41,7 @@ const baseOriginalPracticeQuestions: Question[] = [
 const answerKeys = ['a', 'b', 'c', 'd', 'e'] as const
 
 function numberChoices(correct: number, distractors: number[], answerIndex: number) {
-  const values = distractors.filter(value => value !== correct).slice(0, 4)
+  const values = [...new Set(distractors.filter(value => value !== correct))].slice(0, 4)
   let next = correct + 1
   while (values.length < 4) {
     if (!values.includes(next)) values.push(next)
