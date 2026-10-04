@@ -57,7 +57,7 @@ const TOPICS: Topic[] = [
   { id: 'statistics-distributions', icon: 'σ', name: 'สถิติและตัวแปรสุ่ม', nameEn: 'Statistics & Distributions', grade: 'ม.6', formula: 'z=\\frac{x-\\mu}{\\sigma}' },
 ]
 
-const HUES = [275, 45, 190, 350, 150, 240, 20]
+const HUES = [275, 240, 205, 295, 185, 255, 225]
 
 const DAILY_QUESTIONS: DailyQuestion[] = [
   {
@@ -81,10 +81,10 @@ const DAILY_QUESTIONS: DailyQuestion[] = [
 ]
 
 const GRADE_TABS: Array<{ id: Grade; label: string; dot: string }> = [
-  { id: 'all', label: 'ทั้งหมด', dot: 'oklch(0.22 0.08 280)' },
-  { id: 'ม.4', label: 'ม.4', dot: 'oklch(0.51 0.22 275)' },
-  { id: 'ม.5', label: 'ม.5', dot: 'oklch(0.7 0.19 45)' },
-  { id: 'ม.6', label: 'ม.6', dot: 'oklch(0.55 0.14 150)' },
+  { id: 'all', label: 'ทั้งหมด', dot: 'oklch(0.78 0.12 255)' },
+  { id: 'ม.4', label: 'ม.4', dot: 'oklch(0.72 0.17 275)' },
+  { id: 'ม.5', label: 'ม.5', dot: 'oklch(0.76 0.12 220)' },
+  { id: 'ม.6', label: 'ม.6', dot: 'oklch(0.72 0.14 195)' },
 ]
 
 function renderMath(text: string) {
@@ -97,14 +97,15 @@ function renderMath(text: string) {
 
 function topicStyle(hue: number): CSSProperties {
   return {
-    '--topic-bg': `oklch(0.955 0.04 ${hue})`,
-    '--topic-border': `oklch(0.9 0.06 ${hue})`,
-    '--topic-solid': `oklch(0.55 0.17 ${hue})`,
-    '--topic-deep': `oklch(0.42 0.08 ${hue})`,
-    '--topic-chip': `oklch(0.45 0.15 ${hue})`,
-    '--topic-track': `oklch(0.9 0.05 ${hue})`,
-    '--topic-watermark': `oklch(0.86 0.09 ${hue})`,
-    '--topic-shadow': `oklch(0.5 0.17 ${hue} / .6)`,
+    '--topic-bg': `oklch(0.225 0.045 ${hue})`,
+    '--topic-hover': `oklch(0.285 0.07 ${hue})`,
+    '--topic-border': `oklch(0.36 0.065 ${hue})`,
+    '--topic-solid': `oklch(0.74 0.13 ${hue})`,
+    '--topic-deep': `oklch(0.76 0.045 ${hue})`,
+    '--topic-chip': `oklch(0.82 0.09 ${hue})`,
+    '--topic-track': `oklch(0.31 0.045 ${hue})`,
+    '--topic-watermark': `oklch(0.39 0.075 ${hue})`,
+    '--topic-shadow': `oklch(0.1 0.04 ${hue} / .75)`,
   } as CSSProperties
 }
 
@@ -165,7 +166,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
   const pickedTopic = TOPICS.find((topic) => topic.id === pickedId)
 
   return (
-    <main className="min-h-screen bg-background px-5 py-10 sm:px-8 sm:py-12 lg:px-14 lg:py-14">
+    <main className="practice-dark-theme min-h-screen bg-background px-5 py-10 sm:px-8 sm:py-12 lg:px-14 lg:py-14">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-7">
         <header className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
@@ -181,7 +182,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
             type="button"
             onClick={shuffleTopic}
             disabled={rolling || visibleTopics.length === 0}
-            className="inline-flex min-h-12 items-center gap-2.5 rounded-[14px] border-[1.5px] border-dashed border-cta bg-[oklch(0.97_0.035_60)] px-5 py-3 text-sm font-bold text-[oklch(0.5_0.16_45)] transition-colors hover:bg-[oklch(0.95_0.05_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cta focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-55"
+            className="inline-flex min-h-12 items-center gap-2.5 rounded-[14px] border border-primary/45 bg-card px-5 py-3 text-sm font-bold text-primary transition-colors hover:border-primary/75 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-55"
           >
             <Dice5
               className="h-5 w-5 transition-transform duration-500"
@@ -196,7 +197,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
 
         <section className={`grid gap-5 ${continueTopic ? 'lg:grid-cols-[1fr_1.15fr]' : 'grid-cols-1'}`} aria-label="เริ่มฝึกอย่างรวดเร็ว">
           {continueTopic && continueProgress && (
-            <article className="relative flex min-h-64 flex-col gap-4 overflow-hidden rounded-3xl bg-primary px-7 py-6 text-white">
+            <article className="relative flex min-h-64 flex-col gap-4 overflow-hidden rounded-3xl bg-[oklch(0.27_0.09_275)] px-7 py-6 text-white shadow-[0_18px_42px_-28px_oklch(0.08_0.04_275)]">
               <span className="pointer-events-none absolute -bottom-16 -right-1 font-math text-[200px] leading-none text-white/10" aria-hidden="true">
                 {continueTopic.icon}
               </span>
@@ -208,7 +209,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
               <div className="relative grid max-w-xs grid-cols-5 gap-1.5" aria-label={`ทำแล้ว ${continueProgress.done} จาก ${continueProgress.total} ข้อ`}>
                 {Array.from({ length: 5 }, (_, index) => {
                   const activeSegments = Math.ceil((continueProgress.done / continueProgress.total) * 5)
-                  return <span key={index} className={`h-1.5 rounded-full ${index < activeSegments ? 'bg-[oklch(0.78_0.15_45)]' : 'bg-white/25'}`} />
+                  return <span key={index} className={`h-1.5 rounded-full ${index < activeSegments ? 'bg-[oklch(0.76_0.13_220)]' : 'bg-white/20'}`} />
                 })}
               </div>
               <div className="relative mt-auto flex flex-wrap items-center gap-4">
@@ -220,9 +221,9 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
             </article>
           )}
 
-          <article className="flex min-h-64 flex-col gap-4 rounded-3xl bg-[oklch(0.22_0.08_280)] px-7 py-6 text-white">
+          <article className="flex min-h-64 flex-col gap-4 rounded-3xl border border-white/10 bg-[oklch(0.205_0.06_255)] px-7 py-6 text-white shadow-[0_18px_42px_-28px_oklch(0.08_0.04_255)]">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-semibold text-[oklch(0.78_0.15_45)]">โจทย์ประจำวัน · {dateLabel}</p>
+              <p className="text-sm font-semibold text-[oklch(0.78_0.12_220)]">โจทย์ประจำวัน · {dateLabel}</p>
               <p className="text-xs text-white/65">โจทย์สั้นก่อนเริ่มฝึกจริง</p>
             </div>
             <div className="text-lg leading-relaxed">{renderMath(daily.question)}</div>
@@ -255,7 +256,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
                 'เลือกคำตอบเพื่อดูแนวคิด'
               ) : (
                 <>
-                  <strong className={dailyChoice === daily.correct ? 'text-[oklch(0.78_0.14_150)]' : 'text-[oklch(0.78_0.15_45)]'}>
+                  <strong className={dailyChoice === daily.correct ? 'text-[oklch(0.78_0.14_175)]' : 'text-[oklch(0.78_0.12_220)]'}>
                     {dailyChoice === daily.correct ? 'ถูกต้อง! ' : 'ยังไม่ใช่ — '}
                   </strong>
                   {renderMath(daily.explanation)}
@@ -273,14 +274,14 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
                 type="button"
                 onClick={() => setGrade(tab.id)}
                 aria-pressed={grade === tab.id}
-                className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${grade === tab.id ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${grade === tab.id ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:bg-card/60 hover:text-foreground'}`}
               >
                 <span className="h-2 w-2 rounded-full" style={{ background: tab.dot }} aria-hidden="true" />
                 {tab.label}
               </button>
             ))}
           </div>
-          <label className="flex min-h-12 w-full items-center gap-2.5 rounded-[14px] border border-border bg-white px-4 md:w-80">
+          <label className="flex min-h-12 w-full items-center gap-2.5 rounded-[14px] border border-border bg-card px-4 transition-colors focus-within:border-primary/70 md:w-80">
             <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <span className="sr-only">ค้นหาหัวข้อ</span>
             <input
