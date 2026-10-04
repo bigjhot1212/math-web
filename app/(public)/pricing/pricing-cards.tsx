@@ -65,6 +65,7 @@ type CourseCardProps = {
 function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardProps) {
   const course = COURSES[id]
   const available = course.status === 'available'
+  const isSpecial = course.zone === 'special'
   const [showCurriculum, setShowCurriculum] = useState(false)
   const totalLessons = course.curriculum?.reduce((sum, s) => sum + s.items.length, 0) ?? 0
   const [inCart, setInCart] = useState(false)
@@ -86,8 +87,8 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
       className={`animate-fade-slide-in group relative rounded-3xl border border-border bg-card overflow-hidden shadow-sm transition-all duration-300 ${available ? 'hover:shadow-lg hover:-translate-y-1' : ''}`}
     >
       {/* Poster */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#171a3b]">
-        <CourseArtwork courseId={id} courseName={course.name} />
+      <div className={`relative overflow-hidden bg-[#171a3b] ${isSpecial ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
+        <CourseArtwork courseId={id} courseName={course.name} featured={isSpecial} />
 
         {owned && (
           <span className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-white/90 text-primary">
@@ -109,13 +110,12 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
       </div>
 
       {/* Body */}
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">คอร์สออนไลน์</span>
-          <span className="text-[10px] font-mono text-muted-foreground">{id}</span>
-        </div>
-        <h3 className="text-sm font-heading font-semibold text-foreground mb-1 line-clamp-1">{course.name}</h3>
-        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{course.nameEn} · {course.desc}</p>
+      <div className={isSpecial ? 'p-5' : 'p-4'}>
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {isSpecial ? 'คอร์สพิเศษ' : 'คอร์สออนไลน์'}
+        </p>
+        <h3 className={`${isSpecial ? 'text-lg' : 'text-sm'} font-heading font-semibold text-foreground mb-1 ${isSpecial ? '' : 'line-clamp-1'}`}>{course.name}</h3>
+        <p className={`text-xs text-muted-foreground mb-3 ${isSpecial ? 'line-clamp-3' : 'line-clamp-2'}`}>{course.nameEn} · {course.desc}</p>
 
         {course.curriculum && course.curriculum.length > 0 && (
           <div className="mb-3">
@@ -346,7 +346,9 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
                   onBuy={handleBuyBundle}
                 />
               ))}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className={zone === 'special'
+                ? 'grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2'
+                : 'grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}>
                 {sorted.map(({ id }, i) => (
                   <CourseCard
                     key={id}

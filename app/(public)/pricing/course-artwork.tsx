@@ -7,8 +7,8 @@ type ArtworkConfig = {
 }
 
 const ARTWORKS: Record<string, ArtworkConfig> = {
-  'foundation-high-school': { background: '#171a3b', accent: '#f5a65b', label: 'FOUNDATION', symbol: '±', symbolSize: 100 },
-  'a-level-math-1-intensive': { background: '#28133d', accent: '#ff8a5b', label: 'A-LEVEL 1', symbol: '∑', symbolSize: 96 },
+  'foundation-high-school': { background: '#17204a', accent: '#8ca8ff', label: 'MATH FOUNDATION', symbol: 'x + y', symbolSize: 64 },
+  'a-level-math-1-intensive': { background: '#261745', accent: '#c4b5fd', label: 'A-LEVEL MATH 1', symbol: '∫₀¹', symbolSize: 82 },
   set: { background: '#12264a', accent: '#6fb7ff', label: 'SET THEORY', symbol: '∪', symbolSize: 96 },
   logic: { background: '#21173d', accent: '#b6a2ff', label: 'LOGIC', symbol: '⇒', symbolSize: 84 },
   'real-numbers': { background: '#173145', accent: '#70d5c1', label: 'REAL NUMBERS', symbol: 'ℝ', symbolSize: 88 },
@@ -25,17 +25,17 @@ const ARTWORKS: Record<string, ArtworkConfig> = {
   'statistics-distributions': { background: '#263044', accent: '#f0c86d', label: 'STATISTICS', symbol: 'x̄', symbolSize: 90 },
 }
 
-export default function CourseArtwork({ courseId, courseName }: { courseId: string; courseName: string }) {
+export default function CourseArtwork({ courseId, courseName, featured = false }: { courseId: string; courseName: string; featured?: boolean }) {
   const artwork = ARTWORKS[courseId] ?? ARTWORKS['relations-functions']
 
   return (
     <div className="relative h-full w-full overflow-hidden" role="img" aria-label={`สัญลักษณ์คณิตศาสตร์ประจำคอร์ส${courseName}`}>
-      <svg viewBox="0 0 320 220" className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.025]" aria-hidden="true">
-        <rect width="320" height="220" fill={artwork.background} />
-        <circle cx="160" cy="98" r="68" fill={artwork.accent} fillOpacity=".08" />
-        <text x="160" y="129" fill="white" fontFamily="Georgia, 'Times New Roman', serif" fontSize={artwork.symbolSize} fontWeight="600" textAnchor="middle">{artwork.symbol}</text>
-        <circle cx="160" cy="169" r="3" fill={artwork.accent} />
-        <text x="18" y="204" fill="white" fillOpacity=".52" fontSize="10" fontWeight="700" letterSpacing="2.2">{artwork.label}</text>
+      <svg viewBox={featured ? '0 0 400 200' : '0 0 320 220'} className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.025]" aria-hidden="true">
+        <rect width={featured ? 400 : 320} height={featured ? 200 : 220} fill={artwork.background} />
+        <circle cx={featured ? 200 : 160} cy={featured ? 86 : 98} r={featured ? 66 : 68} fill={artwork.accent} fillOpacity=".09" />
+        <text x={featured ? 200 : 160} y={featured ? 112 : 129} fill="white" fontFamily="Georgia, 'Times New Roman', serif" fontSize={artwork.symbolSize} fontWeight="600" textAnchor="middle">{artwork.symbol}</text>
+        {!featured && <circle cx="160" cy="169" r="3" fill={artwork.accent} />}
+        <text x="18" y={featured ? 181 : 204} fill="white" fillOpacity=".52" fontSize="10" fontWeight="700" letterSpacing="2.2">{artwork.label}</text>
       </svg>
     </div>
   )
