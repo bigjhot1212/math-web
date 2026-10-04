@@ -86,7 +86,7 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
       className={`animate-fade-slide-in group relative rounded-3xl border border-border bg-card overflow-hidden shadow-sm transition-all duration-300 ${available ? 'hover:shadow-lg hover:-translate-y-1' : ''}`}
     >
       {/* Poster */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#171a3b]">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#171a3b]">
         <CourseArtwork courseId={id} courseName={course.name} />
 
         {owned && (
