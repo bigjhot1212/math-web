@@ -5,20 +5,15 @@ import { useRouter } from 'next/navigation'
 import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen, ShoppingCart, Check, MessageCircle } from 'lucide-react'
 import { COURSES, ZONE_LABELS, BUNDLES, type CourseZone } from '@/content/course-videos'
 import { getCart, addToCart, removeFromCart, onCartChange } from '@/lib/cart'
-
-const POSTER_GRADIENTS = [
-  'bg-gradient-to-br from-[var(--primary)] to-[#1e1b4b]',
-  'bg-gradient-to-br from-[var(--cta)] to-[#7c2d12]',
-  'bg-gradient-to-br from-[var(--chart-3)] to-[#134e4a]',
-]
+import CourseArtwork from './course-artwork'
 
 function useCountUp(target: number, durationMs = 900) {
   const [value, setValue] = useState(0)
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setValue(target)
-      return
+      const reducedMotionFrame = requestAnimationFrame(() => setValue(target))
+      return () => cancelAnimationFrame(reducedMotionFrame)
     }
     let raf = 0
     const start = performance.now()
@@ -36,22 +31,22 @@ function useCountUp(target: number, durationMs = 900) {
 }
 
 const ALL_COURSES = [
-  { id: 'foundation-high-school',   icon: 'ABC'  },
-  { id: 'a-level-math-1-intensive', icon: 'A1'   },
-  { id: 'set',                      icon: '∪'    },
-  { id: 'logic',                    icon: '∧'    },
-  { id: 'real-numbers',             icon: 'ℝ'    },
-  { id: 'relations-functions',      icon: 'f(x)' },
-  { id: 'exponential-logarithm',    icon: 'eˣ'   },
-  { id: 'analytic-geometry-conics', icon: '⊙'    },
-  { id: 'trigonometry',             icon: '△'    },
-  { id: 'matrix',                   icon: '[]'   },
-  { id: 'vector',                   icon: '→'    },
-  { id: 'complex-numbers',          icon: 'ℂ'    },
-  { id: 'counting-probability',     icon: 'n!'   },
-  { id: 'sequences-series',         icon: '∑'    },
-  { id: 'calculus',                 icon: '∫'    },
-  { id: 'statistics-distributions', icon: 'σ'    },
+  { id: 'foundation-high-school' },
+  { id: 'a-level-math-1-intensive' },
+  { id: 'set' },
+  { id: 'logic' },
+  { id: 'real-numbers' },
+  { id: 'relations-functions' },
+  { id: 'exponential-logarithm' },
+  { id: 'analytic-geometry-conics' },
+  { id: 'trigonometry' },
+  { id: 'matrix' },
+  { id: 'vector' },
+  { id: 'complex-numbers' },
+  { id: 'counting-probability' },
+  { id: 'sequences-series' },
+  { id: 'calculus' },
+  { id: 'statistics-distributions' },
 ]
 
 const ZONE_ORDER: CourseZone[] = ['special', 'm6', 'm5', 'm4']
@@ -60,8 +55,6 @@ type Props = { isLoggedIn: boolean; purchasedTopicIds: string[] }
 
 type CourseCardProps = {
   id: string
-  icon: string
-  gradient: string
   index: number
   owned: boolean
   loading: boolean
@@ -69,7 +62,7 @@ type CourseCardProps = {
   onBuy: (id: string) => void
 }
 
-function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy }: CourseCardProps) {
+function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardProps) {
   const course = COURSES[id]
   const available = course.status === 'available'
   const [showCurriculum, setShowCurriculum] = useState(false)
@@ -93,11 +86,8 @@ function CourseCard({ id, icon, gradient, index, owned, loading, disabled, onBuy
       className={`animate-fade-slide-in group relative rounded-3xl border border-border bg-card overflow-hidden shadow-sm transition-all duration-300 ${available ? 'hover:shadow-lg hover:-translate-y-1' : ''}`}
     >
       {/* Poster */}
-      <div className={`relative aspect-[4/3] flex items-center justify-center overflow-hidden ${gradient}`}>
-        <span className="text-7xl font-heading font-bold text-white/90 drop-shadow-lg select-none" aria-hidden="true">
-          {icon}
-        </span>
-        <span className="pointer-events-none absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#171a3b]">
+        <CourseArtwork courseId={id} courseName={course.name} />
 
         {owned && (
           <span className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full bg-white/90 text-primary">
@@ -357,13 +347,11 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
                 />
               ))}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {sorted.map(({ id, icon }, i) => (
+                {sorted.map(({ id }, i) => (
                   <CourseCard
                     key={id}
                     id={id}
-                    icon={icon}
                     index={i}
-                    gradient={POSTER_GRADIENTS[i % POSTER_GRADIENTS.length]}
                     owned={purchasedTopicIds.includes(id)}
                     loading={topicLoading === id}
                     disabled={topicLoading !== null}
