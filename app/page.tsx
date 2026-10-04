@@ -55,7 +55,7 @@ export default function Home() {
               ถ้าอยากยื่นคณะโดยไม่ต้องมองคะแนน<br />ก็ต้องทำโจทย์โดยไม่ต้องดูเวลาเหมือนกัน
             </h1>
             <p className="mt-6 max-w-[620px] text-pretty text-lg leading-8 text-muted-foreground">
-              ฝึกทีละบท จับเวลาสอบจริง และดูความก้าวหน้าของตัวเองในที่เดียว เพื่อให้ทุกครั้งที่ทำโจทย์พาเราเข้าใกล้คะแนนที่ต้องการ
+              ฝึกทีละบท จับเวลาสอบจริง และดูความก้าวหน้าของตัวเองในที่เดียว เพื่อให้ทุกครั้งที่ทำโจทย์พาเราเข้าใกล้ความฝันมากขึ้น
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/practice" className={styles.primaryButton}>
