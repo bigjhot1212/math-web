@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Lightbulb, CheckCircle2, XCircle, ArrowLeft, ArrowRight, LogOut, SkipForward } from 'lucide-react'
@@ -17,6 +17,12 @@ export default function PracticeTopicPage() {
   const [showHint, setShowHint] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const [loading, setLoading] = useState(true)
+  const timerRef = useRef<{ questionId: string | null; elapsedMs: number; runningSince: number | null }>({
+    questionId: null,
+    elapsedMs: 0,
+    runningSince: null,
+  })
+  const savedQuestionsRef = useRef(new Set<string>())
 
   useEffect(() => {
     fetch(`/api/questions?topicId=${topicId}`)
@@ -34,6 +40,47 @@ export default function PracticeTopicPage() {
       })
   }, [topicId])
 
+  const currentQuestionId = questions[current]?.id ?? null
+
+  useEffect(() => {
+    if (!currentQuestionId) return
+    timerRef.current = {
+      questionId: currentQuestionId,
+      elapsedMs: 0,
+      runningSince: savedQuestionsRef.current.has(currentQuestionId) ? null : performance.now(),
+    }
+  }, [currentQuestionId])
+
+  useEffect(() => {
+    function pauseTimer() {
+      const timer = timerRef.current
+      if (timer.runningSince === null) return
+      timer.elapsedMs += performance.now() - timer.runningSince
+      timer.runningSince = null
+    }
+
+    function resumeTimer() {
+      const timer = timerRef.current
+      if (!timer.questionId || timer.runningSince !== null || savedQuestionsRef.current.has(timer.questionId)) return
+      timer.runningSince = performance.now()
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') pauseTimer()
+      else if (document.hasFocus()) resumeTimer()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', pauseTimer)
+    window.addEventListener('focus', resumeTimer)
+    return () => {
+      pauseTimer()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('blur', pauseTimer)
+      window.removeEventListener('focus', resumeTimer)
+    }
+  }, [])
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
       <p className="text-muted-foreground">กำลังโหลดโจทย์...</p>
@@ -50,27 +97,53 @@ export default function PracticeTopicPage() {
   const isCorrect = selected === q.answer
   const isWrong = selected !== null && !isCorrect
 
-  async function saveProgress(isCorrect: boolean, hintUsed: boolean) {
-  await fetch('/api/progress', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      questionId: q.id,
-      topicId: q.topicId,
-      isCorrect,
-      timeSpentSeconds: 0,
-      hintUsed
-    })
-  })
-}
+  function getElapsedSeconds(questionId: string) {
+    const timer = timerRef.current
+    if (timer.questionId !== questionId) return 1
+    if (timer.runningSince !== null) {
+      timer.elapsedMs += performance.now() - timer.runningSince
+      timer.runningSince = null
+    }
+    return Math.max(1, Math.round(timer.elapsedMs / 1000))
+  }
+
+  async function saveProgress(question: Question, answerIsCorrect: boolean, hintUsed: boolean) {
+    if (savedQuestionsRef.current.has(question.id)) return
+    savedQuestionsRef.current.add(question.id)
+
+    try {
+      const response = await fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({
+          questionId: question.id,
+          topicId: question.topicId,
+          isCorrect: answerIsCorrect,
+          timeSpentSeconds: getElapsedSeconds(question.id),
+          hintUsed,
+        }),
+      })
+      if (!response.ok) throw new Error('Progress request failed')
+    } catch (error) {
+      savedQuestionsRef.current.delete(question.id)
+      console.error('Unable to save practice progress', error)
+    }
+  }
+
+  function handleSelect(key: string) {
+    if (selected !== null) return
+    const answerIsCorrect = key === q.answer
+    setSelected(key)
+    void saveProgress(q, answerIsCorrect, showHint)
+  }
 
   function handleNext() {
-  saveProgress(isCorrect, showHint)
-  setCurrent(c => c + 1)
-  setSelected(null)
-  setShowHint(false)
-  setShowSolution(false)
-}
+    setCurrent(c => c + 1)
+    setSelected(null)
+    setShowHint(false)
+    setShowSolution(false)
+  }
 
   function moveToQuestion(nextQuestion: number) {
     setCurrent(nextQuestion)
@@ -139,15 +212,13 @@ export default function PracticeTopicPage() {
               else className += "border-border hover:border-primary hover:bg-accent/50 cursor-pointer"
 
               return (
-                <div
+                <button
+                  type="button"
                   key={key}
                   className={className}
-                  onClick={() => {
-                    if (!selected) {
-                      setSelected(key)
-                      if (key === q.answer) saveProgress(true, showHint)
-                    }
-                  }}
+                  onClick={() => handleSelect(key)}
+                  disabled={selected !== null}
+                  aria-pressed={selected === key}
                 >
                   <span className="font-medium text-sm w-6 text-muted-foreground uppercase shrink-0">{key}.</span>
                   <span className="text-sm flex-1">{renderText(value as string)}</span>
@@ -157,7 +228,7 @@ export default function PracticeTopicPage() {
                   {isSelectedWrong && (
                     <XCircle className="w-4 h-4 shrink-0 text-red-600" aria-hidden="true" />
                   )}
-                </div>
+                </button>
               )
             })}
           </div>

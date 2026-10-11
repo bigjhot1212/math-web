@@ -4,15 +4,24 @@ import { createClient } from '@/lib/supabase/server'
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
-    
+
     const { data: { user } } = await supabase.auth.getUser()
-    
+
     if (!user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
 
     const body = await request.json()
     const { questionId, topicId, isCorrect, timeSpentSeconds, hintUsed } = body
+
+    const validQuestionId = typeof questionId === 'string' && questionId.length > 0 && questionId.length <= 160
+    const validTopicId = typeof topicId === 'string' && topicId.length > 0 && topicId.length <= 100
+    const normalizedSeconds = Number(timeSpentSeconds)
+    const validTime = Number.isFinite(normalizedSeconds) && normalizedSeconds >= 1 && normalizedSeconds <= 7_200
+
+    if (!validQuestionId || !validTopicId || typeof isCorrect !== 'boolean' || typeof hintUsed !== 'boolean' || !validTime) {
+      return NextResponse.json({ error: 'Invalid progress data' }, { status: 400 })
+    }
 
     const { error } = await supabase
       .from('user_progress')
@@ -21,7 +30,7 @@ export async function POST(request: NextRequest) {
         question_id: questionId,
         topic_id: topicId,
         is_correct: isCorrect,
-        time_spent_seconds: timeSpentSeconds,
+        time_spent_seconds: Math.round(normalizedSeconds),
         hint_used: hintUsed
       })
 
@@ -30,6 +39,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
 
   } catch (error) {
+    console.error('Failed to save practice progress', error)
     return NextResponse.json({ error: 'Failed to save progress' }, { status: 500 })
   }
 }

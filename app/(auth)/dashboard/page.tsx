@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ListChecks, Target, Flame, ShieldCheck } from 'lucide-react'
+import { Clock3, ListChecks, Target, Flame, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/payment-config'
+import { deduplicateAttempts, formatCompactDuration, formatDuration, getTopicPerformances, getValidTimes, median } from '@/lib/progress-analytics'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -25,7 +26,9 @@ const TOPIC_NAMES: Record<string, string> = {
 type ProgressRow = {
   id: string
   topic_id: string
+  question_id: string
   is_correct: boolean
+  time_spent_seconds: number | null
   answered_at: string
 }
 
@@ -71,19 +74,6 @@ function getAccuracyTrend(rows: ProgressRow[], days = 14) {
   })
 }
 
-function getTopicStats(rows: ProgressRow[]) {
-  const map: Record<string, { correct: number; total: number }> = {}
-  for (const r of rows) {
-    if (!map[r.topic_id]) map[r.topic_id] = { correct: 0, total: 0 }
-    map[r.topic_id].total++
-    if (r.is_correct) map[r.topic_id].correct++
-  }
-  return Object.entries(map)
-    .map(([topicId, s]) => ({ topicId, ...s, accuracy: Math.round((s.correct / s.total) * 100) }))
-    .filter(t => t.total >= 2)
-    .sort((a, b) => a.accuracy - b.accuracy)
-}
-
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -92,7 +82,7 @@ export default async function DashboardPage() {
   const [{ data: progressRows }, { data: examRows }] = await Promise.all([
     supabase
       .from('user_progress')
-      .select('id, topic_id, is_correct, answered_at')
+      .select('id, topic_id, question_id, is_correct, time_spent_seconds, answered_at')
       .eq('user_id', user.id)
       .order('answered_at', { ascending: true }),
     supabase
@@ -104,7 +94,7 @@ export default async function DashboardPage() {
       .limit(5),
   ])
 
-  const progress: ProgressRow[] = progressRows ?? []
+  const progress = deduplicateAttempts((progressRows ?? []) as ProgressRow[])
   const exams: ExamRow[] = examRows ?? []
 
   const totalAnswered = progress.length
@@ -112,9 +102,16 @@ export default async function DashboardPage() {
   const overallAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
   const streak = calculateStreak(progress)
   const trend = getAccuracyTrend(progress, 14)
-  const topicStats = getTopicStats(progress)
-  const weakTopics = topicStats.slice(0, 5)
-  const strongTopics = [...topicStats].reverse().slice(0, 3)
+  const overallMedianSeconds = median(getValidTimes(progress))
+  const topicStats = getTopicPerformances(progress).filter(topic => topic.total >= 2)
+  const weakTopics = topicStats
+    .filter(topic => topic.status !== 'strong' && topic.status !== 'collecting')
+    .sort((a, b) => a.priority - b.priority || a.accuracy - b.accuracy)
+    .slice(0, 5)
+  const strongTopics = topicStats
+    .filter(topic => topic.status === 'strong')
+    .sort((a, b) => b.accuracy - a.accuracy || (a.medianSeconds ?? Infinity) - (b.medianSeconds ?? Infinity))
+    .slice(0, 3)
 
   const displayName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'คุณ'
 
@@ -154,7 +151,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Stat cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-4 mb-8 lg:grid-cols-4">
           <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
             <span className="w-9 h-9 rounded-xl bg-chart-3/15 text-chart-3 flex items-center justify-center mb-3">
               <ListChecks className="w-4.5 h-4.5" aria-hidden="true" />
@@ -182,6 +179,14 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted-foreground mb-1">Streak</p>
             <p className="text-3xl font-heading font-bold text-foreground tabular-nums">{streak}</p>
             <p className="text-xs text-muted-foreground mt-1">วันติดต่อกัน</p>
+          </div>
+          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+            <span className="w-9 h-9 rounded-xl bg-chart-2/15 text-chart-2 flex items-center justify-center mb-3">
+              <Clock3 className="w-4.5 h-4.5" aria-hidden="true" />
+            </span>
+            <p className="text-xs text-muted-foreground mb-1">เวลาต่อข้อ</p>
+            <p className="text-2xl font-heading font-bold text-foreground tabular-nums">{formatCompactDuration(overallMedianSeconds)}</p>
+            <p className="text-xs text-muted-foreground mt-1">ค่ามัธยฐานของเวลาที่ทำจริง</p>
           </div>
         </div>
 
@@ -223,12 +228,13 @@ export default async function DashboardPage() {
 
           {/* Weak topics */}
           <div style={{ animationDelay: '80ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
-            <h2 className="text-sm font-semibold text-foreground mb-4">หัวข้อที่ต้องฝึกเพิ่ม</h2>
+            <h2 className="text-sm font-semibold text-foreground mb-1">หัวข้อที่ควรฝึกต่อ</h2>
+            <p className="mb-4 text-xs text-muted-foreground">วิเคราะห์ร่วมกันจากความถูกต้องและเวลาต่อข้อ</p>
             {weakTopics.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 {totalAnswered === 0
                   ? 'ยังไม่มีข้อมูล เริ่มทำโจทย์เลย!'
-                  : 'ทำโจทย์อย่างน้อย 2 ข้อต่อหัวข้อเพื่อดูสถิติ'}
+                  : 'ทำอย่างน้อย 5 ข้อต่อบท ระบบจึงจะเริ่มวิเคราะห์ได้'}
               </p>
             ) : (
               <div className="flex flex-col gap-3">
@@ -238,17 +244,13 @@ export default async function DashboardPage() {
                     href={`/practice/${t.topicId}`}
                     className="flex items-center gap-3 group"
                   >
-                    <span className="text-sm text-muted-foreground w-36 shrink-0 truncate group-hover:text-foreground transition-colors">
-                      {TOPIC_NAMES[t.topicId] ?? t.topicId}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm text-foreground group-hover:text-primary transition-colors">{TOPIC_NAMES[t.topicId] ?? t.topicId}</span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">{t.statusLabel}</span>
                     </span>
-                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${t.accuracy >= 80 ? 'bg-green-500' : t.accuracy >= 60 ? 'bg-amber-500' : 'bg-red-400'}`}
-                        style={{ width: `${t.accuracy}%` }}
-                      />
-                    </div>
-                    <span className="text-xs text-muted-foreground w-10 text-right shrink-0">
-                      {t.accuracy}%
+                    <span className="shrink-0 text-right text-xs text-muted-foreground">
+                      <span className="block font-semibold tabular-nums text-foreground">{t.accuracy}%</span>
+                      <span className="block tabular-nums">{formatDuration(t.medianSeconds)}</span>
                     </span>
                   </Link>
                 ))}
@@ -306,7 +308,8 @@ export default async function DashboardPage() {
 
           {/* Strong topics */}
           <div style={{ animationDelay: '200ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
-            <h2 className="text-sm font-semibold text-foreground mb-4">หัวข้อที่ทำได้ดี</h2>
+            <h2 className="text-sm font-semibold text-foreground mb-1">หัวข้อที่ทำได้ดี</h2>
+            <p className="mb-4 text-xs text-muted-foreground">แม่นอย่างน้อย 80% และใช้เวลาไม่เกิน 3 นาทีต่อข้อ</p>
             {strongTopics.length === 0 ? (
               <p className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</p>
             ) : (
@@ -322,8 +325,8 @@ export default async function DashboardPage() {
                         style={{ width: `${t.accuracy}%` }}
                       />
                     </div>
-                    <span className="text-xs text-muted-foreground w-10 text-right shrink-0">
-                      {t.accuracy}%
+                    <span className="text-xs text-muted-foreground min-w-24 text-right shrink-0 tabular-nums">
+                      {t.accuracy}% · {formatDuration(t.medianSeconds)}
                     </span>
                   </div>
                 ))}
