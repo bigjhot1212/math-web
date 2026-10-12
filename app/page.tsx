@@ -6,6 +6,7 @@ import {
   Check,
   ChevronRight,
   Clock3,
+  Gem,
   MessageCircle,
   LibraryBig,
   ReceiptText,
@@ -177,6 +178,18 @@ export default function Home() {
             <h3 className="mt-8 font-heading text-2xl font-semibold text-foreground">คอร์สของฉัน</h3>
             <p className="mt-2 leading-7 text-muted-foreground">คอร์สที่ชำระและยืนยันแล้วจะมาอยู่ในคลังส่วนตัว พร้อมลิงก์เข้าเรียนและรายละเอียดเนื้อหา</p>
             <span className="mt-8 inline-flex items-center gap-2 font-semibold text-primary">เปิดคลังคอร์ส <ArrowRight className="size-4" /></span>
+          </Link>
+
+          <Link href="/treasure" className={styles.treasurePanel}>
+            <div>
+              <span className={styles.darkLabel}><Gem className="size-4" /> ขุมทรัพย์ · อ่านฟรี</span>
+              <h3 className="mt-5 max-w-xl font-heading text-3xl font-semibold leading-tight text-foreground">เก็บ Keyword จุดหลอก และสรุปที่ควรเห็นก่อนเริ่มคิดเลข</h3>
+              <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">เปิดอ่านได้เลยโดยไม่ต้องล็อกอิน ค้นตามบทหรือเลือกเฉพาะโพยสรุป ทริคอ่านโจทย์ และเช็กลิสต์ก่อนสอบ</p>
+              <span className="mt-7 inline-flex items-center gap-2 font-semibold text-primary">เปิดขุมทรัพย์ <ArrowRight className="size-4" /></span>
+            </div>
+            <div className={styles.treasureMarks} aria-hidden="true">
+              <span>∪</span><span>⇒</span><span>lim</span><span>σ²</span>
+            </div>
           </Link>
         </div>
       </section>

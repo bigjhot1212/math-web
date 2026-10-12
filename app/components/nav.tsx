@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import UserMenu from './user-menu'
 import CartIcon from './cart-icon'
+import { BookMarked } from 'lucide-react'
 
 export default async function Nav() {
   const supabase = await createClient()
@@ -23,6 +24,7 @@ export default async function Nav() {
           {[
             ['ฝึกโจทย์', '/practice'],
             ['สอบจำลอง', '/exam'],
+            ['ขุมทรัพย์', '/treasure'],
             ...(user ? [['คอร์สของฉัน', '/courses']] : []),
             ['Dashboard', '/dashboard'],
             ['คอร์ส', '/pricing'],
@@ -34,6 +36,9 @@ export default async function Nav() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
+          <Link href="/treasure" className="flex size-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden" aria-label="ขุมทรัพย์">
+            <BookMarked className="size-5" />
+          </Link>
           <CartIcon />
           {user ? (
             <UserMenu name={name} email={email} avatarUrl={avatarUrl} />
