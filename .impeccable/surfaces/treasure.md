@@ -21,4 +21,5 @@ The selected structure is an exam-trap field guide: one featured dossier followe
 - Every resource must yield an immediate, testable takeaway.
 - Do not promise scores, rankings, or outcomes.
 - Public access; no sign-in gate.
-- Add new material through `content/treasure.ts` without a database migration.
+- Keep the approved Word chapters in `treasures/` as the editorial source, then regenerate `content/treasure-data.json` with `scripts/extract-treasure-docx.py`; no database migration is required.
+- Keep one formula guide for every topic available in Practice. Each guide must include formulas, the kinds of exam questions they support, and common cautions.

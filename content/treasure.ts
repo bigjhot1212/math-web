@@ -1,196 +1,75 @@
-export type TreasureKind = 'summary' | 'tip' | 'checklist'
+import treasureData from './treasure-data.json'
 
-export type TreasureSection = {
-  heading: string
-  paragraphs?: string[]
-  bullets?: string[]
-  formula?: string
-  note?: string
+export type TreasureFormula = {
+  name: string
+  expression: string
+  meaning: string
+  condition: string
+  use: string
+  keywords: string
+  caution: string
+  mistakes: string
+}
+
+export type TreasurePair = { label: string; guidance: string }
+
+export type TreasureExample = {
+  title: string
+  level: string
+  problem: string
+  answer: string
+  formula: string
+  keywords: string
+  steps: string[]
+  trap: string
+  check: string
+}
+
+export type TreasureReference = {
+  organization: string
+  title: string
+  url: string
+  note: string
 }
 
 export type TreasureResource = {
+  chapter: number
   slug: string
-  kind: TreasureKind
-  kindLabel: string
   topic: string
   title: string
   description: string
   readMinutes: number
   mark: string
+  practiceSlug: string
   featured?: boolean
+  goal: string
   takeaways: string[]
-  sections: TreasureSection[]
+  overview: string[]
+  scope: string[]
+  formulas: TreasureFormula[]
+  patterns: TreasurePair[]
+  keywords: TreasurePair[]
+  traps: string[]
+  scopeNote: string
+  checklist: string[]
+  examples: TreasureExample[]
+  references: TreasureReference[]
+  sourceDocument: string
 }
 
-export const TREASURE_RESOURCES: TreasureResource[] = [
-  {
-    slug: 'set-keywords',
-    kind: 'tip',
-    kindLabel: 'ทริคอ่านโจทย์',
-    topic: 'เซต',
-    title: 'แปล Keyword เรื่องเซตให้เป็นสัญลักษณ์',
-    description: 'เห็นคำว่า “อย่างน้อยหนึ่ง” หรือ “ทั้งสอง” แล้วรู้ทันทีว่าต้องใช้ยูเนียนหรืออินเตอร์เซกชัน',
-    readMinutes: 4,
-    mark: '∪',
-    featured: true,
-    takeaways: ['อย่างน้อยหนึ่ง → ยูเนียน', 'ทั้งสองพร้อมกัน → อินเตอร์เซกชัน', 'กันการนับซ้ำด้วย Inclusion–Exclusion'],
-    sections: [
-      {
-        heading: 'เริ่มจากแปลภาษาคนเป็นภาษาเซต',
-        paragraphs: ['ก่อนแทนสูตร ให้ขีดเส้นใต้คำที่บอกความสัมพันธ์ของกลุ่ม เพราะคำเพียงคำเดียวเปลี่ยนเครื่องหมายและคำตอบได้'],
-        bullets: ['“อย่างน้อยหนึ่งกลุ่ม” หมายถึงสมาชิกที่อยู่ใน A หรือ B หรืออยู่ทั้งสองกลุ่ม ใช้ A ∪ B', '“อยู่ทั้งสองกลุ่ม” หรือ “ทำทั้งสองอย่าง” ใช้ A ∩ B', '“ไม่อยู่ใน A” ใช้ส่วนเติมเต็ม Aᶜ', '“อยู่ใน A แต่ไม่อยู่ใน B” ใช้ A − B'],
-      },
-      {
-        heading: 'สูตรที่ต้องนึกถึงเมื่อมีสองกลุ่ม',
-        formula: 'n(A ∪ B) = n(A) + n(B) − n(A ∩ B)',
-        note: 'ที่ต้องลบส่วนร่วม เพราะตอนบวก n(A) กับ n(B) สมาชิกในส่วนร่วมถูกนับไปแล้วสองครั้ง',
-      },
-      {
-        heading: 'กับดักที่ออกบ่อย',
-        bullets: ['คำว่า “อย่างใดอย่างหนึ่ง” บางโจทย์หมายถึงเพียงกลุ่มเดียว ต้องอ่านบริบทว่าตัดส่วนร่วมออกหรือไม่', 'ถ้าโจทย์ถามคนที่ไม่เลือกทั้งสองอย่าง ให้หาจำนวนในยูเนียนก่อน แล้วลบออกจากจำนวนทั้งหมด', 'วาดแผนภาพเวนน์และใส่ส่วนร่วมก่อนเสมอ จะลดโอกาสนับซ้ำ'],
-      },
-    ],
-  },
-  {
-    slug: 'logic-implication',
-    kind: 'summary',
-    kindLabel: 'โพยสรุป',
-    topic: 'ตรรกศาสตร์',
-    title: 'ประพจน์แบบ “ถ้า…แล้ว…” ผิดตอนไหน',
-    description: 'จำเพียงกรณีเดียวที่ p → q เป็นเท็จ และแยกบทกลับออกจากบทแย้งให้ชัด',
-    readMinutes: 5,
-    mark: '⇒',
-    takeaways: ['p → q เท็จเฉพาะ p จริง แต่ q เท็จ', 'บทแย้งสมมูลกับประพจน์เดิม', 'บทกลับไม่จำเป็นต้องสมมูล'],
-    sections: [
-      {
-        heading: 'เหตุการณ์เดียวที่ทำให้เงื่อนไขพัง',
-        paragraphs: ['มอง p → q เป็นคำรับรองว่า “ถ้า p เกิดขึ้น q ต้องเกิดตาม” คำรับรองนี้จึงผิดเฉพาะตอน p เกิดจริง แต่ q ไม่เกิด'],
-        formula: 'p → q เป็นเท็จ ⇔ p เป็นจริง และ q เป็นเท็จ',
-      },
-      {
-        heading: 'สามประโยคที่หน้าตาคล้ายกัน',
-        bullets: ['บทกลับ: q → p สลับหน้า–หลัง แต่ไม่จำเป็นต้องสมมูลกับประพจน์เดิม', 'บทผกผัน: ¬p → ¬q ปฏิเสธทั้งสองฝั่ง แต่ยังไม่จำเป็นต้องสมมูล', 'บทแย้ง: ¬q → ¬p สลับแล้วปฏิเสธ เป็นประพจน์ที่สมมูลกับ p → q'],
-      },
-      {
-        heading: 'เช็กก่อนตอบ',
-        note: 'ถ้าโจทย์ถาม “ข้อใดสมมูล” ให้สร้างบทแย้งก่อน อย่าเพิ่งทำตารางค่าความจริงทุกข้อ เพราะมักเสียเวลาเกินจำเป็น',
-      },
-    ],
-  },
-  {
-    slug: 'function-domain-checklist',
-    kind: 'checklist',
-    kindLabel: 'เช็กลิสต์',
-    topic: 'ฟังก์ชัน',
-    title: 'หาโดเมนให้ครบในรอบเดียว',
-    description: 'ไล่ตัวส่วน รากคู่ และลอการิทึมตามลำดับ เพื่อไม่ทำเงื่อนไขหล่นระหว่างทาง',
-    readMinutes: 4,
-    mark: 'f',
-    takeaways: ['ตัวส่วนต้องไม่เป็นศูนย์', 'ใต้รากคู่ต้องไม่ติดลบ', 'จำนวนใน log ต้องมากกว่าศูนย์'],
-    sections: [
-      {
-        heading: 'สามด่านหลักของโดเมน',
-        bullets: ['มีเศษส่วน: ตัวส่วน ≠ 0', 'มีรากที่ดัชนีเป็นจำนวนคู่: จำนวนใต้ราก ≥ 0', 'มี log: จำนวนภายใน log > 0 และฐานต้องเป็นบวกแต่ไม่เท่ากับ 1'],
-      },
-      {
-        heading: 'ถ้ามีหลายเงื่อนไขพร้อมกัน',
-        paragraphs: ['แก้แต่ละเงื่อนไขแยกกันก่อน แล้วนำช่วงคำตอบมาอินเตอร์เซกชัน เพราะค่า x ต้องผ่านทุกด่านพร้อมกัน ไม่ใช่ผ่านด่านใดด่านหนึ่ง'],
-        formula: 'D = D₁ ∩ D₂ ∩ ⋯ ∩ Dₙ',
-      },
-      {
-        heading: 'จุดที่พลาดกันบ่อย',
-        bullets: ['ใต้รากอยู่บนตัวส่วน ต้องมากกว่า 0 ไม่ใช่มากกว่าหรือเท่ากับ 0', 'รากคี่รับจำนวนลบได้ จึงไม่ต้องตั้งเงื่อนไขแบบรากคู่', 'หลังแก้อสมการ อย่าลืมตรวจจุดปลายช่วงว่ารับหรือไม่รับ'],
-      },
-    ],
-  },
-  {
-    slug: 'trigonometry-core-relations',
-    kind: 'summary',
-    kindLabel: 'โพยสรุป',
-    topic: 'ตรีโกณมิติ',
-    title: 'สามความสัมพันธ์ที่พากลับบ้านได้เสมอ',
-    description: 'เมื่อสูตรเต็มหน้า ให้ลดทุกอย่างกลับมาอยู่ใน sin และ cos ก่อน แล้วค่อยจัดรูป',
-    readMinutes: 5,
-    mark: 'θ',
-    takeaways: ['sin²θ + cos²θ = 1', 'tanθ = sinθ / cosθ', 'ดูควอดแรนต์ก่อนใส่เครื่องหมาย'],
-    sections: [
-      {
-        heading: 'ฐานที่ควรจำจริงๆ',
-        formula: 'sin²θ + cos²θ = 1    และ    tanθ = sinθ / cosθ',
-        note: 'สูตรอื่นจำนวนมากย้อนกลับมาจากสองความสัมพันธ์นี้ได้ การจำโครงสร้างจึงปลอดภัยกว่าจำสูตรแยกเป็นสิบสูตร',
-      },
-      {
-        heading: 'ลำดับคิดเมื่อเจอนิพจน์ยาว',
-        bullets: ['ดูว่าโจทย์ต้องการคำตอบในฟังก์ชันใด', 'แปลงฟังก์ชันที่เหลือให้เป็น sin และ cos', 'จัดตัวประกอบหรือทำส่วนให้เท่ากัน', 'ใช้ sin²θ + cos²θ = 1 เมื่อเห็นกำลังสองคู่กัน'],
-      },
-      {
-        heading: 'ก่อนถอดรากหรือหามุม',
-        paragraphs: ['ค่าของ sin, cos และ tan อาจมีขนาดถูกแต่เครื่องหมายผิดได้เสมอ ให้ระบุก่อนว่ามุมอยู่ควอดแรนต์ใด แล้วจึงเลือกเครื่องหมาย'],
-      },
-    ],
-  },
-  {
-    slug: 'limit-indeterminate-checklist',
-    kind: 'tip',
-    kindLabel: 'ทริคอ่านโจทย์',
-    topic: 'แคลคูลัส',
-    title: 'แทนค่าแล้วได้ 0/0 ต้องทำอะไรต่อ',
-    description: '0/0 ไม่ใช่คำตอบ แต่เป็นสัญญาณให้เปลี่ยนรูปด้วยการแยกตัวประกอบ คูณสังยุค หรือทำส่วนร่วม',
-    readMinutes: 6,
-    mark: 'lim',
-    takeaways: ['แทนค่าตรงๆ ก่อนเสมอ', '0/0 คือรูปกำกวม', 'เลือกวิธีจัดรูปจากหน้าตานิพจน์'],
-    sections: [
-      {
-        heading: 'แผนตัดสินใจสั้นๆ',
-        bullets: ['แทนค่าแล้วได้จำนวนจริง: จบได้ทันที', 'ได้ 0/0 และเป็นพหุนาม: ลองแยกตัวประกอบ', 'มีผลต่างของราก: คูณด้วยพจน์สังยุค', 'เป็นผลต่างของเศษส่วน: ทำส่วนให้เท่ากันก่อน'],
-      },
-      {
-        heading: 'เหตุผลที่ตัดตัวประกอบได้',
-        paragraphs: ['ลิมิตสนใจค่าที่ x เข้าใกล้จุดนั้น ไม่ได้แทนว่าต้องใช้ค่าที่จุดนั้นเสมอ หลังจัดรูป เราจึงตัดตัวประกอบที่ไม่เป็นศูนย์เมื่อ x อยู่ใกล้จุดดังกล่าวได้'],
-      },
-      {
-        heading: 'หยุดเช็กอีกครั้งก่อนตอบ',
-        note: 'หลังจัดรูปแล้วให้แทนค่าใหม่ทุกครั้ง อย่าหยุดทันทีที่ตัดตัวประกอบเสร็จ เพราะยังอาจเหลือรูปกำกวมชนิดเดิมอยู่',
-      },
-    ],
-  },
-  {
-    slug: 'statistics-mean-variance',
-    kind: 'checklist',
-    kindLabel: 'เช็กลิสต์',
-    topic: 'สถิติ',
-    title: 'ค่าเฉลี่ยกับความแปรปรวนเปลี่ยนตามข้อมูลอย่างไร',
-    description: 'รู้ผลของการบวกและคูณข้อมูลทุกตัว โดยไม่ต้องคำนวณชุดข้อมูลใหม่ตั้งแต่ต้น',
-    readMinutes: 5,
-    mark: 'σ²',
-    takeaways: ['บวกค่าคงที่: ค่าเฉลี่ยเลื่อน แต่ความแปรปรวนคงเดิม', 'คูณด้วย k: ความแปรปรวนคูณด้วย k²', 'แยกตำแหน่งออกจากการกระจาย'],
-    sections: [
-      {
-        heading: 'ถ้าทุกข้อมูลเพิ่มขึ้นเท่ากัน',
-        formula: 'ถ้า y = x + c แล้ว ȳ = x̄ + c และ Var(y) = Var(x)',
-        note: 'ข้อมูลทั้งชุดเลื่อนไปพร้อมกัน ระยะห่างระหว่างข้อมูลไม่เปลี่ยน ความแปรปรวนจึงเท่าเดิม',
-      },
-      {
-        heading: 'ถ้าทุกข้อมูลถูกขยาย',
-        formula: 'ถ้า y = kx แล้ว ȳ = kx̄ และ Var(y) = k²Var(x)',
-        note: 'ส่วนเบี่ยงเบนมาตรฐานจึงคูณด้วย |k| ไม่ใช่ k²',
-      },
-      {
-        heading: 'แปลความก่อนเลือกสูตร',
-        bullets: ['ค่าเฉลี่ยบอกตำแหน่งกึ่งกลางของข้อมูล', 'ความแปรปรวนและส่วนเบี่ยงเบนมาตรฐานบอกการกระจาย', 'โจทย์ที่เปลี่ยนหน่วย เช่น เมตรเป็นเซนติเมตร คือการคูณข้อมูลทุกตัวด้วยค่าคงที่'],
-      },
-    ],
-  },
-]
+export const TREASURE_RESOURCES = treasureData as TreasureResource[]
+export const TREASURE_TOPICS = ['ทั้งหมด', ...TREASURE_RESOURCES.map((resource) => resource.topic)]
 
-export const TREASURE_TOPICS = ['ทั้งหมด', ...Array.from(new Set(TREASURE_RESOURCES.map((resource) => resource.topic)))]
-export const TREASURE_KINDS = [
-  { value: 'all', label: 'ทุกประเภท' },
-  { value: 'summary', label: 'โพยสรุป' },
-  { value: 'tip', label: 'ทริคอ่านโจทย์' },
-  { value: 'checklist', label: 'เช็กลิสต์' },
-] as const
+export const TREASURE_ALIASES: Record<string, string> = {
+  'set-keywords': 'set-formula-guide',
+  'logic-implication': 'logic-formula-guide',
+  'function-domain-checklist': 'relations-functions-formula-guide',
+  'trigonometry-core-relations': 'trigonometry-formula-guide',
+  'limit-indeterminate-checklist': 'calculus-formula-guide',
+  'statistics-mean-variance': 'statistics-distributions-formula-guide',
+}
 
 export function getTreasureResource(slug: string) {
-  return TREASURE_RESOURCES.find((resource) => resource.slug === slug)
+  const resolvedSlug = TREASURE_ALIASES[slug] ?? slug
+  return TREASURE_RESOURCES.find((resource) => resource.slug === resolvedSlug)
 }
