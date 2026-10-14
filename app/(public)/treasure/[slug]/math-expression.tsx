@@ -3,7 +3,8 @@ import styles from './treasure-article.module.css'
 
 type Props = { value: string }
 
-const OPERATOR = /\s*([=≡⇔↔→⟹∧∨+−×÷/≤≥<>∈∉⊂])\s*/g
+const OPERATOR = /\s*([=≡⇔↔→⟹∧∨+−×÷≤≥<>∈∉⊂])\s*/g
+const RELATIONS = new Set(['=', '≡', '⇔', '↔', '→', '⟹'])
 
 function formatPlain(value: string) {
   return value
@@ -31,7 +32,7 @@ function readScript(value: string, start: number) {
   return { content, end: start + content.length }
 }
 
-function renderLine(line: string, lineIndex: number) {
+function renderScripts(value: string, keyPrefix: string) {
   const parts: ReactNode[] = []
   let plain = ''
   let index = 0
@@ -42,15 +43,15 @@ function renderLine(line: string, lineIndex: number) {
     plain = ''
   }
 
-  while (index < line.length) {
-    const character = line[index]
-    if ((character === '_' || character === '^') && index + 1 < line.length) {
+  while (index < value.length) {
+    const character = value[index]
+    if ((character === '_' || character === '^') && index + 1 < value.length) {
       flush()
-      const script = readScript(line, index + 1)
+      const script = readScript(value, index + 1)
       const content = formatPlain(script.content).trim()
       parts.push(character === '_'
-        ? <sub key={`${lineIndex}-sub-${index}`}>{content}</sub>
-        : <sup key={`${lineIndex}-sup-${index}`}>{content}</sup>)
+        ? <sub key={`${keyPrefix}-sub-${index}`}>{content}</sub>
+        : <sup key={`${keyPrefix}-sup-${index}`}>{content}</sup>)
       index = script.end
       continue
     }
@@ -58,6 +59,77 @@ function renderLine(line: string, lineIndex: number) {
     index += 1
   }
   flush()
+  return parts
+}
+
+function splitRelations(value: string) {
+  const parts: string[] = []
+  let depth = 0
+  let start = 0
+
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index]
+    if ('([{'.includes(character)) depth += 1
+    if (')]}'.includes(character)) depth = Math.max(0, depth - 1)
+    if (depth === 0 && RELATIONS.has(character)) {
+      parts.push(value.slice(start, index).trim(), character)
+      start = index + 1
+    }
+  }
+  parts.push(value.slice(start).trim())
+  return parts.filter(Boolean)
+}
+
+function topLevelSlash(value: string) {
+  let depth = 0
+  let slash = -1
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index]
+    if ('([{'.includes(character)) depth += 1
+    if (')]}'.includes(character)) depth = Math.max(0, depth - 1)
+    if (character === '/' && depth === 0) {
+      if (slash >= 0) return -1
+      slash = index
+    }
+  }
+  return slash
+}
+
+function renderSegment(segment: string, keyPrefix: string) {
+  const slash = topLevelSlash(segment)
+  if (slash < 0) return renderScripts(segment, keyPrefix)
+
+  let numerator = segment.slice(0, slash).trim()
+  const denominator = segment.slice(slash + 1).trim()
+  let prefix = ''
+
+  const limit = numerator.match(/^(lim_(?:\{[^}]+\}|[^\s]+))(\s*\[.*\])$/)
+  if (limit) {
+    prefix = limit[1]
+    numerator = limit[2].trim()
+  } else if (/[ก-๙]/.test(numerator)) {
+    const boundary = numerator.lastIndexOf(' ')
+    if (boundary > 0) {
+      prefix = numerator.slice(0, boundary + 1)
+      numerator = numerator.slice(boundary + 1)
+    }
+  }
+
+  return [
+    ...renderScripts(prefix, `${keyPrefix}-prefix`),
+    <span className={styles.fraction} aria-label={`${numerator} หารด้วย ${denominator}`} key={`${keyPrefix}-fraction`}>
+      <span aria-hidden="true">{renderScripts(numerator, `${keyPrefix}-numerator`)}</span>
+      <span aria-hidden="true">{renderScripts(denominator, `${keyPrefix}-denominator`)}</span>
+    </span>,
+  ]
+}
+
+function renderLine(line: string, lineIndex: number) {
+  const parts = splitRelations(line).flatMap((part, partIndex) => (
+    RELATIONS.has(part)
+      ? <span className={styles.mathRelation} key={`${lineIndex}-relation-${partIndex}`}>{part}</span>
+      : renderSegment(part, `${lineIndex}-${partIndex}`)
+  ))
 
   return <span className={styles.mathLine} key={`${lineIndex}-${line}`}>{parts}</span>
 }

@@ -9,6 +9,15 @@ import styles from './treasure-article.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
 
+const FORMULA_DEMOS: Record<string, { prompt: string; tip: string; substitution: string; answer: string }> = {
+  'sequences-series-formula-guide::ผลบวกเลขคณิต': {
+    prompt: 'ลำดับ 3, 7, 11, … มี 20 พจน์ จงหาผลบวกทั้งหมด',
+    tip: 'โจทย์ให้พจน์แรก ผลต่างร่วม และจำนวนพจน์ จึงเลือกสูตรรูปที่มี a₁, d และ n',
+    substitution: 'a₁ = 3; d = 4; n = 20; S_20 = 20[2(3) + (20−1)4] / 2 = 20(82) / 2',
+    answer: 'S_20 = 820',
+  },
+}
+
 export function generateStaticParams() {
   return TREASURE_RESOURCES.map((resource) => ({ slug: resource.slug }))
 }
@@ -79,11 +88,31 @@ export default async function TreasureArticlePage({ params }: Props) {
                 <div className={styles.formulaBlock} key={formula.name}>
                   <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3></div>
                   <div className={styles.formula}><MathExpression value={formula.expression} /></div>
+                  {FORMULA_DEMOS[`${resource.slug}::${formula.name}`] && (() => {
+                    const demo = FORMULA_DEMOS[`${resource.slug}::${formula.name}`]
+                    return <div className={styles.formulaDemo}>
+                      <strong>ตัวอย่างแทนค่าจริง</strong>
+                      <p>{demo.prompt}</p>
+                      <p className={styles.formulaDemoTip}>{demo.tip}</p>
+                      <MathExpression value={demo.substitution} />
+                      <p className={styles.formulaDemoAnswer}>ดังนั้น <MathExpression value={demo.answer} /></p>
+                    </div>
+                  })()}
+                  <div className={styles.formulaWalkthrough}>
+                    <h4>วิธีใช้สูตรนี้ทีละขั้น</h4>
+                    <ol>
+                      <li><strong>จับคำสำคัญจากโจทย์</strong><span>ถ้าโจทย์กล่าวถึง {formula.keywords} ให้หยุดดูว่าสูตรนี้ตรงกับสิ่งที่โจทย์ถามหรือไม่</span></li>
+                      <li><strong>ระบุความหมายของข้อมูล</strong><span>{formula.meaning}</span></li>
+                      <li><strong>ตรวจเงื่อนไขก่อนแทนค่า</strong><span>{formula.condition}</span></li>
+                      <li><strong>เลือกใช้ให้ตรงคำถาม</strong><span>{formula.use}</span></li>
+                      <li><strong>ตรวจคำตอบอีกครั้ง</strong><span>{formula.caution} และอย่าพลาดแบบที่พบบ่อย: {formula.mistakes}</span></li>
+                    </ol>
+                  </div>
                   <dl className={styles.formulaDetails}>
-                    <div><dt>ความหมาย</dt><dd>{formula.meaning}</dd></div>
-                    <div><dt>เงื่อนไข</dt><dd>{formula.condition}</dd></div>
-                    <div><dt>ใช้เมื่อ</dt><dd>{formula.use}</dd></div>
-                    <div><dt>Keyword</dt><dd>{formula.keywords}</dd></div>
+                    <div><dt>สัญลักษณ์และความหมาย</dt><dd>{formula.meaning}</dd></div>
+                    <div><dt>เงื่อนไขที่ต้องตรวจ</dt><dd>{formula.condition}</dd></div>
+                    <div><dt>โจทย์แบบไหนใช้สูตรนี้</dt><dd>{formula.use}</dd></div>
+                    <div><dt>คำสำคัญในโจทย์</dt><dd>{formula.keywords}</dd></div>
                   </dl>
                   <div className={styles.cautions}>
                     <p><AlertTriangle aria-hidden="true" /> <span><strong>ระวัง</strong>{formula.caution}</span></p>

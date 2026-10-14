@@ -47,12 +47,16 @@
 .formulaTitle h3 { font-size: 20px; font-weight: 600; }
 .formula { max-width: 100%; min-width: 0; overflow-x: auto; margin-top: 20px; padding: 20px 22px; background: oklch(0.21 0.052 266); color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.15rem, 2.6vw, 1.65rem); line-height: 1.7; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
 .mathExpression { display: grid; min-width: 0; gap: .28em; }
-.mathLine { display: block; min-width: max-content; }
+.mathLine { display: flex; min-width: max-content; align-items: center; gap: .24em; }
+.mathRelation { padding-inline: .08em; }
+.fraction { display: inline-grid; min-width: 1.5em; grid-template-rows: auto auto; vertical-align: middle; text-align: center; line-height: 1.15; }
+.fraction > span { padding: .08em .24em; }
+.fraction > span:first-child { border-bottom: .065em solid currentColor; }
 .mathExpression sub, .mathExpression sup { position: relative; vertical-align: baseline; font-size: .64em; line-height: 0; }
 .mathExpression sub { bottom: -.24em; }
 .mathExpression sup { top: -.52em; }
 .formulaDetails { display: grid; grid-template-columns: 1fr 1fr; margin-top: 20px; border-top: 1px solid var(--border); }
-.formulaDetails > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; border-bottom: 1px solid var(--border); padding: 13px 0; }
+.formulaDetails > div { display: grid; grid-template-columns: minmax(120px, .65fr) minmax(0, 1.35fr); gap: 12px; border-bottom: 1px solid var(--border); padding: 13px 0; }
 .formulaDetails > div:nth-child(odd) { padding-right: 20px; }
 .formulaDetails > div:nth-child(even) { border-left: 1px solid var(--border); padding-left: 20px; }
 .formulaDetails dt { color: var(--primary); font-size: 12px; font-weight: 700; }
@@ -61,6 +65,19 @@
 .cautions p, .exampleChecks p { display: grid; grid-template-columns: auto 1fr; gap: 10px; border: 1px solid var(--border); padding: 15px; color: var(--muted-foreground); font-size: 13px; line-height: 1.65; }
 .cautions svg, .exampleChecks svg { width: 17px; margin-top: 3px; color: var(--secondary); }
 .cautions strong, .exampleChecks strong { display: block; margin-bottom: 3px; color: var(--foreground); }
+.formulaDemo { display: grid; gap: 9px; margin-top: 18px; border-block: 1px solid var(--border); padding: 18px 0; }
+.formulaDemo > strong { color: var(--primary); font-size: 12px; }
+.formulaDemo > p:not(.formulaDemoAnswer) { color: var(--muted-foreground); line-height: 1.65; }
+.formulaDemo > .formulaDemoTip { border-left: 2px solid var(--primary); padding-left: 12px; color: var(--foreground); }
+.formulaDemo > .mathExpression { overflow-x: auto; color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.05rem, 2.3vw, 1.35rem); scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
+.formulaDemoAnswer { display: flex; align-items: center; gap: 8px; color: var(--foreground); font-weight: 700; }
+.formulaDemoAnswer .mathExpression { color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: 1.18rem; }
+.formulaWalkthrough { margin-top: 22px; border: 1px solid var(--border); padding: 20px; }
+.formulaWalkthrough h4 { color: var(--foreground); font-size: 15px; font-weight: 700; }
+.formulaWalkthrough ol { display: grid; margin-top: 14px; counter-reset: walkthrough; }
+.formulaWalkthrough li { display: grid; grid-template-columns: 24px minmax(150px, .55fr) minmax(0, 1.45fr); gap: 12px; counter-increment: walkthrough; border-top: 1px solid var(--border); padding: 13px 0; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
+.formulaWalkthrough li::before { color: var(--primary); content: counter(walkthrough, decimal-leading-zero); font-size: 11px; font-variant-numeric: tabular-nums; }
+.formulaWalkthrough li strong { color: var(--foreground); font-weight: 600; }
 .flashIntro { max-width: 68ch; margin: -10px 0 24px; color: var(--muted-foreground); line-height: 1.75; }
 .flashStudy { border: 1px solid var(--border); border-radius: 16px; background: var(--card); padding: 24px; }
 .flashProgress { display: grid; gap: 10px; }
@@ -149,4 +166,5 @@
 .next:hover svg { transform: translateX(4px); }
 @media (max-width: 860px) { .bodyGrid { grid-template-columns: 1fr; gap: 42px; } .sidebar { position: static; max-height: none; grid-template-columns: 1fr 1fr; } .sidebar nav { display: none; } .practiceLink { align-self: end; } }
 @media (max-width: 700px) { .shell { padding-top: 32px; } .header { grid-template-columns: 1fr; gap: 28px; padding: 34px 0; } .mark { width: 118px; } .sidebar { grid-template-columns: 1fr; } .article > section { margin-top: 68px; } .scope, .pairList > div, .keywordTable > div { grid-template-columns: 1fr; gap: 8px; } .formulaDetails, .cautions, .exampleChecks, .exampleFacts, .flashAnswer dl, .flashActions { grid-template-columns: 1fr; } .formulaDetails > div:nth-child(odd) { padding-right: 0; } .formulaDetails > div:nth-child(even), .flashAnswer dl > div:nth-child(even) { border-left: 0; padding-left: 0; } .flashAnswer dl > div:nth-child(odd) { padding-right: 0; } .flashStudy { padding: 16px; } .flashProgress > div, .flashToolbar { align-items: flex-start; flex-direction: column; } .flashCard { min-height: 390px; } .flashQuestion, .flashAnswer { padding: 28px 22px; } .exampleFacts p + p { border-top: 1px solid var(--border); border-left: 0; } .examples summary { grid-template-columns: 1fr auto; } .examples summary > span { grid-column: 1; } .examples summary > strong { grid-column: 1; } .examples summary > small { grid-column: 2; grid-row: 1 / span 2; } .exampleBody { padding: 22px 18px; } }
+@media (max-width: 700px) { .formulaWalkthrough li { grid-template-columns: 24px minmax(0, 1fr); } .formulaWalkthrough li span { grid-column: 2; } .formulaDetails > div { grid-template-columns: 1fr; gap: 5px; } }
 @media (prefers-reduced-motion: reduce) { .next svg { transition: none; } }
