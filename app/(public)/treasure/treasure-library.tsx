@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { ArrowRight, BookOpenText, Check, Clock3, Search, X } from 'lucide-react'
+import { ArrowRight, BookOpenText, Check, Search, X } from 'lucide-react'
 import type { TreasureResource } from '@/content/treasure'
 import { TREASURE_TOPICS } from '@/content/treasure'
 import styles from './treasure.module.css'
@@ -101,7 +101,6 @@ export default function TreasureLibrary({ resources }: Props) {
                   <strong>{resource.topic}</strong>
                   <small>{resource.goal}</small>
                 </span>
-                <span className={styles.rowMeta}><Clock3 aria-hidden="true" className="size-4" /> {resource.readMinutes} นาที</span>
                 <ArrowRight aria-hidden="true" className={styles.rowArrow} />
               </Link>
             ))}</div>

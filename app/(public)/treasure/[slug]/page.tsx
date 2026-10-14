@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Check, Clock3, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Check, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
 import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/content/treasure'
 import FormulaFlashcards from './formula-flashcards'
+import MathExpression from './math-expression'
 import styles from './treasure-article.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -48,7 +49,6 @@ export default async function TreasureArticlePage({ params }: Props) {
             <p>บทที่ {resource.chapter} จาก 14</p>
             <h1>{resource.topic}</h1>
             <p className={styles.goal}>{resource.goal}</p>
-            <span><Clock3 aria-hidden="true" className="size-4" /> ใช้เวลาอ่านประมาณ {resource.readMinutes} นาที</span>
           </div>
           <div className={styles.mark} aria-hidden="true">{resource.mark}</div>
         </header>
@@ -78,7 +78,7 @@ export default async function TreasureArticlePage({ params }: Props) {
               <div className={styles.formulaList}>{resource.formulas.map((formula, index) => (
                 <div className={styles.formulaBlock} key={formula.name}>
                   <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3></div>
-                  <div className={styles.formula}>{formula.expression}</div>
+                  <div className={styles.formula}><MathExpression value={formula.expression} /></div>
                   <dl className={styles.formulaDetails}>
                     <div><dt>ความหมาย</dt><dd>{formula.meaning}</dd></div>
                     <div><dt>เงื่อนไข</dt><dd>{formula.condition}</dd></div>
@@ -127,7 +127,7 @@ export default async function TreasureArticlePage({ params }: Props) {
                   <summary><span>{example.level}</span><strong>{example.title}</strong><small>กดเพื่อ{index === 0 ? 'ปิด' : 'เปิด'}วิธีทำ</small></summary>
                   <div className={styles.exampleBody}>
                     <div><h3>โจทย์</h3><p className={styles.problem}>{example.problem}</p></div>
-                    <div className={styles.exampleFacts}><p><span>คำตอบ</span><strong>{example.answer}</strong></p><p><span>สูตรที่เลือกใช้</span>{example.formula}</p><p><span>Keyword</span>{example.keywords}</p></div>
+                    <div className={styles.exampleFacts}><p><span>คำตอบ</span><strong>{example.answer}</strong></p><p><span>สูตรที่เลือกใช้</span><MathExpression value={example.formula} /></p><p><span>Keyword</span>{example.keywords}</p></div>
                     <div><h3>วิธีคิดทีละขั้น</h3><ol>{example.steps.map((step) => <li key={step}>{step}</li>)}</ol></div>
                     <div className={styles.exampleChecks}><p><AlertTriangle aria-hidden="true" /><span><strong>จุดหลอก</strong>{example.trap}</span></p><p><Check aria-hidden="true" /><span><strong>วิธีตรวจคำตอบ</strong>{example.check}</span></p></div>
                   </div>

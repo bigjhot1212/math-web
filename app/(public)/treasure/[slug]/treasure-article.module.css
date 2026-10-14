@@ -39,13 +39,18 @@
 .scope ul { display: grid; gap: 8px; }
 .scope li { color: var(--foreground); line-height: 1.65; }
 .scope li::before { margin-right: 9px; color: var(--secondary); content: '↳'; }
-.formulaList { display: grid; }
-.formulaBlock { border-top: 1px solid var(--border); padding: 32px 0 38px; }
+.formulaList { display: grid; min-width: 0; }
+.formulaBlock { min-width: 0; border-top: 1px solid var(--border); padding: 32px 0 38px; }
 .formulaBlock:last-child { border-bottom: 1px solid var(--border); }
 .formulaTitle { display: flex; align-items: baseline; gap: 14px; }
 .formulaTitle > span { color: var(--muted-foreground); font-size: 11px; font-variant-numeric: tabular-nums; }
 .formulaTitle h3 { font-size: 20px; font-weight: 600; }
-.formula { overflow-x: auto; margin-top: 20px; padding: 20px 22px; background: oklch(0.21 0.052 266); color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.15rem, 2.6vw, 1.65rem); line-height: 1.7; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
+.formula { max-width: 100%; min-width: 0; overflow-x: auto; margin-top: 20px; padding: 20px 22px; background: oklch(0.21 0.052 266); color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.15rem, 2.6vw, 1.65rem); line-height: 1.7; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
+.mathExpression { display: grid; min-width: 0; gap: .28em; }
+.mathLine { display: block; min-width: max-content; }
+.mathExpression sub, .mathExpression sup { position: relative; vertical-align: baseline; font-size: .64em; line-height: 0; }
+.mathExpression sub { bottom: -.24em; }
+.mathExpression sup { top: -.52em; }
 .formulaDetails { display: grid; grid-template-columns: 1fr 1fr; margin-top: 20px; border-top: 1px solid var(--border); }
 .formulaDetails > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; border-bottom: 1px solid var(--border); padding: 13px 0; }
 .formulaDetails > div:nth-child(odd) { padding-right: 20px; }
@@ -77,7 +82,7 @@
 .flashQuestion li::before { margin-right: 9px; color: var(--secondary); content: '↳'; }
 .flashQuestion button { align-self: flex-start; margin-top: 32px; border-color: var(--primary); color: var(--primary); }
 .flashQuestion button:hover { background: var(--primary); color: var(--primary-foreground); }
-.flashExpression { margin-top: 16px; border-block: 1px solid var(--border); padding: 22px 0; color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.3rem, 3.5vw, 2rem); line-height: 1.75; white-space: pre-wrap; }
+.flashExpression { max-width: 100%; overflow-x: auto; margin-top: 16px; border-block: 1px solid var(--border); padding: 22px 0; color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.3rem, 3.5vw, 2rem); line-height: 1.75; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
 .flashAnswer dl { display: grid; grid-template-columns: 1fr 1fr; margin-top: 16px; }
 .flashAnswer dl > div { border-bottom: 1px solid var(--border); padding: 14px 0; }
 .flashAnswer dl > div:nth-child(odd) { padding-right: 18px; }
@@ -125,6 +130,7 @@
 .exampleFacts p + p { border-left: 1px solid var(--border); }
 .exampleFacts span { display: block; margin-bottom: 5px; color: var(--primary); font-size: 11px; font-weight: 700; }
 .exampleFacts strong { color: var(--secondary); font-size: 16px; }
+.exampleFacts .mathExpression { overflow-x: auto; color: var(--muted-foreground); scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
 .exampleBody ol { display: grid; gap: 10px; counter-reset: steps; list-style: none; }
 .exampleBody ol li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; counter-increment: steps; color: var(--muted-foreground); line-height: 1.7; }
 .exampleBody ol li::before { color: var(--primary); content: counter(steps) '.'; font-variant-numeric: tabular-nums; }

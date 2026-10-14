@@ -36,14 +36,13 @@
 .listHeading svg { color: var(--primary); }
 .listHeading > span { color: var(--muted-foreground); font-variant-numeric: tabular-nums; font-size: 12px; }
 .resourceList { border-top: 1px solid var(--border); }
-.resourceRow { display: grid; grid-template-columns: 34px 66px minmax(0, 1fr) 84px 20px; gap: 16px; align-items: center; min-height: 126px; border-bottom: 1px solid var(--border); padding: 18px 8px; transition: background-color 160ms ease-out; }
+.resourceRow { display: grid; grid-template-columns: 34px 66px minmax(0, 1fr) 20px; gap: 16px; align-items: center; min-height: 126px; border-bottom: 1px solid var(--border); padding: 18px 8px; transition: background-color 160ms ease-out; }
 .resourceRow:hover { background: oklch(0.205 0.045 265 / .72); }
 .rowNumber { color: var(--muted-foreground); font-variant-numeric: tabular-nums; font-size: 11px; }
 .rowMark { display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid var(--border); color: var(--secondary); font-family: var(--font-math); font-size: 25px; }
 .rowCopy { display: grid; gap: 5px; }
 .rowCopy strong { font-size: 18px; line-height: 1.35; }
 .rowCopy small { overflow: hidden; color: var(--muted-foreground); font-size: 13px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
-.rowMeta { display: flex; align-items: center; gap: 5px; color: var(--muted-foreground); font-size: 12px; font-variant-numeric: tabular-nums; }
 .rowArrow { width: 18px; color: var(--primary); }
 .empty { display: grid; min-height: 360px; place-items: center; align-content: center; border-block: 1px solid var(--border); text-align: center; }
 .empty > svg { color: var(--primary); }
@@ -51,5 +50,5 @@
 .empty p { margin-top: 7px; color: var(--muted-foreground); }
 .empty button { margin-top: 20px; cursor: pointer; border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; color: var(--foreground); }
 @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 28px; } .workspace { grid-template-columns: 1fr; gap: 28px; } .filters { position: static; max-height: none; } .filterList { display: flex; max-height: none; overflow-x: auto; padding-bottom: 4px; } .filterList button { flex: none; border: 1px solid var(--border); padding-inline: 12px; } }
-@media (max-width: 680px) { .hero { padding-top: 48px; } .workspace { padding-top: 24px; } .featured { grid-template-columns: 1fr; } .featuredMark { min-height: 178px; font-size: 7rem; } .featuredCopy { padding: 28px 24px; } .resourceRow { grid-template-columns: 54px minmax(0, 1fr) 18px; min-height: 126px; gap: 6px 12px; } .rowNumber { display: none; } .rowMark { grid-column: 1; grid-row: 1 / span 2; width: 52px; height: 52px; font-size: 23px; } .rowCopy { grid-column: 2; grid-row: 1; } .rowMeta { grid-column: 2; grid-row: 2; } .rowArrow { grid-column: 3; grid-row: 1 / span 2; } .rowCopy small { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; } }
+@media (max-width: 680px) { .hero { padding-top: 48px; } .workspace { padding-top: 24px; } .featured { grid-template-columns: 1fr; } .featuredMark { min-height: 178px; font-size: 7rem; } .featuredCopy { padding: 28px 24px; } .resourceRow { grid-template-columns: 54px minmax(0, 1fr) 18px; min-height: 126px; gap: 6px 12px; } .rowNumber { display: none; } .rowMark { grid-column: 1; grid-row: 1; width: 52px; height: 52px; font-size: 23px; } .rowCopy { grid-column: 2; grid-row: 1; } .rowArrow { grid-column: 3; grid-row: 1; } .rowCopy small { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; } }
 @media (prefers-reduced-motion: reduce) { .featured, .resourceRow, .filterList button { transition: none; } }
