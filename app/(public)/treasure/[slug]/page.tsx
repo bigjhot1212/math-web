@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, Check, Clock3, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Check, Clock3, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
 import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/content/treasure'
+import FormulaFlashcards from './formula-flashcards'
 import styles from './treasure-article.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -29,6 +30,7 @@ export default async function TreasureArticlePage({ params }: Props) {
   const sections = [
     ['overview', 'ภาพรวม'],
     ['formulas', 'สูตรสำคัญ'],
+    ['flashcards', 'Flash Cards'],
     ...(resource.patterns.length ? [['patterns', 'รูปแบบโจทย์']] : []),
     ['keywords', 'Keyword'],
     ['traps', 'จุดหลอก'],
@@ -89,6 +91,12 @@ export default async function TreasureArticlePage({ params }: Props) {
                   </div>
                 </div>
               ))}</div>
+            </section>
+
+            <section id="flashcards">
+              <div className={styles.sectionHeading}><BrainCircuit aria-hidden="true" /><div><span>ปิดสูตร แล้วตอบจากความจำ</span><h2>Flash Cards ทดสอบความเข้าใจ</h2></div></div>
+              <p className={styles.flashIntro}>ลองนึกทั้งสูตร ความหมาย และเงื่อนไขก่อนเปิดเฉลย ใบที่ยังไม่แม่นจะวนกลับมาให้ทบทวนอีกครั้งจนจำได้ครบ</p>
+              <FormulaFlashcards formulas={resource.formulas} topic={resource.topic} />
             </section>
 
             {resource.patterns.length > 0 && <section id="patterns">

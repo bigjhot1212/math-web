@@ -55,6 +55,16 @@ def field_map(text: str) -> dict[str, str]:
     return fields
 
 
+def format_expression(chapter: int, text: str) -> str:
+    """Keep logic notation readable when a formula mixes symbols and Thai prose."""
+    if chapter != 2:
+        return text
+    text = re.sub(r";\s*", "\n", text)
+    for operator in ("↔", "→", "≡", "⟹", "∨", "∧"):
+        text = text.replace(operator, f" {operator} ")
+    return "\n".join(re.sub(r"[ \t]+", " ", line).strip() for line in text.splitlines())
+
+
 def table_rows(document: Document, first_cell: str) -> list[list[str]]:
     for table in document.tables:
         rows = [[cell.text.strip() for cell in row.cells] for row in table.rows]
@@ -147,7 +157,7 @@ def parse_document(path: Path) -> dict[str, object]:
     while i < patterns_i:
         style, value = paragraphs[i]
         if style == "Heading 2" and value:
-            expression = paragraphs[i + 1][1]
+            expression = format_expression(chapter, paragraphs[i + 1][1])
             details = field_map(paragraphs[i + 2][1])
             formulas.append({"name": clean_number(value), "expression": expression, **details})
             i += 3

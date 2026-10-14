@@ -23,3 +23,4 @@ The selected structure is an exam-trap field guide: one featured dossier followe
 - Public access; no sign-in gate.
 - Keep the approved Word chapters in `treasures/` as the editorial source, then regenerate `content/treasure-data.json` with `scripts/extract-treasure-docx.py`; no database migration is required.
 - Keep one formula guide for every topic available in Practice. Each guide must include formulas, the kinds of exam questions they support, and common cautions.
+- Give every chapter an in-page flash-card drill built from its formula entries; cards marked “ยังไม่แม่น” must cycle back until the learner remembers them.
