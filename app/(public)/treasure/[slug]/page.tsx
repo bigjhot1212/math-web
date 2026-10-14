@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Check, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
 import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/content/treasure'
 import FormulaFlashcards from './formula-flashcards'
+import CalculusCoreGuide from './calculus-core-guide'
 import { getFormulaLineLabels } from './formula-line-labels'
 import MathExpression from './math-expression'
 import styles from './treasure-article.module.css'
@@ -40,6 +41,7 @@ export default async function TreasureArticlePage({ params }: Props) {
   const next = TREASURE_RESOURCES[(currentIndex + 1) % TREASURE_RESOURCES.length]
   const sections = [
     ['overview', 'ภาพรวม'],
+    ...(resource.slug === 'calculus-formula-guide' ? [['calculus-core', 'พื้นฐานแคลคูลัส']] : []),
     ['formulas', 'สูตรสำคัญ'],
     ['flashcards', 'Flash Cards'],
     ...(resource.patterns.length ? [['patterns', 'รูปแบบโจทย์']] : []),
@@ -82,6 +84,8 @@ export default async function TreasureArticlePage({ params }: Props) {
               {resource.overview.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               <div className={styles.scope}><strong>บทนี้ครอบคลุม</strong><ul>{resource.scope.map((item) => <li key={item}>{item}</li>)}</ul></div>
             </section>
+
+            {resource.slug === 'calculus-formula-guide' && <CalculusCoreGuide />}
 
             <section id="formulas">
               <div className={styles.sectionHeading}><span className={styles.mathIcon}>ƒ</span><div><span>จำความหมายก่อนแทนค่า</span><h2>สูตรและแนวคิดสำคัญ</h2></div></div>
