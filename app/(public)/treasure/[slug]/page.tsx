@@ -93,7 +93,6 @@ export default async function TreasureArticlePage({ params }: Props) {
                     <p><span>เอาไว้ใช้เมื่อ</span>{formula.use}</p>
                   </div>
                   <div className={styles.formula}>
-                    <div className={styles.formulaHeader}><span>ชุดสูตร</span><strong>{formula.name}</strong></div>
                     <MathExpression value={formula.expression} lineLabels={getFormulaLineLabels(resource.slug, formula.name, formula.expression)} />
                   </div>
                   {FORMULA_DEMOS[`${resource.slug}::${formula.name}`] && (() => {

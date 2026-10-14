@@ -199,10 +199,7 @@ function renderLine(line: string, lineIndex: number, label?: string) {
 
   return (
     <span className={styles.mathLine} key={`${lineIndex}-${line}`}>
-      <span className={styles.mathLineMeta}>
-        <span aria-hidden="true">{String(lineIndex + 1).padStart(2, '0')}</span>
-        <span>{label ?? `รูปแบบที่ ${lineIndex + 1}`}</span>
-      </span>
+      <span className={styles.mathLineMeta}>{label ?? `รูปแบบที่ ${lineIndex + 1}`}</span>
       {hasRelation ? (
         <span className={styles.mathEquation}>
           <span className={styles.mathLhs}>{renderSegment(parts[0], `${lineIndex}-lhs`)}</span>
@@ -223,7 +220,7 @@ export default function MathExpression({ value, lineLabels }: Props) {
     .filter(Boolean)
 
   return (
-    <span className={styles.mathExpression}>
+    <span className={styles.mathExpression} data-layout={lines.length === 1 ? 'single' : 'multiple'}>
       {lineLabels
         ? lines.map((line, index) => renderLine(line, index, lineLabels[index]))
         : lines.map(renderCompactLine)}
