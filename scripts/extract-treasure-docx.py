@@ -65,6 +65,19 @@ def format_expression(chapter: int, text: str) -> str:
     return "\n".join(re.sub(r"[ \t]+", " ", line).strip() for line in text.splitlines())
 
 
+def normalize_notation(chapter: int, value: object) -> object:
+    """Use the notation taught on the site consistently across the logic chapter."""
+    if chapter != 2:
+        return value
+    if isinstance(value, str):
+        return value.replace("¬", "~")
+    if isinstance(value, list):
+        return [normalize_notation(chapter, item) for item in value]
+    if isinstance(value, dict):
+        return {key: normalize_notation(chapter, item) for key, item in value.items()}
+    return value
+
+
 def table_rows(document: Document, first_cell: str) -> list[list[str]]:
     for table in document.tables:
         rows = [[cell.text.strip() for cell in row.cells] for row in table.rows]
@@ -207,7 +220,7 @@ def parse_document(path: Path) -> dict[str, object]:
     goal_items = [item.strip() for item in goal.split("•") if item.strip()]
     word_count = sum(len(value.split()) for _, value in paragraphs if value)
 
-    return {
+    resource = {
         "chapter": chapter,
         "slug": slug,
         "topic": topic,
@@ -231,6 +244,9 @@ def parse_document(path: Path) -> dict[str, object]:
         "references": references,
         "sourceDocument": path.name,
     }
+    normalized = normalize_notation(chapter, resource)
+    assert isinstance(normalized, dict)
+    return normalized
 
 
 def main() -> None:
