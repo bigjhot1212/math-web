@@ -45,6 +45,26 @@ function renderScripts(value: string, keyPrefix: string) {
 
   while (index < value.length) {
     const character = value[index]
+    if ((character === '∑' || character === 'Σ') && value[index + 1] === '_') {
+      const lower = readScript(value, index + 2)
+      let end = lower.end
+      let upperContent = ''
+      if (value[end] === '^' && end + 1 < value.length) {
+        const upper = readScript(value, end + 1)
+        upperContent = formatPlain(upper.content).trim()
+        end = upper.end
+      }
+      flush()
+      parts.push(
+        <span className={styles.summation} aria-label={`ผลรวมตั้งแต่ ${lower.content} ถึง ${upperContent}`} key={`${keyPrefix}-sum-${index}`}>
+          <span className={styles.summationUpper} aria-hidden="true">{upperContent}</span>
+          <span className={styles.summationSymbol} aria-hidden="true">∑</span>
+          <span className={styles.summationLower} aria-hidden="true">{formatPlain(lower.content).trim()}</span>
+        </span>,
+      )
+      index = end
+      continue
+    }
     if ((character === '_' || character === '^') && index + 1 < value.length) {
       flush()
       const script = readScript(value, index + 1)
