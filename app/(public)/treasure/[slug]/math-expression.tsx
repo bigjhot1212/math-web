@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import styles from './treasure-article.module.css'
 
-type Props = { value: string }
+type Props = { value: string; lineLabels?: string[] }
 
 const OPERATOR = /\s*([=≡⇔↔→⟹∧∨+−×÷≤≥<>∈∉⊂])\s*/g
 const RELATIONS = new Set(['=', '≡', '⇔', '↔', '→', '⟹'])
@@ -115,12 +115,41 @@ function topLevelSlash(value: string) {
   return slash
 }
 
+function splitDenominator(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed || !'([{'.includes(trimmed[0])) return { denominator: trimmed, suffix: '' }
+
+  const opener = trimmed[0]
+  const closer = opener === '(' ? ')' : opener === '[' ? ']' : '}'
+  let depth = 0
+  let index = 0
+
+  for (; index < trimmed.length; index += 1) {
+    if (trimmed[index] === opener) depth += 1
+    if (trimmed[index] === closer) {
+      depth -= 1
+      if (depth === 0) {
+        index += 1
+        break
+      }
+    }
+  }
+
+  while (index < trimmed.length && /[⁰¹²³⁴⁵⁶⁷⁸⁹]/.test(trimmed[index])) index += 1
+  if (trimmed[index] === '^') index = readScript(trimmed, index + 1).end
+
+  return {
+    denominator: trimmed.slice(0, index).trim(),
+    suffix: trimmed.slice(index).trim(),
+  }
+}
+
 function renderSegment(segment: string, keyPrefix: string) {
   const slash = topLevelSlash(segment)
   if (slash < 0) return renderScripts(segment, keyPrefix)
 
   let numerator = segment.slice(0, slash).trim()
-  const denominator = segment.slice(slash + 1).trim()
+  const { denominator, suffix } = splitDenominator(segment.slice(slash + 1))
   let prefix = ''
 
   const limit = numerator.match(/^(lim_(?:\{[^}]+\}|[^\s]+))(\s*\[.*\])$/)
@@ -141,24 +170,63 @@ function renderSegment(segment: string, keyPrefix: string) {
       <span aria-hidden="true">{renderScripts(numerator, `${keyPrefix}-numerator`)}</span>
       <span aria-hidden="true">{renderScripts(denominator, `${keyPrefix}-denominator`)}</span>
     </span>,
+    ...(suffix ? renderScripts(` ${suffix}`, `${keyPrefix}-suffix`) : []),
   ]
 }
 
-function renderLine(line: string, lineIndex: number) {
+function renderCompactLine(line: string, lineIndex: number) {
   const parts = splitRelations(line).flatMap((part, partIndex) => (
     RELATIONS.has(part)
       ? <span className={styles.mathRelation} key={`${lineIndex}-relation-${partIndex}`}>{part}</span>
       : renderSegment(part, `${lineIndex}-${partIndex}`)
   ))
 
-  return <span className={styles.mathLine} key={`${lineIndex}-${line}`}>{parts}</span>
+  return <span className={styles.mathLineCompact} key={`${lineIndex}-${line}`}>{parts}</span>
 }
 
-export default function MathExpression({ value }: Props) {
+function renderRelationTail(parts: string[], lineIndex: number) {
+  return parts.flatMap((part, partIndex) => (
+    RELATIONS.has(part)
+      ? <span className={styles.mathRelationInline} key={`${lineIndex}-tail-relation-${partIndex}`}>{part}</span>
+      : renderSegment(part, `${lineIndex}-tail-${partIndex}`)
+  ))
+}
+
+function renderLine(line: string, lineIndex: number, label?: string) {
+  const parts = splitRelations(line)
+  const relationIndex = parts.findIndex((part) => RELATIONS.has(part))
+  const hasRelation = relationIndex > 0 && relationIndex < parts.length - 1
+
+  return (
+    <span className={styles.mathLine} key={`${lineIndex}-${line}`}>
+      <span className={styles.mathLineMeta}>
+        <span aria-hidden="true">{String(lineIndex + 1).padStart(2, '0')}</span>
+        <span>{label ?? `รูปแบบที่ ${lineIndex + 1}`}</span>
+      </span>
+      {hasRelation ? (
+        <span className={styles.mathEquation}>
+          <span className={styles.mathLhs}>{renderSegment(parts[0], `${lineIndex}-lhs`)}</span>
+          <span className={styles.mathRelation}>{parts[relationIndex]}</span>
+          <span className={styles.mathRhs}>{renderRelationTail(parts.slice(relationIndex + 1), lineIndex)}</span>
+        </span>
+      ) : (
+        <span className={styles.mathStandalone}>{renderSegment(line, `${lineIndex}-standalone`)}</span>
+      )}
+    </span>
+  )
+}
+
+export default function MathExpression({ value, lineLabels }: Props) {
   const lines = value
     .split(/\s*;\s*|:\s{2,}|\n+/)
     .map((line) => line.trim())
     .filter(Boolean)
 
-  return <span className={styles.mathExpression}>{lines.map(renderLine)}</span>
+  return (
+    <span className={styles.mathExpression}>
+      {lineLabels
+        ? lines.map((line, index) => renderLine(line, index, lineLabels[index]))
+        : lines.map(renderCompactLine)}
+    </span>
+  )
 }

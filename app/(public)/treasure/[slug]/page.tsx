@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Check, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
 import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/content/treasure'
 import FormulaFlashcards from './formula-flashcards'
+import { getFormulaLineLabels } from './formula-line-labels'
 import MathExpression from './math-expression'
 import styles from './treasure-article.module.css'
 
@@ -87,7 +88,14 @@ export default async function TreasureArticlePage({ params }: Props) {
               <div className={styles.formulaList}>{resource.formulas.map((formula, index) => (
                 <div className={styles.formulaBlock} key={formula.name}>
                   <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3></div>
-                  <div className={styles.formula}><MathExpression value={formula.expression} /></div>
+                  <div className={styles.formulaContext}>
+                    <p><span>สูตรนี้คืออะไร</span>{formula.meaning}</p>
+                    <p><span>เอาไว้ใช้เมื่อ</span>{formula.use}</p>
+                  </div>
+                  <div className={styles.formula}>
+                    <div className={styles.formulaHeader}><span>ชุดสูตร</span><strong>{formula.name}</strong></div>
+                    <MathExpression value={formula.expression} lineLabels={getFormulaLineLabels(resource.slug, formula.name, formula.expression)} />
+                  </div>
                   {FORMULA_DEMOS[`${resource.slug}::${formula.name}`] && (() => {
                     const demo = FORMULA_DEMOS[`${resource.slug}::${formula.name}`]
                     return <div className={styles.formulaDemo}>

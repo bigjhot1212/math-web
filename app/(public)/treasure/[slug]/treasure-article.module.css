@@ -45,10 +45,25 @@
 .formulaTitle { display: flex; align-items: baseline; gap: 14px; }
 .formulaTitle > span { color: var(--muted-foreground); font-size: 11px; font-variant-numeric: tabular-nums; }
 .formulaTitle h3 { font-size: 20px; font-weight: 600; }
-.formula { max-width: 100%; min-width: 0; overflow-x: auto; margin-top: 20px; padding: 20px 22px; background: oklch(0.21 0.052 266); color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.15rem, 2.6vw, 1.65rem); line-height: 1.7; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
-.mathExpression { display: grid; min-width: 0; gap: .28em; }
-.mathLine { display: flex; min-width: max-content; align-items: center; gap: .24em; }
-.mathRelation { padding-inline: .08em; }
+.formulaContext { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 18px; border: 1px solid var(--border); background: var(--border); }
+.formulaContext p { min-width: 0; background: var(--background); padding: 16px 18px; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
+.formulaContext span { display: block; margin-bottom: 4px; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: .02em; }
+.formula { max-width: 100%; min-width: 0; overflow-x: auto; margin-top: 14px; border: 1px solid oklch(0.35 0.055 266); background: oklch(0.19 0.046 266); color: var(--secondary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(1.08rem, 2.35vw, 1.48rem); line-height: 1.55; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
+.formulaHeader { position: sticky; left: 0; display: flex; min-width: min(100%, 680px); align-items: baseline; justify-content: space-between; gap: 20px; border-bottom: 1px solid oklch(0.35 0.055 266); padding: 12px 18px; background: oklch(0.22 0.052 266); font-family: var(--font-body), sans-serif; }
+.formulaHeader span { color: oklch(0.7 0.08 258); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.formulaHeader strong { color: var(--foreground); font-size: 12px; font-weight: 600; }
+.mathExpression { display: grid; min-width: 0; }
+.mathLine { display: grid; min-width: max-content; grid-template-columns: 150px minmax(310px, 1fr); gap: 20px; align-items: center; border-bottom: 1px solid oklch(0.3 0.045 266); padding: 18px; }
+.mathLine:last-child { border-bottom: 0; }
+.mathLineMeta { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 8px; align-items: baseline; font-family: var(--font-body), sans-serif; }
+.mathLineMeta > span:first-child { color: var(--primary); font-size: 10px; font-variant-numeric: tabular-nums; }
+.mathLineMeta > span:last-child { color: oklch(0.76 0.035 258); font-size: 12px; font-weight: 600; line-height: 1.45; white-space: normal; }
+.mathEquation { display: grid; min-width: max-content; grid-template-columns: minmax(110px, max-content) 28px minmax(150px, max-content); align-items: center; column-gap: .3em; }
+.mathLhs { justify-self: end; text-align: right; }
+.mathRelation { justify-self: center; padding-inline: .08em; }
+.mathRelationInline { padding-inline: .12em; }
+.mathRhs, .mathStandalone { min-width: max-content; }
+.mathLineCompact { display: flex; min-width: max-content; align-items: center; gap: .24em; }
 .summation { display: inline-grid; min-width: 1.65em; grid-template-areas: 'upper' 'symbol' 'lower'; grid-template-rows: auto auto auto; place-items: center; align-self: center; margin-inline: .08em; vertical-align: middle; line-height: 1; }
 .summationUpper { grid-area: upper; font-size: .52em; line-height: 1; }
 .summationSymbol { grid-area: symbol; font-size: 1.35em; line-height: .82; }
@@ -169,6 +184,7 @@
 .next svg { color: var(--primary); transition: transform 160ms ease-out; }
 .next:hover svg { transform: translateX(4px); }
 @media (max-width: 860px) { .bodyGrid { grid-template-columns: 1fr; gap: 42px; } .sidebar { position: static; max-height: none; grid-template-columns: 1fr 1fr; } .sidebar nav { display: none; } .practiceLink { align-self: end; } }
-@media (max-width: 700px) { .shell { padding-top: 32px; } .header { grid-template-columns: 1fr; gap: 28px; padding: 34px 0; } .mark { width: 118px; } .sidebar { grid-template-columns: 1fr; } .article > section { margin-top: 68px; } .scope, .pairList > div, .keywordTable > div { grid-template-columns: 1fr; gap: 8px; } .formulaDetails, .cautions, .exampleChecks, .exampleFacts, .flashAnswer dl, .flashActions { grid-template-columns: 1fr; } .formulaDetails > div:nth-child(odd) { padding-right: 0; } .formulaDetails > div:nth-child(even), .flashAnswer dl > div:nth-child(even) { border-left: 0; padding-left: 0; } .flashAnswer dl > div:nth-child(odd) { padding-right: 0; } .flashStudy { padding: 16px; } .flashProgress > div, .flashToolbar { align-items: flex-start; flex-direction: column; } .flashCard { min-height: 390px; } .flashQuestion, .flashAnswer { padding: 28px 22px; } .exampleFacts p + p { border-top: 1px solid var(--border); border-left: 0; } .examples summary { grid-template-columns: 1fr auto; } .examples summary > span { grid-column: 1; } .examples summary > strong { grid-column: 1; } .examples summary > small { grid-column: 2; grid-row: 1 / span 2; } .exampleBody { padding: 22px 18px; } }
+@media (max-width: 700px) { .shell { padding-top: 32px; } .header { grid-template-columns: 1fr; gap: 28px; padding: 34px 0; } .mark { width: 118px; } .sidebar { grid-template-columns: 1fr; } .article > section { margin-top: 68px; } .scope, .pairList > div, .keywordTable > div, .formulaContext { grid-template-columns: 1fr; gap: 8px; } .formulaDetails, .cautions, .exampleChecks, .exampleFacts, .flashAnswer dl, .flashActions { grid-template-columns: 1fr; } .formulaDetails > div:nth-child(odd) { padding-right: 0; } .formulaDetails > div:nth-child(even), .flashAnswer dl > div:nth-child(even) { border-left: 0; padding-left: 0; } .flashAnswer dl > div:nth-child(odd) { padding-right: 0; } .flashStudy { padding: 16px; } .flashProgress > div, .flashToolbar { align-items: flex-start; flex-direction: column; } .flashCard { min-height: 390px; } .flashQuestion, .flashAnswer { padding: 28px 22px; } .exampleFacts p + p { border-top: 1px solid var(--border); border-left: 0; } .examples summary { grid-template-columns: 1fr auto; } .examples summary > span { grid-column: 1; } .examples summary > strong { grid-column: 1; } .examples summary > small { grid-column: 2; grid-row: 1 / span 2; } .exampleBody { padding: 22px 18px; } }
+@media (max-width: 700px) { .formulaContext { background: transparent; } .formulaContext p { border-bottom: 1px solid var(--border); padding: 14px 0; } .formulaHeader { min-width: 100%; width: max-content; } .formula { font-size: 1.05rem; } .mathLine { min-width: 100%; grid-template-columns: 1fr; gap: 12px; padding: 16px; } .mathLineMeta { max-width: 290px; } .mathEquation, .mathStandalone { justify-self: start; } }
 @media (max-width: 700px) { .formulaWalkthrough li { grid-template-columns: 24px minmax(0, 1fr); } .formulaWalkthrough li span { grid-column: 2; } .formulaDetails > div { grid-template-columns: 1fr; gap: 5px; } }
 @media (prefers-reduced-motion: reduce) { .next svg { transition: none; } }
