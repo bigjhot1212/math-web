@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Kanit, Sarabun, STIX_Two_Text } from "next/font/google";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 import Nav from "./components/nav";
 

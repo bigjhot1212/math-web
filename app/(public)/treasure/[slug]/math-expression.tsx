@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import katex from 'katex'
 import styles from './treasure-article.module.css'
 
 type Props = { value: string; lineLabels?: string[] }
@@ -6,6 +7,11 @@ type TextProps = { value: string }
 
 const OPERATOR = /\s*([=≡⇔↔→⟹∧∨+−×÷≤≥<>∈∉⊂])\s*/g
 const RELATIONS = new Set(['=', '≡', '⇔', '↔', '→', '⟹'])
+const ROOT_DEGREES: Record<string, string> = { '√': '', '∛': '3', '∜': '4' }
+const SUPERSCRIPT_DIGITS: Record<string, string> = {
+  '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4',
+  '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
+}
 
 function formatPlain(value: string) {
   return value
@@ -48,11 +54,65 @@ function readRadicand(value: string, start: number) {
   if (number) end += number[0].length
   else if (value[end]) end += 1
 
-  while ((value[end] === '_' || value[end] === '^') && end + 1 < value.length) {
-    end = readScript(value, end + 1).end
+  while (end < value.length) {
+    if ((value[end] === '_' || value[end] === '^') && end + 1 < value.length) {
+      end = readScript(value, end + 1).end
+      continue
+    }
+    if (SUPERSCRIPT_DIGITS[value[end]]) {
+      end += 1
+      continue
+    }
+    break
   }
 
   return { content: value.slice(tokenStart, end), end }
+}
+
+function toKatex(value: string) {
+  let output = ''
+  let index = 0
+
+  while (index < value.length) {
+    const character = value[index]
+    const rootDegree = ROOT_DEGREES[character]
+    if (rootDegree !== undefined && index + 1 < value.length) {
+      const radicand = readRadicand(value, index + 1)
+      output += `\\sqrt${rootDegree ? `[${rootDegree}]` : ''}{${toKatex(radicand.content)}}`
+      index = radicand.end
+      continue
+    }
+
+    if (SUPERSCRIPT_DIGITS[character]) {
+      let digits = ''
+      while (index < value.length && SUPERSCRIPT_DIGITS[value[index]]) {
+        digits += SUPERSCRIPT_DIGITS[value[index]]
+        index += 1
+      }
+      output += `^{${digits}}`
+      continue
+    }
+
+    output += character === '−' ? '-' : character === '×' ? '\\times ' : character === '÷' ? '\\div ' : character
+    index += 1
+  }
+
+  return output
+}
+
+function renderRadical(radicand: { content: string; end: number }, degree: string, key: string) {
+  const latex = `\\sqrt${degree ? `[${degree}]` : ''}{${toKatex(radicand.content)}}`
+  const label = degree ? `รากที่ ${degree} ของ ${radicand.content}` : `รากที่สองของ ${radicand.content}`
+  const html = katex.renderToString(latex, { output: 'html', throwOnError: false, strict: 'ignore' })
+
+  return (
+    <span
+      className={styles.radical}
+      aria-label={label}
+      key={key}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  )
 }
 
 function renderScripts(value: string, keyPrefix: string) {
@@ -68,15 +128,23 @@ function renderScripts(value: string, keyPrefix: string) {
 
   while (index < value.length) {
     const character = value[index]
-    if (character === '√' && index + 1 < value.length) {
+    let indexedDegree = ''
+    let rootIndex = index
+    while (rootIndex < value.length && SUPERSCRIPT_DIGITS[value[rootIndex]]) {
+      indexedDegree += SUPERSCRIPT_DIGITS[value[rootIndex]]
+      rootIndex += 1
+    }
+    if (indexedDegree && value[rootIndex] === '√' && rootIndex + 1 < value.length) {
+      const radicand = readRadicand(value, rootIndex + 1)
+      flush()
+      parts.push(renderRadical(radicand, indexedDegree, `${keyPrefix}-radical-${index}`))
+      index = radicand.end
+      continue
+    }
+    if (ROOT_DEGREES[character] !== undefined && index + 1 < value.length) {
       const radicand = readRadicand(value, index + 1)
       flush()
-      parts.push(
-        <span className={styles.radical} aria-label={`รากที่สองของ ${radicand.content}`} key={`${keyPrefix}-radical-${index}`}>
-          <span className={styles.radicalGlyph} aria-hidden="true">√</span>
-          <span className={styles.radicand} aria-hidden="true">{renderScripts(radicand.content, `${keyPrefix}-radicand-${index}`)}</span>
-        </span>,
-      )
+      parts.push(renderRadical(radicand, ROOT_DEGREES[character], `${keyPrefix}-radical-${index}`))
       index = radicand.end
       continue
     }
