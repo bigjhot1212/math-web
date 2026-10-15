@@ -1,5 +1,5 @@
 import { AlertTriangle, ArrowRight, Check, GitBranch, MoveRight } from 'lucide-react'
-import MathExpression from './math-expression'
+import MathExpression, { MathText } from './math-expression'
 import styles from './treasure-article.module.css'
 
 function Example({ title, prompt, steps, conclusion }: { title: string; prompt: string; steps: string[]; conclusion: string }) {
@@ -7,10 +7,10 @@ function Example({ title, prompt, steps, conclusion }: { title: string; prompt: 
     <article className={styles.coreExample}>
       <div>
         <h4>{title}</h4>
-        <p>{prompt}</p>
+        <p><MathText value={prompt} /></p>
       </div>
       <div className={styles.coreExampleMath}>{steps.map((step) => <MathExpression value={step} key={step} />)}</div>
-      <p className={styles.coreConclusion}><Check aria-hidden="true" />{conclusion}</p>
+      <p className={styles.coreConclusion}><Check aria-hidden="true" /><span><MathText value={conclusion} /></span></p>
     </article>
   )
 }

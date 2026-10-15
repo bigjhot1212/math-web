@@ -3,7 +3,7 @@
 import { useState, type KeyboardEvent } from 'react'
 import { CheckCircle2, Eye, RefreshCcw, RotateCcw, Shuffle } from 'lucide-react'
 import type { TreasureFormula } from '@/content/treasure'
-import MathExpression from './math-expression'
+import MathExpression, { MathText } from './math-expression'
 import styles from './treasure-article.module.css'
 
 type Props = {
@@ -115,10 +115,10 @@ export default function FormulaFlashcards({ formulas, topic }: Props) {
                 <p>เฉลย · {card.name}</p>
                 <div className={styles.flashExpression}><MathExpression value={card.expression} /></div>
                 <dl>
-                  <div><dt>ความหมาย</dt><dd>{card.meaning}</dd></div>
-                  <div><dt>เงื่อนไข</dt><dd>{card.condition}</dd></div>
-                  <div><dt>ใช้กับโจทย์</dt><dd>{card.use}</dd></div>
-                  <div><dt>ต้องระวัง</dt><dd>{card.caution}</dd></div>
+                  <div><dt>ความหมาย</dt><dd><MathText value={card.meaning} /></dd></div>
+                  <div><dt>เงื่อนไข</dt><dd><MathText value={card.condition} /></dd></div>
+                  <div><dt>ใช้กับโจทย์</dt><dd><MathText value={card.use} /></dd></div>
+                  <div><dt>ต้องระวัง</dt><dd><MathText value={card.caution} /></dd></div>
                 </dl>
               </div>
             )}

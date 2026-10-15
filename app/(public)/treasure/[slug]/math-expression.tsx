@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import styles from './treasure-article.module.css'
 
 type Props = { value: string; lineLabels?: string[] }
+type TextProps = { value: string }
 
 const OPERATOR = /\s*([=≡⇔↔→⟹∧∨+−×÷≤≥<>∈∉⊂])\s*/g
 const RELATIONS = new Set(['=', '≡', '⇔', '↔', '→', '⟹'])
@@ -15,8 +16,8 @@ function formatPlain(value: string) {
 
 function readScript(value: string, start: number) {
   const opener = value[start]
-  if (opener === '{' || opener === '(') {
-    const closer = opener === '{' ? '}' : ')'
+  if (opener === '{' || opener === '(' || opener === '[') {
+    const closer = opener === '{' ? '}' : opener === '(' ? ')' : ']'
     let depth = 1
     let index = start + 1
     while (index < value.length && depth > 0) {
@@ -32,6 +33,28 @@ function readScript(value: string, start: number) {
   return { content, end: start + content.length }
 }
 
+function readRadicand(value: string, start: number) {
+  let tokenStart = start
+  while (value[tokenStart] === ' ') tokenStart += 1
+
+  if ('([{'.includes(value[tokenStart] ?? '')) {
+    return readScript(value, tokenStart)
+  }
+
+  let end = tokenStart
+  if (value[end] === '−' || value[end] === '-') end += 1
+
+  const number = value.slice(end).match(/^\d+(?:\.\d+)?/)
+  if (number) end += number[0].length
+  else if (value[end]) end += 1
+
+  while ((value[end] === '_' || value[end] === '^') && end + 1 < value.length) {
+    end = readScript(value, end + 1).end
+  }
+
+  return { content: value.slice(tokenStart, end), end }
+}
+
 function renderScripts(value: string, keyPrefix: string) {
   const parts: ReactNode[] = []
   let plain = ''
@@ -45,6 +68,18 @@ function renderScripts(value: string, keyPrefix: string) {
 
   while (index < value.length) {
     const character = value[index]
+    if (character === '√' && index + 1 < value.length) {
+      const radicand = readRadicand(value, index + 1)
+      flush()
+      parts.push(
+        <span className={styles.radical} aria-label={`รากที่สองของ ${radicand.content}`} key={`${keyPrefix}-radical-${index}`}>
+          <span className={styles.radicalGlyph} aria-hidden="true">√</span>
+          <span className={styles.radicand} aria-hidden="true">{renderScripts(radicand.content, `${keyPrefix}-radicand-${index}`)}</span>
+        </span>,
+      )
+      index = radicand.end
+      continue
+    }
     if ((character === '∑' || character === 'Σ') && value[index + 1] === '_') {
       const lower = readScript(value, index + 2)
       let end = lower.end
@@ -80,6 +115,10 @@ function renderScripts(value: string, keyPrefix: string) {
   }
   flush()
   return parts
+}
+
+export function MathText({ value }: TextProps) {
+  return <>{renderScripts(value, 'math-text')}</>
 }
 
 function splitRelations(value: string) {

@@ -6,7 +6,7 @@ import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/con
 import FormulaFlashcards from './formula-flashcards'
 import CalculusCoreGuide from './calculus-core-guide'
 import { getFormulaLineLabels } from './formula-line-labels'
-import MathExpression from './math-expression'
+import MathExpression, { MathText } from './math-expression'
 import styles from './treasure-article.module.css'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -93,8 +93,8 @@ export default async function TreasureArticlePage({ params }: Props) {
                 <div className={styles.formulaBlock} key={formula.name}>
                   <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3></div>
                   <div className={styles.formulaContext}>
-                    <p><span>สูตรนี้คืออะไร</span>{formula.meaning}</p>
-                    <p><span>เอาไว้ใช้เมื่อ</span>{formula.use}</p>
+                    <p><span>สูตรนี้คืออะไร</span><MathText value={formula.meaning} /></p>
+                    <p><span>เอาไว้ใช้เมื่อ</span><MathText value={formula.use} /></p>
                   </div>
                   <div className={styles.formula}>
                     <MathExpression value={formula.expression} lineLabels={getFormulaLineLabels(resource.slug, formula.name, formula.expression)} />
@@ -112,22 +112,22 @@ export default async function TreasureArticlePage({ params }: Props) {
                   <div className={styles.formulaWalkthrough}>
                     <h4>วิธีใช้สูตรนี้ทีละขั้น</h4>
                     <ol>
-                      <li><strong>จับคำสำคัญจากโจทย์</strong><span>ถ้าโจทย์กล่าวถึง {formula.keywords} ให้หยุดดูว่าสูตรนี้ตรงกับสิ่งที่โจทย์ถามหรือไม่</span></li>
-                      <li><strong>ระบุความหมายของข้อมูล</strong><span>{formula.meaning}</span></li>
-                      <li><strong>ตรวจเงื่อนไขก่อนแทนค่า</strong><span>{formula.condition}</span></li>
-                      <li><strong>เลือกใช้ให้ตรงคำถาม</strong><span>{formula.use}</span></li>
-                      <li><strong>ตรวจคำตอบอีกครั้ง</strong><span>{formula.caution} และอย่าพลาดแบบที่พบบ่อย: {formula.mistakes}</span></li>
+                      <li><strong>จับคำสำคัญจากโจทย์</strong><span>ถ้าโจทย์กล่าวถึง <MathText value={formula.keywords} /> ให้หยุดดูว่าสูตรนี้ตรงกับสิ่งที่โจทย์ถามหรือไม่</span></li>
+                      <li><strong>ระบุความหมายของข้อมูล</strong><span><MathText value={formula.meaning} /></span></li>
+                      <li><strong>ตรวจเงื่อนไขก่อนแทนค่า</strong><span><MathText value={formula.condition} /></span></li>
+                      <li><strong>เลือกใช้ให้ตรงคำถาม</strong><span><MathText value={formula.use} /></span></li>
+                      <li><strong>ตรวจคำตอบอีกครั้ง</strong><span><MathText value={`${formula.caution} และอย่าพลาดแบบที่พบบ่อย: ${formula.mistakes}`} /></span></li>
                     </ol>
                   </div>
                   <dl className={styles.formulaDetails}>
-                    <div><dt>สัญลักษณ์และความหมาย</dt><dd>{formula.meaning}</dd></div>
-                    <div><dt>เงื่อนไขที่ต้องตรวจ</dt><dd>{formula.condition}</dd></div>
-                    <div><dt>โจทย์แบบไหนใช้สูตรนี้</dt><dd>{formula.use}</dd></div>
-                    <div><dt>คำสำคัญในโจทย์</dt><dd>{formula.keywords}</dd></div>
+                    <div><dt>สัญลักษณ์และความหมาย</dt><dd><MathText value={formula.meaning} /></dd></div>
+                    <div><dt>เงื่อนไขที่ต้องตรวจ</dt><dd><MathText value={formula.condition} /></dd></div>
+                    <div><dt>โจทย์แบบไหนใช้สูตรนี้</dt><dd><MathText value={formula.use} /></dd></div>
+                    <div><dt>คำสำคัญในโจทย์</dt><dd><MathText value={formula.keywords} /></dd></div>
                   </dl>
                   <div className={styles.cautions}>
-                    <p><AlertTriangle aria-hidden="true" /> <span><strong>ระวัง</strong>{formula.caution}</span></p>
-                    <p><Lightbulb aria-hidden="true" /> <span><strong>พลาดบ่อย</strong>{formula.mistakes}</span></p>
+                    <p><AlertTriangle aria-hidden="true" /> <span><strong>ระวัง</strong><MathText value={formula.caution} /></span></p>
+                    <p><Lightbulb aria-hidden="true" /> <span><strong>พลาดบ่อย</strong><MathText value={formula.mistakes} /></span></p>
                   </div>
                 </div>
               ))}</div>
@@ -141,23 +141,23 @@ export default async function TreasureArticlePage({ params }: Props) {
 
             {resource.patterns.length > 0 && <section id="patterns">
               <div className={styles.sectionHeading}><ListChecks aria-hidden="true" /><div><span>จำแนกหน้าตาโจทย์ก่อน</span><h2>รูปแบบโจทย์ที่ออกบ่อย</h2></div></div>
-              <div className={styles.pairList}>{resource.patterns.map((item) => <div key={item.label}><strong>{item.label}</strong><p>{item.guidance}</p></div>)}</div>
+              <div className={styles.pairList}>{resource.patterns.map((item) => <div key={item.label}><strong><MathText value={item.label} /></strong><p><MathText value={item.guidance} /></p></div>)}</div>
             </section>}
 
             <section id="keywords">
               <div className={styles.sectionHeading}><KeyRound aria-hidden="true" /><div><span>เห็นคำนี้ ให้นึกถึงอะไร</span><h2>Keyword ในโจทย์</h2></div></div>
-              <div className={styles.keywordTable}>{resource.keywords.map((item) => <div key={item.label}><strong>{item.label}</strong><span>{item.guidance}</span></div>)}</div>
+              <div className={styles.keywordTable}>{resource.keywords.map((item) => <div key={item.label}><strong><MathText value={item.label} /></strong><span><MathText value={item.guidance} /></span></div>)}</div>
             </section>
 
             <section id="traps">
               <div className={styles.sectionHeading}><AlertTriangle aria-hidden="true" /><div><span>คะแนนมักหลุดก่อนเริ่มคำนวณ</span><h2>จุดหลอกและข้อควรระวัง</h2></div></div>
-              <ol className={styles.trapList}>{resource.traps.map((item) => <li key={item}>{item}</li>)}</ol>
-              {resource.scopeNote && <p className={styles.scopeNote}><strong>ขอบเขตของบทนี้</strong>{resource.scopeNote}</p>}
+              <ol className={styles.trapList}>{resource.traps.map((item) => <li key={item}><MathText value={item} /></li>)}</ol>
+              {resource.scopeNote && <p className={styles.scopeNote}><strong>ขอบเขตของบทนี้</strong><MathText value={resource.scopeNote} /></p>}
             </section>
 
             <section id="checklist">
               <div className={styles.sectionHeading}><Check aria-hidden="true" /><div><span>ใช้เวลาไม่ถึงครึ่งนาที</span><h2>Checklist ก่อนตอบ</h2></div></div>
-              <ul className={styles.checklist}>{resource.checklist.map((item) => <li key={item}><Check aria-hidden="true" /><span>{item}</span></li>)}</ul>
+              <ul className={styles.checklist}>{resource.checklist.map((item) => <li key={item}><Check aria-hidden="true" /><span><MathText value={item} /></span></li>)}</ul>
             </section>
 
             <section id="examples">
@@ -166,10 +166,10 @@ export default async function TreasureArticlePage({ params }: Props) {
                 <details key={example.title} open={index === 0}>
                   <summary><span>{example.level}</span><strong>{example.title}</strong><small>กดเพื่อ{index === 0 ? 'ปิด' : 'เปิด'}วิธีทำ</small></summary>
                   <div className={styles.exampleBody}>
-                    <div><h3>โจทย์</h3><p className={styles.problem}>{example.problem}</p></div>
-                    <div className={styles.exampleFacts}><p><span>คำตอบ</span><strong>{example.answer}</strong></p><p><span>สูตรที่เลือกใช้</span><MathExpression value={example.formula} /></p><p><span>Keyword</span>{example.keywords}</p></div>
-                    <div><h3>วิธีคิดทีละขั้น</h3><ol>{example.steps.map((step) => <li key={step}>{step}</li>)}</ol></div>
-                    <div className={styles.exampleChecks}><p><AlertTriangle aria-hidden="true" /><span><strong>จุดหลอก</strong>{example.trap}</span></p><p><Check aria-hidden="true" /><span><strong>วิธีตรวจคำตอบ</strong>{example.check}</span></p></div>
+                    <div><h3>โจทย์</h3><p className={styles.problem}><MathText value={example.problem} /></p></div>
+                    <div className={styles.exampleFacts}><p><span>คำตอบ</span><strong><MathText value={example.answer} /></strong></p><p><span>สูตรที่เลือกใช้</span><MathExpression value={example.formula} /></p><p><span>Keyword</span><MathText value={example.keywords} /></p></div>
+                    <div><h3>วิธีคิดทีละขั้น</h3><ol>{example.steps.map((step) => <li key={step}><MathText value={step} /></li>)}</ol></div>
+                    <div className={styles.exampleChecks}><p><AlertTriangle aria-hidden="true" /><span><strong>จุดหลอก</strong><MathText value={example.trap} /></span></p><p><Check aria-hidden="true" /><span><strong>วิธีตรวจคำตอบ</strong><MathText value={example.check} /></span></p></div>
                   </div>
                 </details>
               ))}</div>
