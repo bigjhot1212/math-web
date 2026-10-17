@@ -39,7 +39,7 @@ const FORMULA_DEMOS: Record<string, { prompt: string; tip: string; substitution:
   'vector-formula-guide::การตั้งฉากของเวกเตอร์': {
     prompt: 'ถ้า u⃗ = 2î + kĵ − k̂ ตั้งฉากกับ v⃗ = 3î + 2ĵ + 4k̂ จงหาค่า k',
     tip: 'ตั้งฉากแปลว่า u⃗·v⃗ = 0 จึงคูณองค์ประกอบคู่เดียวกันแล้วรวมกันให้เท่ากับ 0',
-    substitution: 'u⃗·v⃗ = (2)(3) + (k)(2) + (−1)(4); 6 + 2k − 4 = 0; 2k + 2 = 0',
+    substitution: 'u⃗·v⃗ = 2(3) + k(2) − 1(4); 6 + 2k − 4 = 0; 2k + 2 = 0',
     answer: 'k = −1',
   },
 }
@@ -128,8 +128,8 @@ export default async function TreasureArticlePage({ params }: Props) {
                     const demo = FORMULA_DEMOS[`${resource.slug}::${formula.name}`]
                     return <div className={styles.formulaDemo}>
                       <strong>ตัวอย่างแทนค่าจริง</strong>
-                      <p>{demo.prompt}</p>
-                      <p className={styles.formulaDemoTip}>{demo.tip}</p>
+                      <p><MathText value={demo.prompt} /></p>
+                      <p className={styles.formulaDemoTip}><MathText value={demo.tip} /></p>
                       <MathExpression value={demo.substitution} />
                       <p className={styles.formulaDemoAnswer}>ดังนั้น <MathExpression value={demo.answer} /></p>
                     </div>
