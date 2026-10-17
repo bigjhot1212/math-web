@@ -8,6 +8,7 @@ type TextProps = { value: string }
 const OPERATOR = /\s*([=≡⇔↔→⟹∧∨+−×÷≤≥<>∈∉⊂])\s*/g
 const RELATIONS = new Set(['=', '≡', '⇔', '↔', '→', '⟹'])
 const ROOT_DEGREES: Record<string, string> = { '√': '', '∛': '3', '∜': '4' }
+const ACCENTED_SYMBOL = /^([A-Z]{2}|[A-Za-z0-9])([⃗̂])/
 const SUPERSCRIPT_DIGITS: Record<string, string> = {
   '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4',
   '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
@@ -74,6 +75,12 @@ function toKatex(value: string) {
   let index = 0
 
   while (index < value.length) {
+    const accented = value.slice(index).match(ACCENTED_SYMBOL)
+    if (accented) {
+      output += accentLatex(accented[1], accented[2])
+      index += accented[0].length
+      continue
+    }
     const character = value[index]
     const rootDegree = ROOT_DEGREES[character]
     if (rootDegree !== undefined && index + 1 < value.length) {
@@ -98,6 +105,20 @@ function toKatex(value: string) {
   }
 
   return output
+}
+
+function accentLatex(symbol: string, accent: string) {
+  const command = accent === '̂' ? 'hat' : symbol.length > 1 ? 'overrightarrow' : 'vec'
+  return `\\${command}{${symbol}}`
+}
+
+function renderAccent(symbol: string, accent: string, key: string) {
+  const label = accent === '̂' ? `${symbol} หมวก` : `เวกเตอร์ ${symbol}`
+  const html = katex.renderToString(accentLatex(symbol, accent), {
+    output: 'html', throwOnError: false, strict: 'ignore',
+  })
+
+  return <span className={styles.mathAccent} aria-label={label} key={key} dangerouslySetInnerHTML={{ __html: html }} />
 }
 
 function renderRadical(radicand: { content: string; end: number }, degree: string, key: string) {
@@ -127,6 +148,13 @@ function renderScripts(value: string, keyPrefix: string) {
   }
 
   while (index < value.length) {
+    const accented = value.slice(index).match(ACCENTED_SYMBOL)
+    if (accented) {
+      flush()
+      parts.push(renderAccent(accented[1], accented[2], `${keyPrefix}-accent-${index}`))
+      index += accented[0].length
+      continue
+    }
     const character = value[index]
     if (character === '(') {
       const group = readScript(value, index)
@@ -201,7 +229,8 @@ function renderScripts(value: string, keyPrefix: string) {
 }
 
 export function MathText({ value }: TextProps) {
-  return <>{renderScripts(value, 'math-text')}</>
+  // Keep one inline box when this text is used in a grid-based list item.
+  return <span>{renderScripts(value, 'math-text')}</span>
 }
 
 function splitRelations(value: string) {
@@ -297,10 +326,10 @@ function renderSegment(segment: string, keyPrefix: string) {
 }
 
 function renderCompactLine(line: string, lineIndex: number) {
-  const parts = splitRelations(line).flatMap((part, partIndex) => (
+  const parts = splitRelations(line).map((part, partIndex) => (
     RELATIONS.has(part)
       ? <span className={styles.mathRelation} key={`${lineIndex}-relation-${partIndex}`}>{part}</span>
-      : renderSegment(part, `${lineIndex}-${partIndex}`)
+      : <span key={`${lineIndex}-segment-${partIndex}`}>{renderSegment(part, `${lineIndex}-${partIndex}`)}</span>
   ))
 
   return <span className={styles.mathLineCompact} key={`${lineIndex}-${line}`}>{parts}</span>

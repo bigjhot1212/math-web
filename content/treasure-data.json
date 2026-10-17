@@ -1647,7 +1647,7 @@
       },
       {
         "name": "ฟังก์ชันผกผันตรีโกณมิติ",
-        "expression": "arcsin x=θ ⇔ sinθ=x;  |θ|≤π/2;  arccos x=θ ⇔ cosθ=x;  0≤θ≤π;  arctan x=θ ⇔ tanθ=x;  |θ|<π/2",
+        "expression": "arcsin x=θ ⇔ sinθ=x;  x∈[−1,1];  −(π/2)≤θ≤(π/2);  arccos x=θ ⇔ cosθ=x;  x∈[−1,1];  0≤θ≤π;  arctan x=θ ⇔ tanθ=x;  x∈ℝ;  −(π/2)<θ<(π/2)",
         "meaning": "arcsin, arccos และ arctan คืนค่ามุมหลักเพียงมุมเดียวตามช่วงที่กำหนด",
         "condition": "arcsin และ arccos ใช้เมื่อ −1≤x≤1 ส่วน arctan ใช้ได้กับจำนวนจริงทุกค่า",
         "use": "หามุมจากค่าตรีโกณ เลือกมุมหลัก และเริ่มแก้สมการตรีโกณ",

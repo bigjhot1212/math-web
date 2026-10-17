@@ -110,7 +110,7 @@
 .formulaTitle h3 { font-size: 20px; font-weight: 600; }
 .formulaContext { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 18px; border: 1px solid var(--border); background: var(--border); }
 .formulaContext p { min-width: 0; background: var(--background); padding: 16px 18px; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
-.formulaContext span { display: block; margin-bottom: 4px; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: .02em; }
+.formulaContext p > span:first-child { display: block; margin-bottom: 4px; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: .02em; }
 .formula { max-width: 100%; min-width: 0; overflow-x: auto; margin-top: 14px; border: 1px solid oklch(0.32 0.045 266); border-radius: 12px; background: oklch(0.185 0.04 266); color: oklch(0.79 0.105 230); font-family: var(--font-math), var(--font-body), sans-serif; font-size: clamp(.98rem, 1.55vw, 1.2rem); line-height: 1.45; white-space: pre-wrap; scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
 .mathExpression { display: grid; min-width: 0; }
 .mathLine { display: grid; min-width: max-content; grid-template-columns: 170px minmax(280px, 1fr); gap: 22px; align-items: center; border-bottom: 1px solid oklch(0.285 0.038 266); padding: 15px 20px; }
@@ -128,6 +128,8 @@
 .radical { display: inline-block; margin-inline: .045em; vertical-align: -.08em; color: inherit; white-space: nowrap; }
 .radical :global(.katex) { color: inherit; font-size: 1.08em; line-height: 1; }
 .radical :global(.katex-html) { display: inline-block; }
+.mathAccent { display: inline-block; vertical-align: baseline; color: inherit; white-space: nowrap; }
+.mathAccent :global(.katex) { color: inherit; font-size: 1em; }
 .summation { display: inline-grid; min-width: 1.65em; grid-template-areas: 'upper' 'symbol' 'lower'; grid-template-rows: auto auto auto; place-items: center; align-self: center; margin-inline: .08em; vertical-align: middle; line-height: 1; }
 .summationUpper { grid-area: upper; font-size: .52em; line-height: 1; }
 .summationSymbol { grid-area: symbol; font-size: 1.35em; line-height: .82; }
@@ -207,7 +209,7 @@
 .keywordTable { border-top: 1px solid var(--border); }
 .keywordTable > div { display: grid; grid-template-columns: minmax(150px, .75fr) minmax(0, 1.25fr); gap: 26px; border-bottom: 1px solid var(--border); padding: 16px 0; }
 .keywordTable strong { color: var(--secondary); }
-.keywordTable span { color: var(--muted-foreground); line-height: 1.65; }
+.keywordTable > div > span { color: var(--muted-foreground); line-height: 1.65; }
 .trapList { display: grid; gap: 0; counter-reset: traps; list-style: none; border-top: 1px solid var(--border); }
 .trapList li { display: grid; grid-template-columns: 38px 1fr; gap: 12px; counter-increment: traps; border-bottom: 1px solid var(--border); padding: 16px 0; color: var(--foreground); line-height: 1.7; }
 .trapList li::before { color: var(--primary); content: counter(traps, decimal-leading-zero); font-size: 11px; font-variant-numeric: tabular-nums; }
@@ -229,7 +231,7 @@
 .exampleFacts { display: grid; grid-template-columns: 1fr 1fr 1fr; border-block: 1px solid var(--border); }
 .exampleFacts p { padding: 16px; color: var(--muted-foreground); font-size: 13px; line-height: 1.6; }
 .exampleFacts p + p { border-left: 1px solid var(--border); }
-.exampleFacts span { display: block; margin-bottom: 5px; color: var(--primary); font-size: 11px; font-weight: 700; }
+.exampleFacts p > span:first-child { display: block; margin-bottom: 5px; color: var(--primary); font-size: 11px; font-weight: 700; }
 .exampleFacts strong { color: var(--secondary); font-size: 16px; }
 .exampleFacts .mathExpression { overflow-x: auto; color: var(--muted-foreground); scrollbar-color: var(--border) transparent; scrollbar-width: thin; }
 .exampleBody ol { display: grid; gap: 10px; counter-reset: steps; list-style: none; }
