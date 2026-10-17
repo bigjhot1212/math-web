@@ -1,7 +1,8 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
-import { ArrowLeft, Landmark, Loader2, CheckCircle2, Upload } from 'lucide-react'
+import { ArrowLeft, Download, Landmark, Loader2, CheckCircle2, QrCode, Upload } from 'lucide-react'
 import { BANK_TRANSFER_INFO } from '@/lib/payment-config'
 import { removeFromCart } from '@/lib/cart'
 
@@ -14,6 +15,7 @@ type Props = {
 }
 
 export default function CheckoutClient({ type, id, name, price, email }: Props) {
+  const [paymentGuide, setPaymentGuide] = useState<'qr' | 'bank'>('qr')
   const [file, setFile] = useState<File | null>(null)
   const [bankSubmitting, setBankSubmitting] = useState(false)
   const [bankSubmitted, setBankSubmitted] = useState(false)
@@ -86,30 +88,74 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
           </div>
         ) : (
           <div className="rounded-3xl border border-border bg-card/70 overflow-hidden">
-            <div className="flex items-center gap-2 border-b border-border px-5 py-4 text-sm font-medium text-foreground">
-              <Landmark className="w-4 h-4 text-primary" aria-hidden="true" />
-              ข้อมูลบัญชีสำหรับโอนเงิน
+            <div className="grid grid-cols-2 gap-1 border-b border-border bg-muted/40 p-1.5" aria-label="เลือกวิธีดูข้อมูลการชำระเงิน">
+              <button
+                type="button"
+                aria-pressed={paymentGuide === 'qr'}
+                onClick={() => setPaymentGuide('qr')}
+                className={`flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${paymentGuide === 'qr' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                <QrCode className="h-4 w-4" aria-hidden="true" />
+                สแกน QR
+              </button>
+              <button
+                type="button"
+                aria-pressed={paymentGuide === 'bank'}
+                onClick={() => setPaymentGuide('bank')}
+                className={`flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${paymentGuide === 'bank' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                <Landmark className="h-4 w-4" aria-hidden="true" />
+                เลขบัญชี
+              </button>
             </div>
             <div className="space-y-4 p-5">
-              <div className="rounded-2xl bg-muted/60 p-4 text-sm space-y-1">
-                <p className="text-muted-foreground text-xs">โอนเงินมาที่บัญชี</p>
-                <p className="font-medium text-foreground">{BANK_TRANSFER_INFO.bankName}</p>
-                <p className="font-heading text-lg font-semibold text-foreground tabular-nums">{BANK_TRANSFER_INFO.accountNumber}</p>
-                <p className="font-medium text-foreground">{BANK_TRANSFER_INFO.accountName}</p>
-              </div>
+              {paymentGuide === 'qr' ? (
+                <div className="text-center">
+                  <div className="mx-auto max-w-[320px] overflow-hidden rounded-2xl bg-white p-2">
+                    <Image
+                      src="/payment/promptpay-qr.png"
+                      alt="QR PromptPay สำหรับชำระค่าคอร์ส"
+                      width={885}
+                      height={1200}
+                      sizes="(max-width: 640px) 82vw, 320px"
+                      className="h-auto w-full"
+                      priority
+                    />
+                  </div>
+                  <p className="mt-3 text-xs leading-5 text-muted-foreground">สแกนด้วยแอปธนาคาร และตรวจชื่อผู้รับให้ตรงกับภาพก่อนยืนยันยอด</p>
+                  <a
+                    href="/payment/promptpay-qr.png"
+                    download="math-hunters-promptpay.png"
+                    className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                  >
+                    <Download className="h-4 w-4" aria-hidden="true" />
+                    บันทึก QR ลงเครื่อง
+                  </a>
+                </div>
+              ) : (
+                <div className="rounded-2xl bg-muted/60 p-4 text-sm space-y-1">
+                  <p className="text-muted-foreground text-xs">โอนเงินมาที่บัญชี</p>
+                  <p className="font-medium text-foreground">{BANK_TRANSFER_INFO.bankName}</p>
+                  <p className="font-heading text-lg font-semibold text-foreground tabular-nums">{BANK_TRANSFER_INFO.accountNumber}</p>
+                  <p className="font-medium text-foreground">{BANK_TRANSFER_INFO.accountName}</p>
+                </div>
+              )}
 
-              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-2xl p-6 cursor-pointer hover:border-primary/40 transition-colors text-center">
-                <Upload className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
-                <span className="text-xs text-muted-foreground">
-                  {file ? file.name : 'แนบสลิปการโอนเงิน (รูปภาพ)'}
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                />
-              </label>
+              <div className="border-t border-border pt-4">
+                <p className="mb-3 text-sm font-medium text-foreground">แนบหลักฐานการโอน</p>
+                <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-2xl p-6 cursor-pointer hover:border-primary/40 transition-colors text-center">
+                  <Upload className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
+                  <span className="text-xs text-muted-foreground">
+                    {file ? file.name : 'แนบสลิปการโอนเงิน (รูปภาพ)'}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  />
+                </label>
+              </div>
 
               <button
                 onClick={handleSubmitSlip}
