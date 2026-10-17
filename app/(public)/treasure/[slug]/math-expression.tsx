@@ -109,7 +109,9 @@ function toKatex(value: string) {
 
 function accentLatex(symbol: string, accent: string) {
   const command = accent === '̂' ? 'hat' : symbol.length > 1 ? 'overrightarrow' : 'vec'
-  return `\\${command}{${symbol}}`
+  // Unit vectors î, ĵ are written on dotless letters so the dot doesn't collide with the hat
+  const base = accent === '̂' && symbol === 'i' ? '\\imath' : accent === '̂' && symbol === 'j' ? '\\jmath' : symbol
+  return `\\${command}{${base}}`
 }
 
 function renderAccent(symbol: string, accent: string, key: string) {
