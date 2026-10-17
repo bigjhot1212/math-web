@@ -12,6 +12,8 @@ const TOPIC_GROUPS: Record<string, string[]> = {
   'A-Level-2': ['trigonometry', 'matrix', 'vector', 'complex-numbers', 'counting-probability', 'sequences-series', 'calculus', 'statistics-distributions'],
 }
 
+const BASIC_DIAGNOSTIC_TYPE = 'basic-diagnostic-v1'
+
 // examType: "A-Level-1-free", "A-Level-1-paid", "A-Level-2-free", "A-Level-2-paid"
 function parseExamType(examType: string): { topics: string[]; tier: 'free' | 'paid' } | null {
   const tier = examType.endsWith('-paid') ? 'paid' : examType.endsWith('-free') ? 'free' : null
@@ -27,7 +29,7 @@ function loadAllQuestions(): Question[] {
   return fs.readdirSync(dir)
     .filter(f => f.endsWith('.json'))
     .flatMap(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8')) as Question[])
-    .filter(question => question.topicId !== 'set')
+    .filter(question => question.topicId !== 'set' || question.tags?.includes(BASIC_DIAGNOSTIC_TYPE))
     .concat(originalPracticeQuestions, setChallengeQuestions)
 }
 
@@ -35,8 +37,9 @@ export async function POST(request: NextRequest) {
   try {
     const { examType } = await request.json()
     const mockSet = getMath1MockSet(examType)
-    const parsed = mockSet ? null : parseExamType(examType)
-    if (!mockSet && !parsed) {
+    const isBasicDiagnostic = examType === BASIC_DIAGNOSTIC_TYPE
+    const parsed = mockSet || isBasicDiagnostic ? null : parseExamType(examType)
+    if (!mockSet && !parsed && !isBasicDiagnostic) {
       return NextResponse.json({ error: 'Invalid exam type' }, { status: 400 })
     }
 
@@ -45,8 +48,8 @@ export async function POST(request: NextRequest) {
     }
     const tier = parsed?.tier ?? 'free'
     const topics = parsed?.topics ?? []
-    const questionCount = mockSet ? 30 : tier === 'paid' ? 30 : 10
-    const durationMinutes = mockSet ? 90 : tier === 'paid' ? 90 : 30
+    const questionCount = mockSet || isBasicDiagnostic ? 30 : tier === 'paid' ? 30 : 10
+    const durationMinutes = mockSet || isBasicDiagnostic ? 90 : tier === 'paid' ? 90 : 30
 
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -70,9 +73,20 @@ export async function POST(request: NextRequest) {
     const allQuestions = loadAllQuestions()
     const topicSet = new Set(topics)
     const pool = allQuestions.filter(q => topicSet.has(q.topicId))
-    const selected = mockSet?.questions ?? (pool.length > 0 ? pool : allQuestions)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.min(questionCount, pool.length))
+    const diagnosticQuestions = allQuestions
+      .filter(question => question.tags?.includes(BASIC_DIAGNOSTIC_TYPE))
+      .sort((a, b) => a.id.localeCompare(b.id))
+
+    if (isBasicDiagnostic && diagnosticQuestions.length !== 30) {
+      console.error(`Expected 30 diagnostic questions, found ${diagnosticQuestions.length}`)
+      return NextResponse.json({ error: 'ชุดแบบทดสอบยังไม่พร้อมใช้งาน' }, { status: 500 })
+    }
+
+    const selected = isBasicDiagnostic
+      ? diagnosticQuestions
+      : mockSet?.questions ?? (pool.length > 0 ? pool : allQuestions)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, Math.min(questionCount, pool.length || allQuestions.length))
 
     const startedAt = new Date().toISOString()
     const { data, error } = await supabase

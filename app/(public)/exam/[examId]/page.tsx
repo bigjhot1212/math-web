@@ -20,6 +20,7 @@ const EXAM_DURATIONS: Record<string, number> = {
   ONET: 90,
   'A-Level': 90,
   PAT1: 180,
+  'basic-diagnostic-v1': 90,
 }
 
 function renderText(text: string) {

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, CheckCircle2, Target, XCircle } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import 'katex/dist/katex.min.css'
 
@@ -46,6 +46,10 @@ const TOPIC_NAMES: Record<string, string> = {
   'sequences-series': 'ลำดับและอนุกรม',
   'calculus': 'แคลคูลัสเบื้องต้น',
   'statistics-distributions': 'สถิติและตัวแปรสุ่ม',
+}
+
+const EXAM_NAMES: Record<string, string> = {
+  'basic-diagnostic-v1': 'แบบวัดพื้นฐาน A-Level Math 1',
 }
 
 function renderText(text: string) {
@@ -96,9 +100,9 @@ export default function ExamResultPage() {
     'text-red-600'
 
   const scoreLabel =
-    percentage >= 80 ? 'ยอดเยี่ยม!' :
-    percentage >= 60 ? 'ดีแล้ว ฝึกเพิ่มอีกนิดนึง' :
-    'ต้องฝึกเพิ่มอีก'
+    percentage >= 80 ? 'พื้นฐานพร้อมต่อยอด' :
+    percentage >= 60 ? 'พื้นฐานเริ่มแน่นแล้ว' :
+    'เจอบทที่ควรกลับไปอุดแล้ว'
 
   // Breakdown by topic
   const breakdown: Record<string, { correct: number; total: number }> = {}
@@ -108,18 +112,29 @@ export default function ExamResultPage() {
     if (isCorrectAnswer(q, session.answers?.[q.id])) breakdown[q.topicId].correct++
   }
 
+  const isBasicDiagnostic = session.exam_type === 'basic-diagnostic-v1'
+  const topicResults = Object.entries(breakdown)
+    .map(([topicId, stats]) => ({
+      topicId,
+      ...stats,
+      percentage: Math.round((stats.correct / stats.total) * 100),
+    }))
+    .sort((a, b) => a.percentage - b.percentage)
+  const strongTopics = topicResults.filter(topic => topic.percentage >= 70)
+  const focusTopics = topicResults.filter(topic => topic.percentage < 70).slice(0, 4)
+
   const durationMs = new Date(session.submitted_at).getTime() - new Date(session.started_at).getTime()
   const durationMin = Math.floor(durationMs / 60000)
   const durationSec = Math.floor((durationMs % 60000) / 1000)
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-12">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
 
         {/* Score hero */}
         <div className="animate-fade-slide-in text-center py-10 mb-10 border-b border-border relative">
           <p className="text-xs text-muted-foreground uppercase tracking-widest mb-4">
-            {session.exam_type} · ผลสอบ
+            {EXAM_NAMES[session.exam_type] ?? session.exam_type} · ผลสอบ
           </p>
           <div className={`font-heading text-8xl font-bold mb-3 tabular-nums ${scoreColor}`}>{percentage}%</div>
           <p className="text-muted-foreground text-lg mb-2">
@@ -131,31 +146,98 @@ export default function ExamResultPage() {
           </p>
         </div>
 
+        {isBasicDiagnostic && (
+          <section className="mb-10 grid gap-4 md:grid-cols-2">
+            <div className="rounded-3xl border border-green-500/25 bg-green-500/[0.06] p-6">
+              <div className="flex items-center gap-3">
+                <BookOpenCheck className="h-5 w-5 text-green-600" aria-hidden="true" />
+                <h2 className="font-heading text-lg font-semibold text-foreground">พื้นฐานที่พร้อมต่อยอด</h2>
+              </div>
+              {strongTopics.length > 0 ? (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {strongTopics.map(topic => (
+                    <span
+                      key={topic.topicId}
+                      className="rounded-lg border border-green-500/20 bg-background/70 px-3 py-2 text-xs text-foreground"
+                    >
+                      {TOPIC_NAMES[topic.topicId] ?? topic.topicId} · {topic.correct}/{topic.total}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                  ยังไม่มีบทที่ผ่านเกณฑ์รอบนี้ ไม่เป็นไร—เริ่มเก็บจากบทที่พลาดน้อยที่สุดก่อน
+                </p>
+              )}
+            </div>
+
+            <div className="rounded-3xl border border-primary/30 bg-primary/[0.06] p-6">
+              <div className="flex items-center gap-3">
+                <Target className="h-5 w-5 text-primary" aria-hidden="true" />
+                <h2 className="font-heading text-lg font-semibold text-foreground">ควรเริ่มทบทวนจากตรงนี้</h2>
+              </div>
+              {focusTopics.length > 0 ? (
+                <div className="mt-4 divide-y divide-border">
+                  {focusTopics.map(topic => (
+                    <Link
+                      key={topic.topicId}
+                      href={`/practice/${topic.topicId}`}
+                      className="group flex items-center justify-between gap-4 py-3 text-sm text-foreground transition-colors hover:text-primary"
+                    >
+                      <span>{TOPIC_NAMES[topic.topicId] ?? topic.topicId}</span>
+                      <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground group-hover:text-primary">
+                        ฝึกบทนี้
+                        <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                  ทำได้ดีทุกบท ลองต่อด้วยข้อสอบจำลองแบบจับเวลาได้เลย
+                </p>
+              )}
+            </div>
+
+            <p className="text-xs leading-5 text-muted-foreground md:col-span-2">
+              ผลนี้เป็นสัญญาณเริ่มต้นจากโจทย์ 30 ข้อ ควรใช้ร่วมกับผลการฝึกเพิ่มเติมในแต่ละบท
+            </p>
+          </section>
+        )}
+
         {/* Topic breakdown */}
         <div className="mb-10 p-5 rounded-3xl border border-border bg-card shadow-sm">
           <h2 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">
             ผลตามหัวข้อ
           </h2>
           <div className="flex flex-col gap-4">
-            {Object.entries(breakdown).map(([topicId, stats]) => {
-              const pct = Math.round((stats.correct / stats.total) * 100)
+            {topicResults.map(({ topicId, correct, total, percentage: pct }) => {
               const barColor =
                 pct >= 80 ? 'bg-green-500' :
                 pct >= 60 ? 'bg-amber-500' :
                 'bg-red-500'
               return (
-                <div key={topicId} className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground w-44 shrink-0 truncate">
-                    {TOPIC_NAMES[topicId] ?? topicId}
-                  </span>
-                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                <div key={topicId} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 sm:grid-cols-[12rem_1fr_auto]">
+                  {isBasicDiagnostic ? (
+                    <Link
+                      href={`/practice/${topicId}`}
+                      className="order-1 truncate text-sm text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      {TOPIC_NAMES[topicId] ?? topicId}
+                    </Link>
+                  ) : (
+                    <span className="order-1 truncate text-sm text-muted-foreground">
+                      {TOPIC_NAMES[topicId] ?? topicId}
+                    </span>
+                  )}
+                  <div className="order-3 col-span-2 h-2 overflow-hidden rounded-full bg-muted sm:order-2 sm:col-span-1">
                     <div
                       className={`h-full rounded-full transition-all ${barColor}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-sm text-muted-foreground w-12 text-right shrink-0">
-                    {stats.correct}/{stats.total}
+                  <span className="order-2 text-right text-sm text-muted-foreground sm:order-3 sm:w-12">
+                    {correct}/{total}
                   </span>
                 </div>
               )

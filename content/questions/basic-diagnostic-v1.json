@@ -1,0 +1,712 @@
+[
+  {
+    "id": "basic-diagnostic-v1-01",
+    "topicId": "set",
+    "subtopic": "set-operations",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $A$ และ $B$ เป็นสับเซตของเอกภพสัมพัทธ์ $U$ โดยที่ $n(U)=120$, $n(A)=70$, $n(B)=65$ และ $n(A'\\cap B')=15$ แล้ว $n[(A\\cap B)\\cup(A'\\cap B')]$ เท่ากับข้อใด",
+      "choices": { "a": "$30$", "b": "$35$", "c": "$40$", "d": "$45$", "e": "$50$" }
+    },
+    "answer": "d",
+    "hint": "หา $n(A\\cup B)$ จากส่วนเติมเต็มก่อน แล้วใช้หลักบวกลบรวม",
+    "solution": {
+      "steps": [
+        "$n(A\\cup B)=120-15=105$",
+        "$n(A\\cap B)=70+65-105=30$",
+        "สองส่วนไม่ทับซ้อนกัน จึงได้ $30+15=45$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "set", "venn-diagram"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-02",
+    "topicId": "logic",
+    "subtopic": "tautology",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "พิจารณาประพจน์ต่อไปนี้ ก) $[(p\\to q)\\land(q\\to r)]\\to(p\\to r)$ ข) $[(p\\lor q)\\land\\neg p]\\to q$ ค) $(p\\to q)\\leftrightarrow(\\neg p\\to\\neg q)$ ง) $(p\\leftrightarrow q)\\leftrightarrow[(p\\land q)\\lor(\\neg p\\land\\neg q)]$ ข้อใดกล่าวถูกต้องเกี่ยวกับสัจนิรันดร์",
+      "choices": {
+        "a": "ก) เป็นสัจนิรันดร์เพียงข้อเดียว",
+        "b": "ก) และ ข) เป็นสัจนิรันดร์เท่านั้น",
+        "c": "ก) และ ง) เป็นสัจนิรันดร์เท่านั้น",
+        "d": "ก) ข) และ ง) เป็นสัจนิรันดร์เท่านั้น",
+        "e": "ก) ข) ค) และ ง) เป็นสัจนิรันดร์ทั้งหมด"
+      }
+    },
+    "answer": "d",
+    "hint": "ตรวจว่าแต่ละประพจน์มีกรณีโต้แย้งหรือไม่",
+    "solution": {
+      "steps": [
+        "ก) เป็นสัจนิรันดร์จากการส่งต่อเหตุ $p\\to q\\to r$",
+        "ข) เป็นสัจนิรันดร์ เพราะเมื่อ $p\\lor q$ จริงและ $p$ เท็จ ต้องมี $q$ จริง",
+        "ค) ไม่เป็นสัจนิรันดร์ เช่น $p$ จริงและ $q$ เท็จ",
+        "ง) เป็นสัจนิรันดร์ เพราะทั้งสองข้างหมายถึง $p,q$ มีค่าความจริงตรงกัน"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "logic", "tautology"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-03",
+    "topicId": "real-numbers",
+    "subtopic": "absolute-value-equation",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $k$ เป็นจำนวนจริงบวก สมการ $|x^2-4x+1|=k$ จะมีคำตอบที่เป็นจำนวนจริงแตกต่างกันทั้งหมด $4$ คำตอบ เมื่อ $k$ อยู่ในช่วงใด",
+      "choices": { "a": "$k<0$", "b": "$0<k<3$", "c": "$0\\le k<3$", "d": "$0<k\\le3$", "e": "$k>3$" }
+    },
+    "answer": "b",
+    "hint": "แยกเป็นพาราโบลาสองสมการ แล้วตรวจจำนวนรากของแต่ละสมการ",
+    "solution": {
+      "steps": [
+        "แยกได้เป็น $x^2-4x+1=k$ และ $x^2-4x+1=-k$",
+        "สมการแรกมีสองรากเมื่อ $k>0$",
+        "สมการที่สองมีสองรากเมื่อ $12-4k>0$ หรือ $k<3$",
+        "จึงต้องมี $0<k<3$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "real-numbers", "absolute-value"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-04",
+    "topicId": "real-numbers",
+    "subtopic": "polynomial-factors",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $p(x)=x^3+ax^2+bx+6$ เมื่อ $a,b\\in\\mathbb R$ ถ้า $x-1$ และ $x+2$ เป็นตัวประกอบของ $p(x)$ แล้ว $p(2)$ เท่ากับข้อใด",
+      "choices": { "a": "$-8$", "b": "$-4$", "c": "$0$", "d": "$4$", "e": "$8$" }
+    },
+    "answer": "b",
+    "hint": "ใช้ $p(1)=0$ และ $p(-2)=0$ สร้างระบบสมการ",
+    "solution": {
+      "steps": [
+        "$p(1)=0$ ให้ $a+b=-7$",
+        "$p(-2)=0$ ให้ $2a-b=1$",
+        "แก้ระบบได้ $a=-2$ และ $b=-5$",
+        "$p(2)=8-8-10+6=-4$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "polynomial", "factor-theorem"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-05",
+    "topicId": "relations-functions",
+    "subtopic": "composite-function",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $f(x)=x^2-4x+7$ และ $g(x)=2x+1$ ถ้า $f(g(a))=f(5)$ และ $a\\ne2$ แล้ว $a$ เท่ากับข้อใด",
+      "choices": { "a": "$-3$", "b": "$-2$", "c": "$-1$", "d": "$1$", "e": "$2$" }
+    },
+    "answer": "c",
+    "hint": "ให้ $y=g(a)$ แล้วแก้ $f(y)=f(5)$",
+    "solution": {
+      "steps": [
+        "$f(5)=12$ จึงได้ $y^2-4y+7=12$",
+        "$(y-5)(y+1)=0$ จึงมี $y=5$ หรือ $y=-1$",
+        "$2a+1=5$ ให้ $a=2$ และ $2a+1=-1$ ให้ $a=-1$",
+        "ตัด $a=2$ ตามเงื่อนไข จึงเหลือ $a=-1$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "function", "composition"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-06",
+    "topicId": "relations-functions",
+    "subtopic": "rational-function",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดฟังก์ชัน $f(x)=\\frac{3x-2}{x+1}$ เมื่อ $x\\ne-1$ ให้ $a$ และ $b$ เป็นจำนวนจริงที่สอดคล้องกับ $f(a)=2$ และ $f(b)=-1$ แล้ว $a+b$ เท่ากับข้อใด",
+      "choices": { "a": "$3$", "b": "$\\frac{15}{4}$", "c": "$4$", "d": "$\\frac{17}{4}$", "e": "$\\frac92$" }
+    },
+    "answer": "d",
+    "hint": "แก้สมการหา $a$ และ $b$ แยกกัน",
+    "solution": {
+      "steps": [
+        "$\\frac{3a-2}{a+1}=2$ ให้ $a=4$",
+        "$\\frac{3b-2}{b+1}=-1$ ให้ $b=\\frac14$",
+        "$a+b=4+\\frac14=\\frac{17}{4}$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "function", "rational-function"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-07",
+    "topicId": "exponential-logarithm",
+    "subtopic": "exponential-equation",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $x_1$ และ $x_2$ เป็นคำตอบที่แตกต่างกันของสมการ $4^x-6(2^x)+8=0$ แล้ว $x_1^2+x_2^2$ เท่ากับข้อใด",
+      "choices": { "a": "$3$", "b": "$4$", "c": "$5$", "d": "$6$", "e": "$8$" }
+    },
+    "answer": "c",
+    "hint": "ให้ $y=2^x$ แล้วแก้สมการกำลังสอง",
+    "solution": {
+      "steps": [
+        "ให้ $y=2^x>0$ จะได้ $y^2-6y+8=0$",
+        "$(y-2)(y-4)=0$ จึงมี $2^x=2$ หรือ $2^x=4$",
+        "ได้ $x_1=1$, $x_2=2$ และ $x_1^2+x_2^2=5$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "exponential", "equation"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-08",
+    "topicId": "exponential-logarithm",
+    "subtopic": "logarithmic-parameter",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $k>0$ และ $x_1<x_2$ เป็นคำตอบที่แตกต่างกันของสมการ $\\log_2(x-1)+\\log_2(7-x)=\\log_2 k$ ถ้า $x_2-x_1=2$ แล้ว $k+x_1x_2$ เท่ากับข้อใด",
+      "choices": { "a": "$19$", "b": "$21$", "c": "$23$", "d": "$25$", "e": "$27$" }
+    },
+    "answer": "c",
+    "hint": "รวมลอการิทึม แล้วใช้ผลบวก ผลคูณ และผลต่างของราก",
+    "solution": {
+      "steps": [
+        "โดเมนคือ $1<x<7$ และสมการเทียบเท่า $x^2-8x+(7+k)=0$",
+        "$x_1+x_2=8$ และ $x_1x_2=7+k$",
+        "$(x_2-x_1)^2=64-4(7+k)=4$ จึงได้ $k=8$",
+        "$x_1x_2=15$ ดังนั้น $k+x_1x_2=23$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "logarithm", "roots"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-09",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "circle-tangent",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "วงกลมวงหนึ่งมีสมการ $(x-2)^2+(y-1)^2=5$ กำหนดให้ $P(5,5)$ เป็นจุดที่อยู่นอกวงกลม ลากส่วนของเส้นตรงจาก $P$ ไปสัมผัสวงกลมที่จุด $T$ แล้วความยาว $PT$ เท่ากับข้อใด",
+      "choices": { "a": "$\\sqrt5$", "b": "$2\\sqrt5$", "c": "$3\\sqrt5$", "d": "$4\\sqrt5$", "e": "$5\\sqrt5$" }
+    },
+    "answer": "b",
+    "hint": "รัศมีที่จุดสัมผัสตั้งฉากกับเส้นสัมผัส",
+    "solution": {
+      "steps": [
+        "จุดศูนย์กลางคือ $C(2,1)$ รัศมี $CT=\\sqrt5$",
+        "$PC=\\sqrt{3^2+4^2}=5$",
+        "$PT=\\sqrt{PC^2-CT^2}=\\sqrt{25-5}=2\\sqrt5$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "circle", "tangent"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-10",
+    "topicId": "trigonometry",
+    "subtopic": "trigonometric-identity",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $0<\\theta<\\frac\\pi2$ และ $\\sin\\theta-\\cos\\theta=\\frac13$ แล้ว $\\tan\\theta+\\cot\\theta$ เท่ากับข้อใด",
+      "choices": { "a": "$\\frac54$", "b": "$\\frac74$", "c": "$2$", "d": "$\\frac94$", "e": "$\\frac52$" }
+    },
+    "answer": "d",
+    "hint": "ยกกำลังสองเพื่อหา $\\sin2\\theta$",
+    "solution": {
+      "steps": [
+        "$(\\sin\\theta-\\cos\\theta)^2=1-\\sin2\\theta=\\frac19$",
+        "จึงได้ $\\sin2\\theta=\\frac89$",
+        "$\\tan\\theta+\\cot\\theta=\\frac{2}{\\sin2\\theta}=\\frac94$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "trigonometry", "identity"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-11",
+    "topicId": "trigonometry",
+    "subtopic": "trigonometric-equation",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ผลบวกของคำตอบทั้งหมดของสมการ $2\\sin^2x-3\\sin x+1=0$ เมื่อ $0\\le x<2\\pi$ เท่ากับข้อใด",
+      "choices": { "a": "$\\pi$", "b": "$\\frac{4\\pi}{3}$", "c": "$\\frac{3\\pi}{2}$", "d": "$\\frac{5\\pi}{3}$", "e": "$2\\pi$" }
+    },
+    "answer": "c",
+    "hint": "แยกตัวประกอบเป็นสมการใน $\\sin x$",
+    "solution": {
+      "steps": [
+        "$(2\\sin x-1)(\\sin x-1)=0$",
+        "คำตอบคือ $\\frac\\pi6$, $\\frac\\pi2$, $\\frac{5\\pi}6$",
+        "ผลบวกเท่ากับ $\\frac{3\\pi}{2}$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "trigonometry", "equation"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-12",
+    "topicId": "matrix",
+    "subtopic": "matrix-expression",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $A=\\begin{bmatrix}1&2\\\\3&4\\end{bmatrix}$ เมื่อ $I$ เป็นเมทริกซ์เอกลักษณ์ขนาด $2\\times2$ ค่าของ $\\det(A^2-5A+6I)$ เท่ากับข้อใด",
+      "choices": { "a": "$16$", "b": "$32$", "c": "$48$", "d": "$64$", "e": "$96$" }
+    },
+    "answer": "d",
+    "hint": "คำนวณ $A^2$ ก่อน แล้วลดรูปเมทริกซ์ภายในดีเทอร์มิแนนต์",
+    "solution": {
+      "steps": [
+        "$A^2=\\begin{bmatrix}7&10\\\\15&22\\end{bmatrix}$",
+        "$A^2-5A+6I=\\begin{bmatrix}8&0\\\\0&8\\end{bmatrix}$",
+        "ดีเทอร์มิแนนต์เท่ากับ $8(8)=64$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "matrix", "determinant"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-13",
+    "topicId": "vector",
+    "subtopic": "dot-product",
+    "level": "A-Level",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $\\vec u$ และ $\\vec v$ เป็นเวกเตอร์ที่ $|\\vec u|=3$, $|\\vec v|=4$ และ $|\\vec u-\\vec v|=\\sqrt{13}$ มุมระหว่าง $\\vec u$ และ $\\vec v$ มีขนาดเท่ากับข้อใด",
+      "choices": { "a": "$30^\\circ$", "b": "$45^\\circ$", "c": "$60^\\circ$", "d": "$90^\\circ$", "e": "$120^\\circ$" }
+    },
+    "answer": "c",
+    "hint": "ยกกำลังสองความยาวของ $\\vec u-\\vec v$",
+    "solution": {
+      "steps": [
+        "$13=9+16-2(3)(4)\\cos\\theta$",
+        "$\\cos\\theta=\\frac12$",
+        "ดังนั้น $\\theta=60^\\circ$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "vector", "dot-product"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-14",
+    "topicId": "vector",
+    "subtopic": "cross-product-area",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดจุด $A(1,0,2)$, $B(3,-1,4)$ และ $C(2,2,1)$ พื้นที่ของรูปสามเหลี่ยม $ABC$ เท่ากับข้อใด",
+      "choices": { "a": "$\\sqrt2$", "b": "$2\\sqrt2$", "c": "$\\frac{5\\sqrt2}{2}$", "d": "$5\\sqrt2$", "e": "$10\\sqrt2$" }
+    },
+    "answer": "c",
+    "hint": "พื้นที่สามเหลี่ยมเท่ากับครึ่งหนึ่งของขนาดครอสโปรดักต์",
+    "solution": {
+      "steps": [
+        "$\\overrightarrow{AB}=(2,-1,2)$ และ $\\overrightarrow{AC}=(1,2,-1)$",
+        "$\\overrightarrow{AB}\\times\\overrightarrow{AC}=(-3,4,5)$",
+        "ขนาดเท่ากับ $5\\sqrt2$ พื้นที่จึงเท่ากับ $\\frac{5\\sqrt2}{2}$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "vector", "cross-product"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-15",
+    "topicId": "complex-numbers",
+    "subtopic": "complex-properties",
+    "level": "A-Level",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $z=1+i$ พิจารณาข้อความต่อไปนี้ ก) $z^2=2i$ ข) $|z|=2$ ค) $\\frac1z=\\frac{1-i}{2}$ ข้อใดถูกต้อง",
+      "choices": {
+        "a": "ข้อความ ก) ถูกต้องเพียงข้อเดียวเท่านั้น",
+        "b": "ข้อความ ข) ถูกต้องเพียงข้อเดียวเท่านั้น",
+        "c": "ข้อความ ก) และ ค) ถูกต้องเท่านั้น",
+        "d": "ข้อความ ข) และ ค) ถูกต้องเท่านั้น",
+        "e": "ข้อความ ก) ข) และ ค) ถูกต้อง"
+      }
+    },
+    "answer": "c",
+    "hint": "คำนวณกำลังสอง มอดูลัส และส่วนกลับแยกกัน",
+    "solution": {
+      "steps": [
+        "$z^2=(1+i)^2=2i$",
+        "$|z|=\\sqrt2$ จึงทำให้ข้อความ ข) ผิด",
+        "$\\frac1z=\\frac{1-i}{2}$",
+        "ถูกเฉพาะ ก) และ ค)"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "complex-numbers", "modulus"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-16",
+    "topicId": "complex-numbers",
+    "subtopic": "complex-roots",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ถ้า $z_1$ และ $z_2$ เป็นคำตอบของสมการ $z^2-2z+5=0$ แล้ว $|z_1|\\,|z_2|$ เท่ากับข้อใด",
+      "choices": { "a": "$1$", "b": "$\\sqrt5$", "c": "$4$", "d": "$5$", "e": "$25$" }
+    },
+    "answer": "d",
+    "hint": "หารากหรือใช้ $|z_1z_2|=|z_1||z_2|$",
+    "solution": {
+      "steps": [
+        "รากคือ $1+2i$ และ $1-2i$",
+        "แต่ละรากมีมอดูลัส $\\sqrt5$",
+        "ผลคูณของมอดูลัสเท่ากับ $5$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "complex-numbers", "quadratic"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-17",
+    "topicId": "counting-probability",
+    "subtopic": "permutation-with-repetition",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "จำนวนวิธีเรียงตัวอักษรทั้งหมดในคำว่า MATHMATH โดยที่ตัวอักษร A ทั้งสองตัวไม่อยู่ติดกัน เท่ากับข้อใด",
+      "choices": { "a": "$1{,}260$", "b": "$1{,}680$", "c": "$1{,}890$", "d": "$2{,}100$", "e": "$2{,}520$" }
+    },
+    "answer": "c",
+    "hint": "นับทั้งหมดแล้วลบกรณีที่มอง AA เป็นหนึ่งหน่วย",
+    "solution": {
+      "steps": [
+        "เรียงทั้งหมดได้ $\\frac{8!}{2!2!2!2!}=2{,}520$ วิธี",
+        "กรณี A ติดกันเรียงได้ $\\frac{7!}{2!2!2!}=630$ วิธี",
+        "จำนวนที่ต้องการคือ $2{,}520-630=1{,}890$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "counting", "permutation"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-18",
+    "topicId": "counting-probability",
+    "subtopic": "combination",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กลุ่มนักเรียนกลุ่มหนึ่งมีนักเรียนชาย $5$ คน และนักเรียนหญิง $4$ คน ถ้าต้องเลือกตัวแทน $4$ คน โดยมีนักเรียนหญิงอย่างน้อย $2$ คน จะเลือกได้ทั้งหมดกี่วิธี",
+      "choices": { "a": "$60$", "b": "$70$", "c": "$80$", "d": "$81$", "e": "$90$" }
+    },
+    "answer": "d",
+    "hint": "แบ่งเป็นเลือกนักเรียนหญิง 2, 3 และ 4 คน",
+    "solution": {
+      "steps": [
+        "$\\binom42\\binom52+\\binom43\\binom51+\\binom44\\binom50$",
+        "$=60+20+1=81$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "counting", "combination"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-19",
+    "topicId": "counting-probability",
+    "subtopic": "conditional-probability",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ทอดลูกเต๋ามาตรฐานสองลูกพร้อมกันหนึ่งครั้ง เมื่อทราบว่าผลรวมของแต้มไม่น้อยกว่า $10$ ความน่าจะเป็นที่มีลูกเต๋าอย่างน้อยหนึ่งลูกขึ้นแต้ม $6$ เท่ากับข้อใด",
+      "choices": { "a": "$\\frac12$", "b": "$\\frac23$", "c": "$\\frac34$", "d": "$\\frac45$", "e": "$\\frac56$" }
+    },
+    "answer": "e",
+    "hint": "สร้างปริภูมิตัวอย่างใหม่เฉพาะผลลัพธ์ที่ผลรวมไม่น้อยกว่า 10",
+    "solution": {
+      "steps": [
+        "มีผลลัพธ์ตามเงื่อนไข $6$ แบบ: $(4,6),(5,5),(6,4),(5,6),(6,5),(6,6)$",
+        "มีแต้ม 6 อย่างน้อยหนึ่งลูกอยู่ $5$ แบบ",
+        "ความน่าจะเป็นคือ $\\frac56$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "probability", "conditional-probability"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-20",
+    "topicId": "sequences-series",
+    "subtopic": "partial-sum",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $S_n$ เป็นผลบวก $n$ พจน์แรกของลำดับเลขคณิตลำดับหนึ่ง โดยที่ $S_n=3n^2-2n$ แล้ว $a_6+a_9+a_{12}+\\cdots+a_{30}$ เท่ากับข้อใด",
+      "choices": { "a": "$837$", "b": "$882$", "c": "$927$", "d": "$972$", "e": "$1{,}017$" }
+    },
+    "answer": "c",
+    "hint": "หา $a_n$ จาก $S_n-S_{n-1}$ ก่อน",
+    "solution": {
+      "steps": [
+        "$a_n=S_n-S_{n-1}=6n-5$",
+        "ดัชนี $6,9,\\ldots,30$ มี $9$ พจน์",
+        "$a_6=31$ และ $a_{30}=175$",
+        "ผลบวกคือ $\\frac92(31+175)=927$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "sequence", "partial-sum"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-21",
+    "topicId": "sequences-series",
+    "subtopic": "infinite-geometric-series",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้อนุกรมเรขาคณิตอนันต์มีพจน์แรกเป็นจำนวนบวก อัตราส่วนร่วม $r$ สอดคล้องกับ $0<r<1$ และมีผลบวกอนันต์เท่ากับ $12$ ถ้าผลบวกสองพจน์แรกเท่ากับ $9$ แล้วพจน์ที่ $4$ เท่ากับข้อใด",
+      "choices": { "a": "$\\frac38$", "b": "$\\frac12$", "c": "$\\frac34$", "d": "$1$", "e": "$\\frac32$" }
+    },
+    "answer": "c",
+    "hint": "เขียนสมการจากผลบวกอนันต์และผลบวกสองพจน์แรก",
+    "solution": {
+      "steps": [
+        "$\\frac{a}{1-r}=12$ และ $a(1+r)=9$",
+        "แทน $a=12(1-r)$ ได้ $12(1-r^2)=9$",
+        "จาก $0<r<1$ ได้ $r=\\frac12$ และ $a=6$",
+        "$a_4=ar^3=\\frac34$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "series", "infinite-series"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-22",
+    "topicId": "calculus",
+    "subtopic": "derivative-tangent",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ $f(x)=\\frac{x^2+1}{x-1}$ เมื่อ $x\\ne1$ เส้นสัมผัสกราฟของ $y=f(x)$ ที่จุดซึ่ง $x=2$ ตัดแกน $x$ และแกน $y$ เกิดเป็นรูปสามเหลี่ยมร่วมกับแกนพิกัด รูปสามเหลี่ยมนี้มีพื้นที่เท่ากับข้อใด",
+      "choices": { "a": "$\\frac{35}{2}$", "b": "$21$", "c": "$\\frac{49}{2}$", "d": "$28$", "e": "$\\frac{63}{2}$" }
+    },
+    "answer": "c",
+    "hint": "หา $f(2)$ และ $f'(2)$ เพื่อเขียนสมการเส้นสัมผัส",
+    "solution": {
+      "steps": [
+        "$f'(x)=\\frac{2x(x-1)-(x^2+1)}{(x-1)^2}$",
+        "$f'(2)=-1$ และ $f(2)=5$",
+        "เส้นสัมผัสคือ $y-5=-(x-2)$ หรือ $x+y=7$",
+        "พื้นที่เท่ากับ $\\frac12(7)(7)=\\frac{49}{2}$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "calculus", "tangent-line"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-23",
+    "topicId": "calculus",
+    "subtopic": "area-under-curve",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "content": {
+      "text": "พื้นที่ระหว่างกราฟ $y=x^2-3x+2$ กับแกน $x$ ตั้งแต่ $x=0$ ถึง $x=3$ เท่ากับข้อใด",
+      "choices": { "a": "$\\frac76$", "b": "$\\frac32$", "c": "$\\frac{11}{6}$", "d": "$2$", "e": "$\\frac{13}{6}$" }
+    },
+    "answer": "c",
+    "hint": "กราฟเปลี่ยนเครื่องหมายที่ $x=1$ และ $x=2$ จึงต้องแบ่งช่วง",
+    "solution": {
+      "steps": [
+        "$x^2-3x+2=(x-1)(x-2)$",
+        "ให้ $F(x)=\\frac{x^3}{3}-\\frac{3x^2}{2}+2x$",
+        "พื้นที่คือ $[F(1)-F(0)]-[F(2)-F(1)]+[F(3)-F(2)]$",
+        "$=\\frac56+\\frac16+\\frac56=\\frac{11}{6}$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "calculus", "definite-integral"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-24",
+    "topicId": "statistics-distributions",
+    "subtopic": "linear-transformation",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "ข้อมูลชุดหนึ่งมีค่าเฉลี่ยเลขคณิตเท่ากับ $10$ และความแปรปรวนเท่ากับ $9$ ถ้าแปลงข้อมูลทุกค่า $x$ เป็น $y=2x-3$ แล้วผลบวกของค่าเฉลี่ยเลขคณิตและความแปรปรวนของข้อมูลชุดใหม่เท่ากับข้อใด",
+      "choices": { "a": "$35$", "b": "$43$", "c": "$47$", "d": "$53$", "e": "$55$" }
+    },
+    "answer": "d",
+    "hint": "ค่าเฉลี่ยเปลี่ยนตาม $aX+b$ แต่ความแปรปรวนคูณด้วย $a^2$",
+    "solution": {
+      "steps": [
+        "$\\bar y=2(10)-3=17$",
+        "$\\operatorname{Var}(Y)=2^2(9)=36$",
+        "ผลบวกคือ $17+36=53$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "statistics", "transformation"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-25",
+    "topicId": "statistics-distributions",
+    "subtopic": "normal-distribution",
+    "level": "A-Level",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "content": {
+      "text": "กำหนดให้ตัวแปรสุ่ม $X$ มีการแจกแจงปกติที่มีค่าเฉลี่ย $50$ และส่วนเบี่ยงเบนมาตรฐาน $4$ ถ้า $Z$ เป็นตัวแปรสุ่มปกติมาตรฐาน และกำหนดให้ $P(Z\\le1)=0.8413$ แล้ว $P(46\\le X\\le54)$ เท่ากับข้อใด",
+      "choices": { "a": "$0.1587$", "b": "$0.3174$", "c": "$0.5000$", "d": "$0.6826$", "e": "$0.8413$" }
+    },
+    "answer": "d",
+    "hint": "แปลงขอบช่วงเป็นคะแนนมาตรฐาน $Z=-1$ และ $Z=1$",
+    "solution": {
+      "steps": [
+        "$46$ และ $54$ ให้คะแนนมาตรฐาน $-1$ และ $1$",
+        "$P(-1\\le Z\\le1)=0.8413-(1-0.8413)$",
+        "ได้ความน่าจะเป็น $0.6826$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "statistics", "normal-distribution"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-26",
+    "topicId": "analytic-geometry-conics",
+    "subtopic": "ellipse-foci",
+    "level": "A-Level",
+    "difficulty": "easy",
+    "type": "short-answer",
+    "content": {
+      "text": "กำหนดวงรี $\\frac{x^2}{25}+\\frac{y^2}{9}=1$ ระยะห่างระหว่างจุดโฟกัสทั้งสองของวงรีเท่ากับเท่าใด"
+    },
+    "answer": "8",
+    "acceptedAnswers": ["8.0"],
+    "hint": "ใช้ $c^2=a^2-b^2$ แล้วหาระยะ $2c$",
+    "solution": {
+      "steps": [
+        "$a=5$, $b=3$",
+        "$c=\\sqrt{25-9}=4$",
+        "ระยะห่างระหว่างโฟกัสคือ $2c=8$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "ellipse", "short-answer"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-27",
+    "topicId": "counting-probability",
+    "subtopic": "counting-principle",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "short-answer",
+    "content": {
+      "text": "ต้องการสร้างจำนวนเต็มบวกห้าหลักที่เป็นจำนวนคู่จากเลขโดด $0,1,2,3,4,5$ โดยแต่ละจำนวนใช้เลขโดดไม่ซ้ำกัน จะสร้างได้ทั้งหมดกี่จำนวน"
+    },
+    "answer": "312",
+    "hint": "แบ่งกรณีตามหลักหน่วยเป็น 0 หรือเป็น 2, 4",
+    "solution": {
+      "steps": [
+        "หลักหน่วยเป็น 0 มี $5\\cdot4\\cdot3\\cdot2=120$ วิธี",
+        "หลักหน่วยเป็น 2 หรือ 4 มี $2\\cdot4\\cdot4\\cdot3\\cdot2=192$ วิธี",
+        "รวม $120+192=312$ วิธี"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "counting", "short-answer"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-28",
+    "topicId": "sequences-series",
+    "subtopic": "arithmetic-sequence-selection",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "short-answer",
+    "content": {
+      "text": "กำหนดให้ $a_1,a_2,a_3,\\ldots$ เป็นลำดับเลขคณิต โดยที่ $a_4=11$ และ $a_{10}=29$ จงหาผลบวกของพจน์ใน $30$ พจน์แรกที่มีค่าหารด้วย $5$ ลงตัว"
+    },
+    "answer": "255",
+    "hint": "หาพจน์ทั่วไป แล้วหาดัชนีที่ทำให้พจน์หารด้วย 5 ลงตัว",
+    "solution": {
+      "steps": [
+        "$d=3$ และ $a_1=2$ จึงมี $a_n=3n-1$",
+        "เงื่อนไขหารด้วย 5 ลงตัวให้ $n=2,7,12,17,22,27$",
+        "พจน์คือ $5,20,35,50,65,80$ ซึ่งรวมได้ $255$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "sequence", "short-answer"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-29",
+    "topicId": "calculus",
+    "subtopic": "absolute-maximum",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "short-answer",
+    "content": {
+      "text": "กำหนดให้ $f(x)=x^3-3x^2-9x+5$ เมื่อ $-2\\le x\\le4$ ค่าสูงสุดสัมบูรณ์ของ $f$ เท่ากับเท่าใด"
+    },
+    "answer": "10",
+    "acceptedAnswers": ["10.0"],
+    "hint": "ตรวจค่าฟังก์ชันที่จุดวิกฤตและปลายช่วงทั้งหมด",
+    "solution": {
+      "steps": [
+        "$f'(x)=3(x-3)(x+1)$ จึงมีจุดวิกฤต $x=-1,3$",
+        "ตรวจ $x=-2,-1,3,4$ ได้ค่าตามลำดับ $3,10,-22,-15$",
+        "ค่ามากที่สุดของฟังก์ชันคือ $10$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "calculus", "short-answer"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  },
+  {
+    "id": "basic-diagnostic-v1-30",
+    "topicId": "statistics-distributions",
+    "subtopic": "mean-mode-variance",
+    "level": "A-Level",
+    "difficulty": "hard",
+    "type": "short-answer",
+    "content": {
+      "text": "ข้อมูลห้าจำนวนเรียงจากน้อยไปมากเป็น $-2,x,4,z,8$ ถ้าข้อมูลชุดนี้มีค่าเฉลี่ยเลขคณิตเท่ากับ $3$ และมีฐานนิยมเพียงค่าเดียวเท่ากับ $4$ แล้วความแปรปรวนของประชากรชุดนี้เท่ากับเท่าใด"
+    },
+    "answer": "11.2",
+    "acceptedAnswers": ["11.20"],
+    "hint": "ใช้ค่าเฉลี่ยหา $x+z$ แล้วใช้เงื่อนไขฐานนิยมและลำดับของข้อมูล",
+    "solution": {
+      "steps": [
+        "ค่าเฉลี่ยให้ $x+z=5$",
+        "เพื่อให้ 4 เป็นฐานนิยมเพียงค่าเดียวและข้อมูลเรียงลำดับ ต้องมี $x=1$, $z=4$",
+        "ข้อมูลคือ $-2,1,4,4,8$",
+        "ความแปรปรวนประชากรคือ $\\frac{25+4+1+1+25}{5}=11.2$"
+      ]
+    },
+    "tags": ["basic-diagnostic-v1", "statistics", "short-answer"],
+    "source": "MathPrep แบบวัดพื้นฐานชุดที่ 1"
+  }
+]
