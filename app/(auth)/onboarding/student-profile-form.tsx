@@ -46,7 +46,7 @@ export default function StudentProfileForm({ next, defaultName, defaults = {}, m
   return (
     <main className="min-h-screen bg-background flex items-center justify-center p-6">
       <form onSubmit={submit} className="w-full max-w-xl rounded-3xl border border-border bg-card p-7 shadow-sm md:p-9">
-        <p className="text-sm font-medium text-primary mb-2">{mode === 'edit' ? 'โปรไฟล์ของฉัน' : 'ยินดีต้อนรับสู่ MathPrep'}</p>
+        <p className="text-sm font-medium text-primary mb-2">{mode === 'edit' ? 'โปรไฟล์ของฉัน' : 'ยินดีต้อนรับสู่ Math Hunters'}</p>
         <h1 className="font-heading text-2xl font-bold text-foreground">{mode === 'edit' ? 'อัปเดตข้อมูลของน้อง' : 'ขอรู้จักกันอีกนิด'}</h1>
         <p className="mt-2 text-sm text-muted-foreground">ข้อมูลนี้ช่วยให้พี่เข้าใจเป้าหมายของน้อง ๆ และพัฒนาคอร์สให้ตรงจุดขึ้น</p>
 

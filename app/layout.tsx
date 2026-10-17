@@ -3,6 +3,7 @@ import { JetBrains_Mono, Kanit, Sarabun, STIX_Two_Text } from "next/font/google"
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import Nav from "./components/nav";
+import { BRAND_FULL_NAME } from "@/lib/brand";
 
 const kanit = Kanit({
   variable: "--font-heading",
@@ -29,7 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MathPrep — เตรียมสอบคณิตศาสตร์",
+  title: `${BRAND_FULL_NAME} — เตรียมสอบคณิตศาสตร์`,
   description: "ฝึกโจทย์และสอบจำลอง ONET · A-Level · PAT1",
 };
 

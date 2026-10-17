@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import UserMenu from './user-menu'
 import CartIcon from './cart-icon'
 import { BookMarked } from 'lucide-react'
+import BrandMark from './brand-mark'
+import { BRAND_NAME } from '@/lib/brand'
 
 export default async function Nav() {
   const supabase = await createClient()
@@ -16,8 +18,10 @@ export default async function Nav() {
     <header className="sticky top-0 z-20 border-b border-border/80 bg-background/90 backdrop-blur-xl">
       <div className="max-w-6xl mx-auto flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 font-heading font-bold text-foreground cursor-pointer">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-lg text-primary-foreground shadow-sm shadow-primary/30">∑</span>
-          <span className="tracking-tight">MathPrep</span>
+          <span className="flex h-8 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30">
+            <BrandMark className="h-4 w-7" />
+          </span>
+          <span className="tracking-tight">{BRAND_NAME}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 rounded-2xl bg-muted/70 p-1 md:flex">

@@ -27,8 +27,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const resource = getTreasureResource(slug)
-  if (!resource) return { title: 'ไม่พบเนื้อหา | MathPrep' }
-  return { title: `${resource.title} | ขุมทรัพย์ MathPrep`, description: resource.description }
+  if (!resource) return { title: 'ไม่พบเนื้อหา | Math Hunters' }
+  return { title: `${resource.title} | ขุมทรัพย์ Math Hunters`, description: resource.description }
 }
 
 export default async function TreasureArticlePage({ params }: Props) {

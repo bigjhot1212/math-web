@@ -10,9 +10,9 @@ export async function notifyNewBankTransfer({ amountThb, courseName, email }: Tr
         method: 'POST',
         headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: process.env.RESEND_FROM_EMAIL ?? 'MathPrep <onboarding@resend.dev>',
+          from: process.env.RESEND_FROM_EMAIL ?? 'Math Hunters <onboarding@resend.dev>',
           to: [recipient],
-          subject: 'มีสลิปใหม่รอตรวจสอบ — MathPrep',
+          subject: 'มีสลิปใหม่รอตรวจสอบ — Math Hunters',
           text,
         }),
       })

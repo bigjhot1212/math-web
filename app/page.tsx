@@ -83,7 +83,7 @@ export default function Home() {
             </dl>
           </div>
 
-          <div className={styles.heroStage} aria-label="ตัวอย่างประสบการณ์เรียนใน MathPrep">
+          <div className={styles.heroStage} aria-label="ตัวอย่างประสบการณ์เรียนใน Math Hunters Association">
             <div className={styles.scoreCard}>
               <div className="flex items-center justify-between gap-3 text-sm font-semibold text-white/80">
                 <span>A-LEVEL MATH 1</span>

@@ -3,6 +3,8 @@
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import BrandMark from '@/app/components/brand-mark'
+import { BRAND_FULL_NAME, BRAND_NAME } from '@/lib/brand'
 
 function LoginCard() {
   const searchParams = useSearchParams()
@@ -56,10 +58,11 @@ export default function LoginPage() {
     <main className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="animate-fade-slide-in w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center text-3xl font-heading font-semibold text-primary">
-            ∑
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+            <BrandMark className="h-8 w-12" />
           </div>
-          <h1 className="text-2xl font-heading font-semibold text-foreground mb-2">MathPrep</h1>
+          <h1 className="text-2xl font-heading font-semibold text-foreground mb-1">{BRAND_NAME}</h1>
+          <p className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-primary">{BRAND_FULL_NAME}</p>
           <p className="text-muted-foreground text-sm">
             ระบบฝึกโจทย์คณิตศาสตร์ ONET · A-Level · PAT1
           </p>

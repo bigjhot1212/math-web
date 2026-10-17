@@ -3,8 +3,8 @@ import { TREASURE_RESOURCES } from '@/content/treasure'
 import TreasureLibrary from './treasure-library'
 
 export const metadata: Metadata = {
-  title: 'ขุมทรัพย์ | MathPrep',
-  description: 'คลังสรุป ทริคอ่านโจทย์ และเช็กลิสต์คณิตศาสตร์ฟรีจาก MathPrep',
+  title: 'ขุมทรัพย์ | Math Hunters',
+  description: 'คลังสรุป ทริคอ่านโจทย์ และเช็กลิสต์คณิตศาสตร์ฟรีจาก Math Hunters Association',
 }
 
 export default function TreasurePage() {

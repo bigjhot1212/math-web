@@ -272,7 +272,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
         <div className="mb-10 border-b border-border pb-6">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">MathPrep courses</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Math Hunters courses</p>
               <h1 className="mt-2 text-3xl sm:text-4xl font-heading font-bold text-foreground">เลือกคอร์สที่อยากเริ่ม</h1>
               <p className="mt-2 text-muted-foreground">เลือกเรียนเป็นบท หรือค่อย ๆ เก็บครบตามระดับชั้น</p>
             </div>

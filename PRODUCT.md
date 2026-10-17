@@ -1,4 +1,4 @@
-# MathPrep Product Brief
+# Math Hunters Association Product Brief
 
 <!-- impeccable:product-schema 1 -->
 
@@ -13,7 +13,7 @@ Web application built with Next.js and deployed on Vercel.
 
 ## Product Purpose
 
-MathPrep helps students understand what a question is testing, practise by topic, simulate timed exams, review their progress, access purchased courses, and use free study resources in one place. *(Inferred from the existing product and the current request.)*
+Math Hunters Association helps students understand what a question is testing, practise by topic, simulate timed exams, review their progress, access purchased courses, and use free study resources in one place. *(Inferred from the existing product and the current request.)*
 
 ## Positioning
 
@@ -36,7 +36,7 @@ Teacher-led preparation that focuses on reading keywords, recognising the intend
 
 ## Brand Commitments
 
-- Product name: MathPrep.
+- Product name: Math Hunters Association; use “Math Hunters” in compact interface contexts.
 - Thai copy should sound like a helpful teacher speaking plainly, not like translated or institutional prose.
 - Existing visual identity: cool dark navy/violet surfaces, restrained cyan and purple accents, Kanit headings, Sarabun body text, and STIX Two Math for notation.
 - The product owner’s supplied credential is A-Level Math 1, 98/100; do not invent additional credentials or testimonials.
