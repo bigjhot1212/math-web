@@ -1,0 +1,152 @@
+[
+  {
+    "id":"ipst-m4-book2-v1-01","topicId":"relations-functions","subtopic":"relations-counting","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"กำหนดให้ $A$ และ $B$ เป็นเซตที่มีสมาชิก $4$ และ $3$ สมาชิกตามลำดับ จำนวนความสัมพันธ์จาก $A$ ไป $B$ ที่มีสมาชิกพอดี $5$ คู่อันดับเท่ากับข้อใด","choices":{"a":"$220$","b":"$495$","c":"$720$","d":"$792$","e":"$1{,}024$"}},
+    "answer":"d","hint":"ความสัมพันธ์เป็นสับเซตของ $A\\times B$","solution":{"steps":["$A\\times B$ มีสมาชิก $4\\cdot3=12$ คู่อันดับ","ความสัมพันธ์ที่มี 5 คู่อันดับเกิดจากการเลือก 5 คู่อันดับจากทั้งหมด 12 คู่","จำนวนวิธีคือ $\\binom{12}{5}$","คำนวณได้ $\\binom{12}{5}=792$ ตอบข้อ d"]},"tags":["ipst-m4-book2-v1","relations-functions","relation"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-02","topicId":"relations-functions","subtopic":"domain","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"โดเมนของความสัมพันธ์ $y=\\frac{\\sqrt{5-x}}{x-1}$ ตรงกับข้อใด","choices":{"a":"$(-\\infty,5]$","b":"$(-\\infty,1)\\cup(1,5]$","c":"$[1,5]$","d":"$(1,5]$","e":"$(-\\infty,1)\\cup(1,5)$"}},
+    "answer":"b","hint":"ตรวจทั้งเงื่อนไขใต้เครื่องหมายกรณฑ์และตัวส่วน","solution":{"steps":["ใต้รากต้องไม่เป็นลบ: $5-x\\ge0$ จึงได้ $x\\le5$","ตัวส่วนต้องไม่เป็นศูนย์: $x-1\\ne0$ จึงได้ $x\\ne1$","นำสองเงื่อนไขมาหาส่วนร่วม","โดเมนคือ $(-\\infty,1)\\cup(1,5]$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","relations-functions","domain"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-03","topicId":"relations-functions","subtopic":"inverse-function","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"กำหนด $f(x)=\\frac{2x-3}{x+1}$ เมื่อ $x\\ne-1$ แล้ว $f^{-1}(x)$ ตรงกับข้อใด","choices":{"a":"$\\frac{x-3}{x+2}$","b":"$\\frac{x+3}{x-2}$","c":"$\\frac{x+3}{2-x}$","d":"$\\frac{3-x}{x+2}$","e":"$\\frac{2x+3}{1-x}$"}},
+    "answer":"c","hint":"ให้ $y=f(x)$ แล้วแก้สมการหา $x$ ในรูปของ $y$","solution":{"steps":["ให้ $y=\\frac{2x-3}{x+1}$","คูณไขว้ได้ $yx+y=2x-3$","จัดรูปเป็น $x(y-2)=-(y+3)$ จึง $x=\\frac{y+3}{2-y}$","สลับชื่อตัวแปร ได้ $f^{-1}(x)=\\frac{x+3}{2-x}$ ตอบข้อ c"]},"tags":["ipst-m4-book2-v1","relations-functions","inverse"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-04","topicId":"relations-functions","subtopic":"composite-function","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"กำหนด $f(x)=x^2+1$ และ $g(x)=2x-3$ ถ้า $a_1<a_2$ เป็นคำตอบของ $f(g(a))=26$ แล้ว $a_1+a_2$ เท่ากับข้อใด","choices":{"a":"$-1$","b":"$1$","c":"$2$","d":"$3$","e":"$5$"}},
+    "answer":"d","hint":"แทน $g(a)$ ลงใน $f$ แล้วแยกกรณีจากกำลังสอง","solution":{"steps":["$f(g(a))=(2a-3)^2+1$","สมการจึงเป็น $(2a-3)^2=25$","ได้ $2a-3=5$ หรือ $2a-3=-5$ จึงมี $a=4$ หรือ $a=-1$","ผลบวกคือ $-1+4=3$ ตอบข้อ d"]},"tags":["ipst-m4-book2-v1","relations-functions","composition"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-05","topicId":"relations-functions","subtopic":"range","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"กำหนด $f(x)=x^2-2x+4$ โดยมีโดเมน $[-1,3]$ เรนจ์ของ $f$ ตรงกับข้อใด","choices":{"a":"$[2,7]$","b":"$[3,7]$","c":"$[3,8]$","d":"$[4,7]$","e":"$[4,8]$"}},
+    "answer":"b","hint":"เขียนฟังก์ชันให้อยู่ในรูปกำลังสองสมบูรณ์และตรวจปลายช่วง","solution":{"steps":["$f(x)=x^2-2x+4=(x-1)^2+3$","จุดยอดอยู่ที่ $x=1$ ซึ่งอยู่ในโดเมน จึงมีค่าต่ำสุด $f(1)=3$","ตรวจปลายช่วง: $f(-1)=7$ และ $f(3)=7$ จึงมีค่าสูงสุด 7","ฟังก์ชันต่อเนื่องบนช่วงปิด เรนจ์จึงเป็น $[3,7]$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","relations-functions","range"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-06","topicId":"relations-functions","subtopic":"bijection","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"กำหนด $A=\\{1,2,3\\}$ และ $B=\\{a,b,c\\}$ ความสัมพันธ์ใดเป็นฟังก์ชันหนึ่งต่อหนึ่งและทั่วถึงจาก $A$ ไป $B$","choices":{"a":"$\\{(1,a),(2,a),(3,c)\\}$","b":"$\\{(1,a),(1,b),(2,c)\\}$","c":"$\\{(1,b),(2,c),(3,a)\\}$","d":"$\\{(1,a),(2,b)\\}$","e":"$\\{(1,a),(2,b),(3,b)\\}$"}},
+    "answer":"c","hint":"สมาชิกทุกตัวของ $A$ ต้องมีภาพเดียว ภาพไม่ซ้ำ และใช้สมาชิกใน $B$ ครบ","solution":{"steps":["ฟังก์ชันจาก $A$ ต้องมีคู่อันดับที่ขึ้นต้นด้วย $1,2,3$ อย่างละหนึ่งคู่","หนึ่งต่อหนึ่งหมายถึงสมาชิกต่างกันใน $A$ ต้องมีภาพต่างกัน","ทั่วถึงหมายถึงเรนจ์ต้องเท่ากับ $B$","ข้อ c มีภาพ $b,c,a$ ครบและไม่ซ้ำ จึงตอบข้อ c"]},"tags":["ipst-m4-book2-v1","relations-functions","bijection"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-07","topicId":"relations-functions","subtopic":"function-operations-domain","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"กำหนด $f(x)=\\sqrt{x-1}$ และ $g(x)=\\sqrt{5-x}$ โดเมนของ $\\frac{f}{g}$ ตรงกับข้อใด","choices":{"a":"$[1,5]$","b":"$[1,5)$","c":"$(1,5)$","d":"$(-\\infty,5)$","e":"$[1,\\infty)$"}},
+    "answer":"b","hint":"นอกจากทั้งสองฟังก์ชันต้องนิยามแล้ว ตัวหารต้องไม่เป็นศูนย์","solution":{"steps":["$f$ นิยามเมื่อ $x-1\\ge0$ หรือ $x\\ge1$","$g$ นิยามเมื่อ $5-x\\ge0$ หรือ $x\\le5$","เพราะ $g$ เป็นตัวหาร ต้องมี $g(x)\\ne0$ จึงตัด $x=5$ ออก","ส่วนร่วมของเงื่อนไขคือ $[1,5)$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","relations-functions","domain"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-08","topicId":"relations-functions","subtopic":"composition-reconstruction","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"กำหนด $h(x)=3x-4$ และ $(f\\circ h)(x)=6x+5$ สำหรับทุกจำนวนจริง แล้ว $f^{-1}(17)$ เท่ากับข้อใด","choices":{"a":"$1$","b":"$2$","c":"$3$","d":"$4$","e":"$5$"}},
+    "answer":"b","hint":"เขียน $x$ ในรูปของ $u=h(x)$ เพื่อหา $f(u)$","solution":{"steps":["ให้ $u=h(x)=3x-4$ จึง $x=\\frac{u+4}{3}$","จาก $f(h(x))=6x+5$ ได้ $f(u)=6\\left(\\frac{u+4}{3}\\right)+5$","ลดรูปได้ $f(u)=2u+13$","ต้องการ $f^{-1}(17)$ คือค่า $u$ ที่ทำให้ $2u+13=17$ จึงได้ $u=2$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","relations-functions","composition","inverse"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-09","topicId":"exponential-logarithm","subtopic":"exponential-equation","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"ถ้า $x_1<x_2$ เป็นคำตอบของ $2^{2x}-5(2^x)+4=0$ แล้ว $x_1+x_2$ เท่ากับข้อใด","choices":{"a":"$0$","b":"$1$","c":"$2$","d":"$3$","e":"$4$"}},
+    "answer":"c","hint":"ให้ $y=2^x$","solution":{"steps":["ให้ $y=2^x>0$ จะได้ $y^2-5y+4=0$","แยกตัวประกอบเป็น $(y-1)(y-4)=0$","ดังนั้น $2^x=1$ หรือ $2^x=4$ ให้ $x=0$ หรือ $x=2$","ผลบวกคือ $0+2=2$ ตอบข้อ c"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","equation"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-10","topicId":"exponential-logarithm","subtopic":"exponential-inequality","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"เซตคำตอบของ $\\left(\\frac13\\right)^{2x-1}>9$ ตรงกับข้อใด","choices":{"a":"$x<-\\frac12$","b":"$x\\le-\\frac12$","c":"$x> -\\frac12$","d":"$x<\\frac12$","e":"$x>\\frac12$"}},
+    "answer":"a","hint":"เขียน $9$ ให้มีฐาน $\\frac13$ และระวังฐานอยู่ระหว่าง 0 กับ 1","solution":{"steps":["เขียน $9=3^2=(\\frac13)^{-2}$","จึงเปรียบเทียบ $(\\frac13)^{2x-1}>(\\frac13)^{-2}$","เพราะ $0<\\frac13<1$ ฟังก์ชันลด จึงกลับทิศเมื่อเปรียบเทียบเลขชี้กำลัง: $2x-1<-2$","ได้ $x<-\\frac12$ ตอบข้อ a"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","inequality"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-11","topicId":"exponential-logarithm","subtopic":"logarithmic-equation","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"คำตอบของ $\\log_2(x-1)+\\log_2(x-3)=3$ เท่ากับข้อใด","choices":{"a":"$-1$","b":"$1$","c":"$3$","d":"$4$","e":"$5$"}},
+    "answer":"e","hint":"กำหนดโดเมนก่อนรวมลอการิทึม","solution":{"steps":["โดเมนกำหนดให้ $x-1>0$ และ $x-3>0$ จึงต้องมี $x>3$","รวมลอการิทึมได้ $\\log_2[(x-1)(x-3)]=3$","จึง $(x-1)(x-3)=8$ หรือ $x^2-4x-5=0$","ได้ $x=5,-1$ แต่ผ่านโดเมนเฉพาะ $x=5$ ตอบข้อ e"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","log-equation"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-12","topicId":"exponential-logarithm","subtopic":"logarithm-value","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"กำหนดให้ $a>0$, $a\\ne1$ และ $\\log_a8=\\frac32$ แล้ว $\\log_a\\frac1{32}$ เท่ากับข้อใด","choices":{"a":"$-5$","b":"$-\\frac52$","c":"$-\\frac32$","d":"$\\frac32$","e":"$\\frac52$"}},
+    "answer":"b","hint":"หา $a$ จาก $a^{3/2}=8$ ก่อน","solution":{"steps":["$\\log_a8=\\frac32$ หมายถึง $a^{3/2}=8$","ยกกำลัง $\\frac23$ ทั้งสองข้าง ได้ $a=8^{2/3}=4$","$\\frac1{32}=2^{-5}$ และ $4=2^2$","ดังนั้น $\\log_4(2^{-5})=-\\frac52$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","logarithm"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-13","topicId":"exponential-logarithm","subtopic":"exponential-graph","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"ข้อใดกล่าวถูกต้องเกี่ยวกับกราฟ $y=2^{x-1}-3$","choices":{"a":"มีโดเมน $(-3,\\infty)$","b":"มีเรนจ์ $(-3,\\infty)$","c":"มีเส้นกำกับแนวนอน $y=3$","d":"เป็นฟังก์ชันลด","e":"ตัดแกน $y$ ที่ $(0,-1)$"}},
+    "answer":"b","hint":"เริ่มจากกราฟ $y=2^x$ แล้วเลื่อนขวา 1 และลง 3","solution":{"steps":["$2^{x-1}>0$ สำหรับทุกจำนวนจริง จึงมีโดเมนเป็นจำนวนจริงทั้งหมด","เมื่อลบ 3 ค่าของฟังก์ชันจึงมากกว่า $-3$ เสมอ และเข้าใกล้ $-3$ ได้","เรนจ์คือ $(-3,\\infty)$ และเส้นกำกับแนวนอนคือ $y=-3$","ฐาน 2 มากกว่า 1 กราฟยังเป็นฟังก์ชันเพิ่ม จึงตอบข้อ b"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","graph"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-14","topicId":"exponential-logarithm","subtopic":"exponential-model","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"ประชากรแบคทีเรียเริ่มต้น $5{,}000$ ตัว และเพิ่มขึ้นร้อยละ $20$ ทุกชั่วโมง ถ้าการเติบโตเป็นไปตามแบบจำลอง $P(n)=5{,}000(1.2)^n$ จะมีประชากร $8{,}640$ ตัวเมื่อผ่านไปกี่ชั่วโมง","choices":{"a":"$2$","b":"$3$","c":"$4$","d":"$5$","e":"$6$"}},
+    "answer":"b","hint":"หารด้วย 5,000 แล้วสังเกตกำลังของ 1.2","solution":{"steps":["ตั้งสมการ $5{,}000(1.2)^n=8{,}640$","หารด้วย 5,000 ได้ $(1.2)^n=1.728$","คำนวณ $1.2^2=1.44$ และ $1.2^3=1.728$","จึงได้ $n=3$ ชั่วโมง ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","modeling"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-15","topicId":"exponential-logarithm","subtopic":"parameter-equation","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"กำหนด $k>1$ สมการ $4^x-(k+1)2^x+k=0$ มีคำตอบจริงสองคำตอบที่แตกต่างกัน $3$ หน่วย แล้ว $k$ เท่ากับข้อใด","choices":{"a":"$4$","b":"$6$","c":"$8$","d":"$9$","e":"$16$"}},
+    "answer":"c","hint":"ให้ $y=2^x$ แล้วสังเกตรากของสมการกำลังสอง","solution":{"steps":["ให้ $y=2^x$ จะได้ $y^2-(k+1)y+k=0$","แยกตัวประกอบได้ $(y-1)(y-k)=0$","จึงมีคำตอบ $x=0$ และ $x=\\log_2k$","เพราะ $k>1$ และคำตอบห่างกัน 3 จึง $\\log_2k=3$ ให้ $k=8$ ตอบข้อ c"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","parameter"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-16","topicId":"exponential-logarithm","subtopic":"logarithmic-inequality","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"เซตคำตอบของ $\\log_{1/2}(x+1)\\ge-2$ ตรงกับข้อใด","choices":{"a":"$x\\le3$","b":"$-1<x\\le3$","c":"$-1\\le x<3$","d":"$x\\ge3$","e":"$-1<x<3$"}},
+    "answer":"b","hint":"กำหนดโดเมนและระวังว่าฐาน $\\frac12$ ทำให้ฟังก์ชันลด","solution":{"steps":["โดเมนคือ $x+1>0$ หรือ $x>-1$","$-2=\\log_{1/2}4$ เพราะ $(\\frac12)^{-2}=4$","เนื่องจากฐานอยู่ระหว่าง 0 กับ 1 อสมการ $\\log_{1/2}(x+1)\\ge\\log_{1/2}4$ ให้ $x+1\\le4$","รวมกับโดเมนได้ $-1<x\\le3$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","log-inequality"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-17","topicId":"analytic-geometry-conics","subtopic":"section-formula","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"กำหนด $A(-2,3)$ และ $B(6,-1)$ จุด $P$ แบ่งส่วนของเส้นตรง $AB$ ภายในด้วยอัตราส่วน $AP:PB=1:3$ แล้วผลบวกของพิกัดของ $P$ เท่ากับข้อใด","choices":{"a":"$-2$","b":"$0$","c":"$1$","d":"$2$","e":"$4$"}},
+    "answer":"d","hint":"อัตราส่วน 1:3 ทำให้ $P$ อยู่ห่างจาก $A$ หนึ่งในสี่ของทางไป $B$","solution":{"steps":["ใช้สูตรแบ่งส่วนภายใน $P=\\frac{3A+1B}{1+3}$","พิกัด $x$ คือ $\\frac{3(-2)+6}{4}=0$","พิกัด $y$ คือ $\\frac{3(3)+(-1)}{4}=2$","ดังนั้น $P=(0,2)$ และผลบวกพิกัดเท่ากับ 2 ตอบข้อ d"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","section"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-18","topicId":"analytic-geometry-conics","subtopic":"perpendicular-line","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"สมการเส้นตรงที่ผ่านจุด $(4,1)$ และตั้งฉากกับเส้นตรง $2x-3y+6=0$ ตรงกับข้อใด","choices":{"a":"$2x-3y-5=0$","b":"$3x+2y-14=0$","c":"$3x-2y-10=0$","d":"$2x+3y-11=0$","e":"$3x+2y+14=0$"}},
+    "answer":"b","hint":"หาความชันของเส้นเดิม แล้วใช้ผลคูณความชันเท่ากับ $-1$","solution":{"steps":["เส้นเดิมเขียนเป็น $y=\\frac23x+2$ จึงมีความชัน $\\frac23$","เส้นที่ตั้งฉากมีความชัน $-\\frac32$","ใช้สมการจุด–ความชัน: $y-1=-\\frac32(x-4)$","จัดรูปได้ $3x+2y-14=0$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","line"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-19","topicId":"analytic-geometry-conics","subtopic":"parallel-line-distance","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"ระยะห่างระหว่างเส้นตรง $3x-4y+5=0$ และ $3x-4y-15=0$ เท่ากับข้อใด","choices":{"a":"$2$","b":"$3$","c":"$4$","d":"$5$","e":"$6$"}},
+    "answer":"c","hint":"เส้นทั้งสองขนานกันและมีสัมประสิทธิ์ $x,y$ เหมือนกัน","solution":{"steps":["เส้นตรงทั้งสองมีสัมประสิทธิ์ของ $x,y$ เหมือนกัน จึงขนานกัน","สูตรระยะระหว่าง $Ax+By+C_1=0$ และ $Ax+By+C_2=0$ คือ $\\frac{|C_1-C_2|}{\\sqrt{A^2+B^2}}$","แทนค่าได้ $\\frac{|5-(-15)|}{\\sqrt{3^2+(-4)^2}}$","เท่ากับ $\\frac{20}{5}=4$ ตอบข้อ c"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","distance"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-20","topicId":"analytic-geometry-conics","subtopic":"coordinate-area","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"รูปสามเหลี่ยมที่มีจุดยอด $A(1,2)$, $B(5,2)$ และ $C(3,7)$ มีพื้นที่เท่ากับข้อใด","choices":{"a":"$8$","b":"$10$","c":"$12$","d":"$16$","e":"$20$"}},
+    "answer":"b","hint":"$AB$ เป็นฐานแนวนอน จึงอ่านความยาวฐานและความสูงได้โดยตรง","solution":{"steps":["จุด $A$ และ $B$ มีพิกัด $y$ เท่ากัน จึงใช้ $AB$ เป็นฐานแนวนอน","ความยาวฐาน $AB=5-1=4$","ความสูงจาก $C$ ถึงเส้น $y=2$ เท่ากับ $7-2=5$","พื้นที่คือ $\\frac12(4)(5)=10$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","area"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-21","topicId":"analytic-geometry-conics","subtopic":"circle-equation","level":"A-Level","difficulty":"medium","type":"multiple-choice",
+    "content":{"text":"วงกลม $x^2+y^2-6x+4y-12=0$ มีจุดศูนย์กลางและรัศมีตรงกับข้อใด","choices":{"a":"ศูนย์กลาง $(3,-2)$ รัศมี $5$","b":"ศูนย์กลาง $(-3,2)$ รัศมี $5$","c":"ศูนย์กลาง $(3,-2)$ รัศมี $25$","d":"ศูนย์กลาง $(-3,2)$ รัศมี $25$","e":"ศูนย์กลาง $(6,-4)$ รัศมี $5$"}},
+    "answer":"a","hint":"จัดกลุ่ม $x,y$ แล้วทำกำลังสองสมบูรณ์","solution":{"steps":["จัดรูปเป็น $(x^2-6x)+(y^2+4y)=12$","เติมกำลังสองสมบูรณ์: $(x-3)^2-9+(y+2)^2-4=12$","จึงได้ $(x-3)^2+(y+2)^2=25$","ศูนย์กลางคือ $(3,-2)$ และรัศมี $5$ ตอบข้อ a"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","circle"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-22","topicId":"analytic-geometry-conics","subtopic":"circle-tangent","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"สมการเส้นสัมผัสวงกลม $x^2+y^2=25$ ที่จุด $(3,4)$ ตรงกับข้อใด","choices":{"a":"$3x+4y=5$","b":"$3x+4y=25$","c":"$4x+3y=25$","d":"$3x-4y=25$","e":"$4x-3y=25$"}},
+    "answer":"b","hint":"เส้นสัมผัสตั้งฉากกับรัศมีที่จุดสัมผัส","solution":{"steps":["รัศมีจาก $(0,0)$ ไป $(3,4)$ มีความชัน $\\frac43$","เส้นสัมผัสจึงมีความชัน $-\\frac34$","ใช้สมการผ่านจุด $(3,4)$: $y-4=-\\frac34(x-3)$","คูณและจัดรูปได้ $3x+4y=25$ ตอบข้อ b"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","tangent"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-23","topicId":"analytic-geometry-conics","subtopic":"parabola","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"พาราโบลา $y^2=8x$ มีจุดโฟกัสและเส้นไดเรกตริกซ์ตรงกับข้อใด","choices":{"a":"โฟกัส $(2,0)$ และ $x=-2$","b":"โฟกัส $(-2,0)$ และ $x=2$","c":"โฟกัส $(0,2)$ และ $y=-2$","d":"โฟกัส $(4,0)$ และ $x=-4$","e":"โฟกัส $(0,4)$ และ $y=-4$"}},
+    "answer":"a","hint":"เทียบกับรูปมาตรฐาน $y^2=4px$","solution":{"steps":["รูปมาตรฐานคือ $y^2=4px$","เทียบ $4p=8$ ได้ $p=2$","เมื่อ $p>0$ พาราโบลาเปิดไปทางขวา มีโฟกัส $(p,0)$","จึงมีโฟกัส $(2,0)$ และไดเรกตริกซ์ $x=-2$ ตอบข้อ a"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","parabola"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-24","topicId":"analytic-geometry-conics","subtopic":"ellipse","level":"A-Level","difficulty":"hard","type":"multiple-choice",
+    "content":{"text":"วงรี $\\frac{x^2}{25}+\\frac{y^2}{9}=1$ มีความเยื้องศูนย์กลางเท่ากับข้อใด","choices":{"a":"$\\frac15$","b":"$\\frac25$","c":"$\\frac35$","d":"$\\frac45$","e":"$\\frac54$"}},
+    "answer":"d","hint":"ใช้ $c^2=a^2-b^2$ และ $e=\\frac ca$","solution":{"steps":["วงรีมีแกนเอกตามแกน $x$ โดย $a^2=25$ และ $b^2=9$","ดังนั้น $a=5$, $b=3$","$c^2=a^2-b^2=25-9=16$ จึง $c=4$","ความเยื้องศูนย์กลาง $e=\\frac ca=\\frac45$ ตอบข้อ d"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","ellipse"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-25","topicId":"relations-functions","subtopic":"onto-functions","level":"A-Level","difficulty":"hard","type":"short-answer",
+    "content":{"text":"กำหนดให้ $A$ มีสมาชิก $4$ ตัว และ $B$ มีสมาชิก $3$ ตัว จงหาจำนวนฟังก์ชันทั่วถึงจาก $A$ ไป $B$"},
+    "answer":"36","acceptedAnswers":["36.0"],"hint":"นับฟังก์ชันทั้งหมดแล้วลบฟังก์ชันที่ขาดสมาชิกในโคโดเมนด้วยหลักบวกลบรวม","solution":{"steps":["ฟังก์ชันจาก $A$ ไป $B$ ทั้งหมดมี $3^4=81$ ฟังก์ชัน","เลือกสมาชิกใน $B$ ที่ไม่ถูกใช้ 1 ตัวได้ $\\binom31$ วิธี และส่งสมาชิกของ $A$ ไปอีก 2 ตัวได้ $2^4$ วิธี จึงลบ $3(16)=48$","กรณีขาดสมาชิกใน $B$ สองตัวถูกลบซ้ำ ต้องบวกคืน $\\binom32(1^4)=3$","จึงมีฟังก์ชันทั่วถึง $81-48+3=36$ ฟังก์ชัน"]},"tags":["ipst-m4-book2-v1","relations-functions","onto","short-answer"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-26","topicId":"relations-functions","subtopic":"iterated-function","level":"A-Level","difficulty":"hard","type":"short-answer",
+    "content":{"text":"กำหนด $f(x)=ax+b$ โดย $a>0$ ถ้า $f(f(x))=4x+3$ สำหรับทุกจำนวนจริง จงหา $a+b$"},
+    "answer":"3","acceptedAnswers":["3.0"],"hint":"คำนวณ $f(f(x))$ แล้วเทียบสัมประสิทธิ์","solution":{"steps":["$f(f(x))=a(ax+b)+b=a^2x+b(a+1)$","เทียบสัมประสิทธิ์กับ $4x+3$ ได้ $a^2=4$ และ $b(a+1)=3$","เพราะ $a>0$ จึง $a=2$ แล้ว $3b=3$ ให้ $b=1$","ดังนั้น $a+b=2+1=3$"]},"tags":["ipst-m4-book2-v1","relations-functions","composition","short-answer"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-27","topicId":"exponential-logarithm","subtopic":"mixed-base-logarithm","level":"A-Level","difficulty":"hard","type":"short-answer",
+    "content":{"text":"จงหาคำตอบของสมการ $\\log_2x+\\log_4x=6$"},
+    "answer":"16","acceptedAnswers":["16.0"],"hint":"เขียน $\\log_4x$ ในรูป $\\log_2x$","solution":{"steps":["โดเมนกำหนดให้ $x>0$","ให้ $t=\\log_2x$","เพราะ $4=2^2$ จึง $\\log_4x=\\frac12\\log_2x=\\frac t2$","ได้ $t+\\frac t2=6$ จึง $t=4$ และ $x=2^4=16$"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","log-equation","short-answer"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-28","topicId":"exponential-logarithm","subtopic":"exponential-factorization","level":"A-Level","difficulty":"medium","type":"short-answer",
+    "content":{"text":"จงหาค่า $x$ ที่สอดคล้องกับ $3^x+3^{x+1}=108$"},
+    "answer":"3","acceptedAnswers":["3.0"],"hint":"ดึง $3^x$ เป็นตัวร่วม","solution":{"steps":["$3^{x+1}=3\\cdot3^x$","ดังนั้น $3^x+3^{x+1}=3^x(1+3)=4\\cdot3^x$","ได้ $4\\cdot3^x=108$ จึง $3^x=27$","เพราะ $27=3^3$ จึง $x=3$"]},"tags":["ipst-m4-book2-v1","exponential-logarithm","exponential-equation","short-answer"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-29","topicId":"analytic-geometry-conics","subtopic":"hyperbola","level":"A-Level","difficulty":"hard","type":"short-answer",
+    "content":{"text":"ไฮเพอร์โบลา $\\frac{x^2}{16}-\\frac{y^2}{9}=1$ มีระยะห่างระหว่างจุดโฟกัสทั้งสองเท่าใด"},
+    "answer":"10","acceptedAnswers":["10.0"],"hint":"สำหรับไฮเพอร์โบลาใช้ $c^2=a^2+b^2$","solution":{"steps":["จากสมการได้ $a^2=16$ และ $b^2=9$","ไฮเพอร์โบลามี $c^2=a^2+b^2=16+9=25$","จึงได้ $c=5$ และจุดโฟกัสคือ $(\\pm5,0)$","ระยะระหว่างโฟกัสทั้งสองคือ $2c=10$"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","hyperbola","short-answer"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  },
+  {
+    "id":"ipst-m4-book2-v1-30","topicId":"analytic-geometry-conics","subtopic":"circle-point","level":"A-Level","difficulty":"hard","type":"short-answer",
+    "content":{"text":"จุด $(a,4)$ อยู่บนวงกลมที่มีจุดศูนย์กลาง $(1,-2)$ และรัศมี $10$ ถ้า $a>1$ จงหาค่า $a$"},
+    "answer":"9","acceptedAnswers":["9.0"],"hint":"ใช้ระยะจากจุด $(a,4)$ ถึงจุดศูนย์กลางเท่ากับรัศมี","solution":{"steps":["สมการระยะให้ $(a-1)^2+[4-(-2)]^2=10^2$","จึง $(a-1)^2+36=100$ หรือ $(a-1)^2=64$","ได้ $a-1=8$ หรือ $a-1=-8$ จึงมี $a=9$ หรือ $a=-7$","เงื่อนไข $a>1$ ทำให้เหลือ $a=9$"]},"tags":["ipst-m4-book2-v1","analytic-geometry-conics","circle","short-answer"],"source":"Math Hunters Association ชุดทบทวน ม.4 เล่ม 2"
+  }
+]

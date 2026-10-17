@@ -29,7 +29,7 @@ function loadAllQuestions(): Question[] {
   return fs.readdirSync(dir)
     .filter(f => f.endsWith('.json'))
     .flatMap(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8')) as Question[])
-    .filter(question => !question.tags?.includes('ipst-m4-book1-v1'))
+    .filter(question => !question.tags?.some(tag => tag === 'ipst-m4-book1-v1' || tag === 'ipst-m4-book2-v1'))
     .filter(question => question.topicId !== 'set' || question.tags?.includes(BASIC_DIAGNOSTIC_TYPE))
     .concat(originalPracticeQuestions, setChallengeQuestions)
 }

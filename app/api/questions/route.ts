@@ -39,24 +39,27 @@ export async function GET(request: NextRequest) {
     }
 
     const fileContent = fs.readFileSync(filePath, 'utf-8')
-    const m4Book1Path = path.join(process.cwd(), 'content', 'questions', 'ipst-m4-book1-v1.json')
-    const m4Book1Questions = fs.existsSync(m4Book1Path)
-      ? (JSON.parse(fs.readFileSync(m4Book1Path, 'utf-8')) as Question[])
-          .filter(question => question.topicId === topicId)
-      : []
+    const supplementalQuestionFiles = ['ipst-m4-book1-v1.json', 'ipst-m4-book2-v1.json']
+    const supplementalQuestions = supplementalQuestionFiles.flatMap(fileName => {
+      const supplementalPath = path.join(process.cwd(), 'content', 'questions', fileName)
+      return fs.existsSync(supplementalPath)
+        ? (JSON.parse(fs.readFileSync(supplementalPath, 'utf-8')) as Question[])
+            .filter(question => question.topicId === topicId)
+        : []
+    })
 
     let questions: Question[] = topicId === 'set'
-      ? [...setChallengeQuestions, ...m4Book1Questions]
+      ? [...setChallengeQuestions, ...supplementalQuestions]
       : topicId === 'logic'
-        ? [...logicChallengeQuestions, ...m4Book1Questions]
+        ? [...logicChallengeQuestions, ...supplementalQuestions]
         : topicId === 'real-numbers'
-          ? [...realNumbersChallengeQuestions, ...m4Book1Questions]
+          ? [...realNumbersChallengeQuestions, ...supplementalQuestions]
           : topicId === 'relations-functions'
-            ? relationsFunctionsChallengeQuestions
+            ? [...relationsFunctionsChallengeQuestions, ...supplementalQuestions]
             : topicId === 'exponential-logarithm'
-              ? exponentialLogarithmChallengeQuestions
+              ? [...exponentialLogarithmChallengeQuestions, ...supplementalQuestions]
               : topicId === 'analytic-geometry-conics'
-                ? analyticGeometryConicsChallengeQuestions
+                ? [...analyticGeometryConicsChallengeQuestions, ...supplementalQuestions]
                 : topicId === 'trigonometry'
                   ? trigonometryChallengeQuestions
                   : topicId === 'matrix'
