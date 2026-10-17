@@ -1,0 +1,182 @@
+[
+  {
+    "id": "ipst-m4-book1-v1-01", "topicId": "set", "subtopic": "venn-diagram", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $A$ และ $B$ เป็นสับเซตของเอกภพสัมพัทธ์ $U$ โดย $n(U)=100$, $n(A)=58$, $n(B)=47$ และมีสมาชิกที่ไม่อยู่ในทั้ง $A$ และ $B$ จำนวน $18$ สมาชิก จำนวนสมาชิกที่อยู่ใน $A$ หรือ $B$ เพียงเซตเดียวเท่ากับข้อใด", "choices": { "a": "$41$", "b": "$45$", "c": "$53$", "d": "$59$", "e": "$64$" } },
+    "answer": "d", "hint": "หา $n(A\\cup B)$ และ $n(A\\cap B)$ ก่อน", "solution": { "steps": ["สมาชิกที่อยู่ในอย่างน้อยหนึ่งเซตมี $n(A\\cup B)=100-18=82$", "ใช้หลักบวกลบรวม: $n(A\\cap B)=58+47-82=23$", "จำนวนที่อยู่เพียงเซตเดียวคือ $n(A)+n(B)-2n(A\\cap B)$", "จึงได้ $58+47-2(23)=59$ ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "set", "venn-diagram"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-02", "topicId": "set", "subtopic": "three-set-survey", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "นักเรียนห้องหนึ่งมี $80$ คน จากการสำรวจชุมนุมคณิตศาสตร์ $A$ วิทยาศาสตร์ $B$ และคอมพิวเตอร์ $C$ พบว่า $n(A)=42$, $n(B)=35$, $n(C)=28$, $n(A\\cap B)=15$, $n(A\\cap C)=12$, $n(B\\cap C)=10$ และ $n(A\\cap B\\cap C)=7$ จำนวนนักเรียนที่อยู่เพียงชุมนุมเดียวเท่ากับข้อใด", "choices": { "a": "$43$", "b": "$47$", "c": "$52$", "d": "$56$", "e": "$59$" } },
+    "answer": "c", "hint": "ลบส่วนที่อยู่สองชุมนุม แล้วบวกส่วนสามชุมนุมคืน", "solution": { "steps": ["เฉพาะชุมนุม $A$: $42-15-12+7=22$ คน", "เฉพาะชุมนุม $B$: $35-15-10+7=17$ คน", "เฉพาะชุมนุม $C$: $28-12-10+7=13$ คน", "รวมผู้ที่อยู่เพียงชุมนุมเดียว $22+17+13=52$ คน ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "set", "three-sets"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-03", "topicId": "set", "subtopic": "proper-subsets", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $A=\\{1,2,3,4,5,6,7\\}$ จำนวนสับเซต $B$ ที่สอดคล้องกับ $\\{1,2\\}\\subset B\\subset A$ เมื่อ $\\subset$ หมายถึงสับเซตแท้ เท่ากับข้อใด", "choices": { "a": "$16$", "b": "$24$", "c": "$28$", "d": "$30$", "e": "$32$" } },
+    "answer": "d", "hint": "สมาชิกอีก 5 ตัวเลือกได้อิสระ แต่ต้องตัดปลายทั้งสองกรณี", "solution": { "steps": ["สมาชิก $1,2$ ต้องอยู่ใน $B$ แน่นอน", "สมาชิก $3,4,5,6,7$ แต่ละตัวเลือกใส่หรือไม่ใส่ได้ จึงมี $2^5=32$ แบบ", "ตัด $B=\\{1,2\\}$ เพราะต้องเป็นสับเซตแท้ด้านซ้าย และตัด $B=A$ เพราะต้องเป็นสับเซตแท้ด้านขวา", "เหลือ $32-2=30$ แบบ ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "set", "subset"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-04", "topicId": "set", "subtopic": "interval-operations", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "ให้เอกภพสัมพัทธ์เป็นเซตของจำนวนจริง กำหนด $A=(-3,5]$ และ $B=[1,7)$ เซต $(A\\cap B')\\cup(A'\\cap B)$ ตรงกับข้อใด", "choices": { "a": "$[-3,1)\\cup(5,7]$", "b": "$(-3,1)\\cup(5,7)$", "c": "$(-3,1]\\cup[5,7)$", "d": "$[-3,1]\\cup[5,7]$", "e": "$(-3,7)$" } },
+    "answer": "b", "hint": "นิพจน์นี้เลือกสมาชิกที่อยู่เพียงหนึ่งในสองเซต", "solution": { "steps": ["$A\\cap B'$ คือสมาชิกของ $A$ ที่ไม่อยู่ใน $B$ จึงได้ $(-3,1)$", "จุด $1$ ไม่รวม เพราะอยู่ในทั้ง $A$ และ $B$", "$A'\\cap B$ คือสมาชิกของ $B$ ที่ไม่อยู่ใน $A$ จึงได้ $(5,7)$", "ยูเนียนเป็น $(-3,1)\\cup(5,7)$ ตอบข้อ b"] },
+    "tags": ["ipst-m4-book1-v1", "set", "interval"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-05", "topicId": "set", "subtopic": "de-morgan", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $A$ และ $B$ เป็นสับเซตของเอกภพสัมพัทธ์เดียวกัน เซต $(A\\cup B')'\\cup(A\\cap B)$ เท่ากับเซตใด", "choices": { "a": "$A$", "b": "$B$", "c": "$A\\cap B$", "d": "$A\\cup B$", "e": "$A'\\cap B$" } },
+    "answer": "b", "hint": "ใช้กฎของดีมอร์แกนกับวงเล็บแรก", "solution": { "steps": ["จากกฎของดีมอร์แกน $(A\\cup B')'=A'\\cap(B')'=A'\\cap B$", "ดังนั้นนิพจน์เป็น $(A'\\cap B)\\cup(A\\cap B)$", "ดึง $B$ เป็นตัวร่วมได้ $B\\cap(A'\\cup A)$", "เพราะ $A'\\cup A=U$ จึงเหลือ $B$ ตอบข้อ b"] },
+    "tags": ["ipst-m4-book1-v1", "set", "de-morgan"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-06", "topicId": "set", "subtopic": "set-equality", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $\\{2,a+1,7\\}=\\{2,4,b\\}$ เมื่อ $a,b\\in\\mathbb R$ แล้ว $a+b$ เท่ากับข้อใด", "choices": { "a": "$7$", "b": "$8$", "c": "$10$", "d": "$11$", "e": "$12$" } },
+    "answer": "c", "hint": "เซตเท่ากันเมื่อมีสมาชิกเหมือนกันทุกตัว โดยไม่สนลำดับ", "solution": { "steps": ["เซตด้านขวามีสมาชิก $4$ ดังนั้นด้านซ้ายต้องมี $a+1=4$", "ได้ $a=3$", "สมาชิก $7$ ทางซ้ายต้องปรากฏทางขวา จึงได้ $b=7$", "ดังนั้น $a+b=3+7=10$ ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "set", "set-equality"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-07", "topicId": "set", "subtopic": "set-difference", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $n(A)=90$, $n(B)=70$ และ $n(A\\cup B)=120$ แล้ว $n(A'\\cap B)$ เท่ากับข้อใด", "choices": { "a": "$20$", "b": "$25$", "c": "$30$", "d": "$35$", "e": "$40$" } },
+    "answer": "c", "hint": "$A'\\cap B$ คือส่วนของ $B$ ที่ไม่อยู่ใน $A$", "solution": { "steps": ["$n(A\\cap B)=90+70-120=40$", "$A'\\cap B=B-A$", "จึงมีสมาชิก $n(B)-n(A\\cap B)=70-40=30$", "ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "set", "difference"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-08", "topicId": "set", "subtopic": "set-identities", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "พิจารณา ก) $A-(B\\cup C)=(A-B)\\cap(A-C)$ ข) $A-(B\\cap C)=(A-B)\\cap(A-C)$ ค) $(A\\cup B)-(A\\cap B)=(A-B)\\cup(B-A)$ ข้อความใดถูกต้องสำหรับทุกเซต $A,B,C$", "choices": { "a": "ก) เท่านั้น", "b": "ข) เท่านั้น", "c": "ก) และ ข) เท่านั้น", "d": "ก) และ ค) เท่านั้น", "e": "ก) ข) และ ค)" } },
+    "answer": "d", "hint": "เขียน $A-B$ เป็น $A\\cap B'$ แล้วใช้กฎของดีมอร์แกน", "solution": { "steps": ["ก) $A-(B\\cup C)=A\\cap(B\\cup C)'=A\\cap B'\\cap C'=(A-B)\\cap(A-C)$ จึงถูก", "ข) ที่ถูกต้องต้องเป็น $A-(B\\cap C)=(A-B)\\cup(A-C)$ จึงผิด", "ค) ทั้งสองข้างหมายถึงสมาชิกที่อยู่ใน $A$ หรือ $B$ เพียงเซตเดียว จึงถูก", "ถูกเฉพาะ ก) และ ค) ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "set", "identity"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-09", "topicId": "logic", "subtopic": "tautology", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "พิจารณา ก) $[(p\\to q)\\land(q\\to r)]\\to(p\\to r)$ ข) $(p\\to q)\\lor(q\\to p)$ ค) $(p\\to q)\\leftrightarrow(\\neg p\\to\\neg q)$ ง) $[p\\land(p\\to q)]\\to q$ ข้อใดกล่าวถูกต้องเกี่ยวกับสัจนิรันดร์", "choices": { "a": "ก) และ ข) เท่านั้น", "b": "ก) และ ง) เท่านั้น", "c": "ข) และ ค) เท่านั้น", "d": "ก) ข) และ ง) เท่านั้น", "e": "ทั้งสี่ข้อ" } },
+    "answer": "d", "hint": "หากสงสัยว่าข้อใดไม่เป็นสัจนิรันดร์ ให้หาค่าความจริงที่ทำให้ข้อดังกล่าวเป็นเท็จ", "solution": { "steps": ["ก) เป็นกฎถ่ายทอด: ถ้า $p$ นำไปสู่ $q$ และ $q$ นำไปสู่ $r$ แล้ว $p$ ย่อมนำไปสู่ $r$", "ข) ถ้าทั้งสองอิมพลิเคชันเป็นเท็จพร้อมกัน จะต้องได้ทั้ง $p$ จริง $q$ เท็จ และ $q$ จริง $p$ เท็จ ซึ่งเป็นไปไม่ได้ จึงเป็นสัจนิรันดร์", "ค) ไม่เป็นสัจนิรันดร์ เช่น $p$ จริง $q$ เท็จ จะได้ซ้ายเท็จแต่ขวาจริง", "ง) เป็นรูป Modus Ponens จึงเป็นสัจนิรันดร์ สรุป ก) ข) ง) ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "tautology"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-10", "topicId": "logic", "subtopic": "negation", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "นิเสธของประพจน์ ‘ถ้า $p$ แล้ว $q$’ ตรงกับข้อใด", "choices": { "a": "$\\neg p\\to\\neg q$", "b": "$p\\land\\neg q$", "c": "$\\neg p\\land q$", "d": "$p\\lor\\neg q$", "e": "$\\neg p\\lor q$" } },
+    "answer": "b", "hint": "ประพจน์ $p\\to q$ เป็นเท็จในกรณีใดเพียงกรณีเดียว", "solution": { "steps": ["$p\\to q$ สมมูลกับ $\\neg p\\lor q$", "นิเสธคือ $\\neg(\\neg p\\lor q)$", "ใช้กฎของดีมอร์แกนได้ $p\\land\\neg q$", "จึงตอบข้อ b"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "negation"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-11", "topicId": "logic", "subtopic": "truth-values", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $p$ เท็จ $q$ จริง และ $r$ เท็จ ให้ $P: \\neg(p\\lor r)\\leftrightarrow(q\\land\\neg r)$ และ $Q:(p\\to q)\\land(q\\to r)$ คู่ลำดับค่าความจริง $(P,Q)$ ตรงกับข้อใด", "choices": { "a": "(จริง, จริง)", "b": "(จริง, เท็จ)", "c": "(เท็จ, จริง)", "d": "(เท็จ, เท็จ)", "e": "ระบุไม่ได้" } },
+    "answer": "b", "hint": "แทนค่าจากวงเล็บชั้นในออกมาทีละส่วน", "solution": { "steps": ["$p\\lor r$ เท็จ จึง $\\neg(p\\lor r)$ จริง และ $q\\land\\neg r$ ก็จริง ดังนั้น $P$ จริง", "$p\\to q$ จริง เพราะเหตุ $p$ เท็จ", "$q\\to r$ เท็จ เพราะ $q$ จริงแต่ $r$ เท็จ จึงทำให้ $Q$ เท็จ", "ได้ $(P,Q)=(จริง,เท็จ)$ ตอบข้อ b"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "truth-value"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-12", "topicId": "logic", "subtopic": "logical-equivalence", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "ประพจน์ใดสมมูลกับ $p\\to(q\\land r)$", "choices": { "a": "$(p\\to q)\\lor(p\\to r)$", "b": "$(q\\to p)\\land(r\\to p)$", "c": "$(p\\to q)\\land(p\\to r)$", "d": "$(p\\land q)\\to r$", "e": "$(p\\lor q)\\to r$" } },
+    "answer": "c", "hint": "เปลี่ยน $p\\to q$ เป็น $\\neg p\\lor q$", "solution": { "steps": ["$p\\to(q\\land r)\\equiv\\neg p\\lor(q\\land r)$", "พิจารณาข้อ c: $(p\\to q)\\land(p\\to r)$", "ได้ $(\\neg p\\lor q)\\land(\\neg p\\lor r)\\equiv\\neg p\\lor(q\\land r)$ จากกฎแจกแจง", "จึงสมมูลกัน ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "equivalence"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-13", "topicId": "logic", "subtopic": "contrapositive", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "ประพจน์แย้งสลับที่ของ ‘ถ้าจำนวนเต็ม $n$ หารด้วย $6$ ลงตัว แล้ว $n$ หารด้วย $3$ ลงตัว’ ตรงกับข้อใด", "choices": { "a": "ถ้า $n$ หารด้วย 3 ลงตัว แล้วหารด้วย 6 ลงตัว", "b": "ถ้า $n$ หารด้วย 6 ไม่ลงตัว แล้วหารด้วย 3 ไม่ลงตัว", "c": "ถ้า $n$ หารด้วย 3 ลงตัว แล้วหารด้วย 6 ไม่ลงตัว", "d": "ถ้า $n$ หารด้วย 3 ไม่ลงตัว แล้วหารด้วย 6 ไม่ลงตัว", "e": "$n$ หารด้วย 3 ลงตัว ก็ต่อเมื่อหารด้วย 6 ลงตัว" } },
+    "answer": "d", "hint": "ประพจน์แย้งสลับที่ของ $p\\to q$ คือ $\\neg q\\to\\neg p$", "solution": { "steps": ["ให้ $p$ คือ ‘หารด้วย 6 ลงตัว’ และ $q$ คือ ‘หารด้วย 3 ลงตัว’", "ประพจน์แย้งสลับที่คือ $\\neg q\\to\\neg p$", "จึงได้ ‘ถ้า $n$ หารด้วย 3 ไม่ลงตัว แล้ว $n$ หารด้วย 6 ไม่ลงตัว’", "ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "contrapositive"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-14", "topicId": "logic", "subtopic": "valid-arguments", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "พิจารณา ก) $p\\to q,\\ p\\ \\therefore q$ ข) $p\\to q,\\ q\\ \\therefore p$ ค) $p\\lor q,\\ \\neg p\\ \\therefore q$ ง) $p\\to q,\\ \\neg q\\ \\therefore\\neg p$ ข้อใดเป็นการอ้างเหตุผลที่สมเหตุสมผล", "choices": { "a": "ก) เท่านั้น", "b": "ก) และ ข) เท่านั้น", "c": "ข) และ ค) เท่านั้น", "d": "ก) และ ค) เท่านั้น", "e": "ก) ค) และ ง) เท่านั้น" } },
+    "answer": "e", "hint": "เทียบแต่ละรูปกับ Modus Ponens, Modus Tollens และ Disjunctive Syllogism", "solution": { "steps": ["ก) สมเหตุสมผล เป็น Modus Ponens", "ข) ไม่สมเหตุสมผล เพราะเป็นการยืนยันผล เช่น ฝนตกแล้วถนนเปียก แต่ถนนเปียกอาจเกิดจากสาเหตุอื่น", "ค) สมเหตุสมผล เป็น Disjunctive Syllogism และ ง) สมเหตุสมผล เป็น Modus Tollens", "จึงถูก ก) ค) ง) ตอบข้อ e"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "argument"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-15", "topicId": "logic", "subtopic": "truth-assignment-count", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "จากการกำหนดค่าความจริงให้ $p,q,r$ ทั้งหมด $8$ แบบ มีกี่แบบที่ทำให้ $(p\\lor q)\\land(\\neg p\\lor r)$ เป็นจริง", "choices": { "a": "$2$", "b": "$3$", "c": "$4$", "d": "$5$", "e": "$6$" } },
+    "answer": "c", "hint": "แบ่งกรณีตามค่าของ $p$", "solution": { "steps": ["ถ้า $p$ จริง วงเล็บแรกจริง แต่ $\\neg p\\lor r$ บังคับให้ $r$ จริง ส่วน $q$ เลือกได้ 2 ค่า จึงมี 2 แบบ", "ถ้า $p$ เท็จ วงเล็บที่สองจริง แต่ $p\\lor q$ บังคับให้ $q$ จริง ส่วน $r$ เลือกได้ 2 ค่า จึงมี 2 แบบ", "สองกรณีไม่ซ้ำกัน", "รวม $2+2=4$ แบบ ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "counting"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-16", "topicId": "logic", "subtopic": "contradiction", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "ประพจน์ใดเป็นประพจน์ขัดแย้ง", "choices": { "a": "$p\\lor\\neg p$", "b": "$p\\to p$", "c": "$(p\\land q)\\to p$", "d": "$(p\\leftrightarrow q)\\land(p\\leftrightarrow\\neg q)$", "e": "$(p\\to q)\\lor(q\\to p)$" } },
+    "answer": "d", "hint": "ประพจน์ขัดแย้งต้องเป็นเท็จทุกกรณี", "solution": { "steps": ["$p\\leftrightarrow q$ จริงเมื่อ $p,q$ มีค่าตรงกัน", "$p\\leftrightarrow\\neg q$ จริงเมื่อ $p,q$ มีค่าต่างกัน", "สองเงื่อนไขนี้เกิดพร้อมกันไม่ได้ ดังนั้นการเชื่อมด้วย $\\land$ เป็นเท็จทุกกรณี", "ข้อ d จึงเป็นประพจน์ขัดแย้ง"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "contradiction"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-17", "topicId": "real-numbers", "subtopic": "absolute-value-equation", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "ถ้า $x_1<x_2$ เป็นคำตอบของ $|x-1|+|x-5|=6$ แล้ว $x_1^2+x_2^2$ เท่ากับข้อใด", "choices": { "a": "$26$", "b": "$30$", "c": "$32$", "d": "$36$", "e": "$40$" } },
+    "answer": "d", "hint": "แบ่งช่วงที่ $x<1$, $1\\le x\\le5$ และ $x>5$", "solution": { "steps": ["เมื่อ $1\\le x\\le5$ ผลบวกเท่ากับ $4$ จึงไม่มีคำตอบ", "เมื่อ $x<1$: $(1-x)+(5-x)=6$ ได้ $x=0$", "เมื่อ $x>5$: $(x-1)+(x-5)=6$ ได้ $x=6$", "ดังนั้น $x_1^2+x_2^2=0^2+6^2=36$ ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "absolute-value"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-18", "topicId": "real-numbers", "subtopic": "absolute-value-inequality", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "จำนวนเต็มที่สอดคล้องกับ $|2x-3|\\le5$ มีทั้งหมดกี่จำนวน", "choices": { "a": "$4$", "b": "$5$", "c": "$6$", "d": "$7$", "e": "$8$" } },
+    "answer": "c", "hint": "เปลี่ยนเป็นอสมการสามส่วน", "solution": { "steps": ["$|2x-3|\\le5$ ให้ $-5\\le2x-3\\le5$", "บวก 3 ทุกส่วน: $-2\\le2x\\le8$", "หาร 2 ได้ $-1\\le x\\le4$", "จำนวนเต็มคือ $-1,0,1,2,3,4$ รวม 6 จำนวน ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "inequality"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-19", "topicId": "real-numbers", "subtopic": "radical-equation", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "ผลบวกของคำตอบจริงทั้งหมดของสมการ $\\sqrt{x+5}=x-1$ เท่ากับข้อใด", "choices": { "a": "$-1$", "b": "$1$", "c": "$3$", "d": "$4$", "e": "$5$" } },
+    "answer": "d", "hint": "ด้านขวาต้องไม่เป็นลบ และต้องตรวจคำตอบหลังยกกำลังสอง", "solution": { "steps": ["เพราะ $\\sqrt{x+5}\\ge0$ จึงต้องมี $x-1\\ge0$ หรือ $x\\ge1$", "ยกกำลังสองได้ $x+5=(x-1)^2$ จึงเป็น $x^2-3x-4=0$", "แยกตัวประกอบได้ $(x-4)(x+1)=0$ ให้ $x=4,-1$", "$x=-1$ ไม่ผ่านเงื่อนไข เหลือคำตอบ $x=4$ ผลบวกจึงเป็น 4 ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "radical"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-20", "topicId": "real-numbers", "subtopic": "rational-inequality", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "เซตคำตอบของ $\\frac{x-2}{x+1}\\ge0$ ตรงกับข้อใด", "choices": { "a": "$(-\\infty,-1]\\cup[2,\\infty)$", "b": "$(-\\infty,-1)\\cup[2,\\infty)$", "c": "$[-1,2]$", "d": "$(-1,2]$", "e": "$(-\\infty,2]$" } },
+    "answer": "b", "hint": "ทำตารางเครื่องหมายที่จุด $-1$ และ $2$", "solution": { "steps": ["จุดวิกฤตคือ $x=-1$ ซึ่งทำให้ส่วนเป็นศูนย์ และ $x=2$ ซึ่งทำให้เศษเป็นศูนย์", "ทดสอบเครื่องหมายในสามช่วง ได้บวกบน $(-\\infty,-1)$ ลบบน $(-1,2)$ และบวกบน $(2,\\infty)$", "อสมการใช้ $\\ge0$ จึงรวม $x=2$", "ห้ามรวม $x=-1$ เพราะนิพจน์ไม่มีความหมาย คำตอบคือ $(-\\infty,-1)\\cup[2,\\infty)$ ตอบข้อ b"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "rational-inequality"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-21", "topicId": "real-numbers", "subtopic": "factor-remainder-theorem", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "กำหนด $P(x)=x^3+ax+b$ เมื่อ $a,b\\in\\mathbb R$ ถ้า $x-2$ เป็นตัวประกอบของ $P(x)$ และเมื่อหาร $P(x)$ ด้วย $x+1$ ได้เศษ $-15$ แล้ว $a+b$ เท่ากับข้อใด", "choices": { "a": "$-14$", "b": "$-12$", "c": "$-10$", "d": "$-8$", "e": "$-6$" } },
+    "answer": "c", "hint": "ใช้ $P(2)=0$ และ $P(-1)=-15$", "solution": { "steps": ["ทฤษฎีบทตัวประกอบให้ $P(2)=8+2a+b=0$", "ทฤษฎีบทเศษเหลือให้ $P(-1)=-1-a+b=-15$", "ลบสมการที่สองออกจากสมการแรกได้ $9+3a=15$ จึง $a=2$ แล้วแทนกลับได้ $b=-12$", "ดังนั้น $a+b=-10$ ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "polynomial"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-22", "topicId": "real-numbers", "subtopic": "absolute-polynomial", "level": "A-Level", "difficulty": "hard", "type": "multiple-choice",
+    "content": { "text": "ผลบวกของคำตอบจริงที่แตกต่างกันทั้งหมดของ $|x^2-5x+4|=2$ เท่ากับข้อใด", "choices": { "a": "$5$", "b": "$7$", "c": "$8$", "d": "$10$", "e": "$12$" } },
+    "answer": "d", "hint": "แยกเป็นกรณีที่พหุนามเท่ากับ $2$ และ $-2$", "solution": { "steps": ["กรณีแรก $x^2-5x+4=2$ หรือ $x^2-5x+2=0$ มีรากจริงสองรากและผลบวกรากเท่ากับ 5", "กรณีที่สอง $x^2-5x+4=-2$ หรือ $x^2-5x+6=0$ ได้ราก $2,3$ ผลบวกเท่ากับ 5", "รากของสองสมการไม่ซ้ำกัน เพราะค่าเดียวกันไม่อาจทำให้พหุนามเท่ากับทั้ง $2$ และ $-2$", "ผลบวกรากทั้งสี่คือ $5+5=10$ ตอบข้อ d"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "absolute-value"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-23", "topicId": "real-numbers", "subtopic": "exponents-radicals", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "ค่าของ $\\frac{16^{3/4}8^{2/3}}{\\sqrt2}$ เท่ากับข้อใด", "choices": { "a": "$8\\sqrt2$", "b": "$12\\sqrt2$", "c": "$16\\sqrt2$", "d": "$24\\sqrt2$", "e": "$32\\sqrt2$" } },
+    "answer": "c", "hint": "เขียน 16 และ 8 เป็นกำลังของ 2", "solution": { "steps": ["$16^{3/4}=(2^4)^{3/4}=2^3=8$", "$8^{2/3}=(2^3)^{2/3}=2^2=4$", "จึงได้ $\\frac{8\\cdot4}{\\sqrt2}=\\frac{32}{\\sqrt2}$", "ทำส่วนให้เป็นจำนวนตรรกยะ ได้ $16\\sqrt2$ ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "exponent"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-24", "topicId": "real-numbers", "subtopic": "algebraic-identity", "level": "A-Level", "difficulty": "medium", "type": "multiple-choice",
+    "content": { "text": "กำหนดให้ $x\\ne0$ และ $x+\\frac1x=3$ แล้ว $x^2+\\frac1{x^2}$ เท่ากับข้อใด", "choices": { "a": "$5$", "b": "$6$", "c": "$7$", "d": "$8$", "e": "$9$" } },
+    "answer": "c", "hint": "ยกกำลังสองสมการที่กำหนด", "solution": { "steps": ["ยกกำลังสอง: $(x+\\frac1x)^2=3^2$", "กระจายได้ $x^2+2+\\frac1{x^2}=9$", "ย้าย 2 ไปอีกข้าง ได้ $x^2+\\frac1{x^2}=7$", "ตอบข้อ c"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "identity"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-25", "topicId": "set", "subtopic": "two-set-survey", "level": "A-Level", "difficulty": "medium", "type": "short-answer",
+    "content": { "text": "นักเรียน $60$ คนใช้แอปฝึกคณิตศาสตร์ $A$ จำนวน $35$ คน ใช้แอป $B$ จำนวน $28$ คน และไม่ใช้ทั้งสองแอป $12$ คน จงหาจำนวนนักเรียนที่ใช้เพียงแอปเดียว" },
+    "answer": "33", "acceptedAnswers": ["33.0"], "hint": "หาอย่างน้อยหนึ่งแอป แล้วหาผู้ใช้ทั้งสองแอป", "solution": { "steps": ["ผู้ใช้แอปอย่างน้อยหนึ่งแอปมี $60-12=48$ คน", "$n(A\\cap B)=35+28-48=15$ คน", "ผู้ใช้เพียงแอปเดียวคือ $(35-15)+(28-15)$", "ได้ $20+13=33$ คน"] },
+    "tags": ["ipst-m4-book1-v1", "set", "short-answer"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-26", "topicId": "set", "subtopic": "power-set", "level": "A-Level", "difficulty": "hard", "type": "short-answer",
+    "content": { "text": "กำหนดให้ $n(A)=6$, $n(B)=5$ และ $n(A\\cup B)=8$ แล้วเซต $\\mathcal P(A)\\cap\\mathcal P(B)$ มีสมาชิกกี่สมาชิก" },
+    "answer": "8", "acceptedAnswers": ["8.0"], "hint": "สับเซตที่อยู่ในเพาเวอร์เซตทั้งสองต้องเป็นสับเซตของ $A\\cap B$", "solution": { "steps": ["$n(A\\cap B)=6+5-8=3$", "สมาชิกของ $\\mathcal P(A)\\cap\\mathcal P(B)$ ต้องเป็นสับเซตของทั้ง $A$ และ $B$", "ดังนั้น $\\mathcal P(A)\\cap\\mathcal P(B)=\\mathcal P(A\\cap B)$", "เซตที่มี 3 สมาชิกมีสับเซต $2^3=8$ เซต จึงตอบ 8"] },
+    "tags": ["ipst-m4-book1-v1", "set", "power-set", "short-answer"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-27", "topicId": "logic", "subtopic": "truth-assignment-count", "level": "A-Level", "difficulty": "hard", "type": "short-answer",
+    "content": { "text": "จากการกำหนดค่าความจริงให้ $p,q,r$ ทั้งหมด $8$ แบบ จงหาจำนวนแบบที่ทำให้ $(p\\to q)\\land(q\\to r)$ เป็นจริง" },
+    "answer": "4", "acceptedAnswers": ["4.0"], "hint": "แบ่งกรณีตามค่าของ $q$ หรือไล่ค่าที่ไม่ทำให้อิมพลิเคชันเป็นเท็จ", "solution": { "steps": ["ถ้า $q$ เท็จ เพื่อให้ $p\\to q$ จริง ต้องมี $p$ เท็จ ส่วน $r$ เลือกได้ 2 ค่า จึงมี 2 แบบ", "ถ้า $q$ จริง ประพจน์ $p\\to q$ จริงเสมอ แต่ $q\\to r$ บังคับให้ $r$ จริง ส่วน $p$ เลือกได้ 2 ค่า จึงมี 2 แบบ", "สองกรณีไม่ซ้ำกัน", "รวม $2+2=4$ แบบ"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "short-answer"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-28", "topicId": "logic", "subtopic": "tautology-count", "level": "A-Level", "difficulty": "medium", "type": "short-answer",
+    "content": { "text": "พิจารณา ก) $p\\lor\\neg p$ ข) $(p\\land q)\\to p$ ค) $p\\to(p\\lor q)$ ง) $(p\\to q)\\leftrightarrow(q\\to p)$ ในบรรดาสี่ประพจน์นี้ มีสัจนิรันดร์ทั้งหมดกี่ประพจน์" },
+    "answer": "3", "acceptedAnswers": ["3.0"], "hint": "ตรวจว่ามีกรณีใดทำให้แต่ละประพจน์เป็นเท็จหรือไม่", "solution": { "steps": ["ก) เป็นกฎตัดสินทางเลือก จึงจริงทุกกรณี", "ข) ถ้าเหตุ $p\\land q$ จริงแล้ว $p$ จริงแน่นอน และถ้าเหตุเท็จ อิมพลิเคชันก็จริง จึงเป็นสัจนิรันดร์", "ค) ถ้า $p$ จริง แล้ว $p\\lor q$ จริง และถ้า $p$ เท็จ อิมพลิเคชันจริง จึงเป็นสัจนิรันดร์", "ง) ไม่เป็นสัจนิรันดร์ เช่น $p$ จริง $q$ เท็จ สองด้านมีค่าต่างกัน ดังนั้นมีทั้งหมด 3 ประพจน์"] },
+    "tags": ["ipst-m4-book1-v1", "logic", "tautology", "short-answer"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-29", "topicId": "real-numbers", "subtopic": "absolute-value-minimum", "level": "A-Level", "difficulty": "medium", "type": "short-answer",
+    "content": { "text": "จงหาค่าต่ำสุดของ $|x-2|+|x+3|$ เมื่อ $x$ เป็นจำนวนจริง" },
+    "answer": "5", "acceptedAnswers": ["5.0"], "hint": "มองเป็นผลบวกของระยะจาก $x$ ไปยังจุด $2$ และ $-3$", "solution": { "steps": ["$|x-2|$ คือระยะจาก $x$ ถึง $2$ และ $|x+3|$ คือระยะจาก $x$ ถึง $-3$", "จากอสมการสามเหลี่ยม ผลบวกของสองระยะไม่น้อยกว่าระยะระหว่าง $-3$ กับ $2$", "ระยะดังกล่าวคือ $2-(-3)=5$", "เมื่อ $-3\\le x\\le2$ ผลบวกเท่ากับ 5 จริง ดังนั้นค่าต่ำสุดคือ 5"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "absolute-value", "short-answer"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  },
+  {
+    "id": "ipst-m4-book1-v1-30", "topicId": "real-numbers", "subtopic": "inequality-system", "level": "A-Level", "difficulty": "hard", "type": "short-answer",
+    "content": { "text": "จงหาจำนวนเต็ม $x$ ทั้งหมดที่สอดคล้องกับ $|x-2|<4$ และ $x^2-1\\ge0$ พร้อมกัน" },
+    "answer": "6", "acceptedAnswers": ["6.0"], "hint": "หาเซตคำตอบของแต่ละอสมการ แล้วนำมาหาส่วนร่วม", "solution": { "steps": ["$|x-2|<4$ ให้ $-4<x-2<4$ หรือ $-2<x<6$", "$x^2-1=(x-1)(x+1)\\ge0$ ให้ $x\\le-1$ หรือ $x\\ge1$", "ส่วนร่วมคือ $(-2,-1]\\cup[1,6)$", "จำนวนเต็มคือ $-1,1,2,3,4,5$ รวม 6 จำนวน"] },
+    "tags": ["ipst-m4-book1-v1", "real-numbers", "inequality", "short-answer"], "source": "Math Hunters Association ชุดทบทวน ม.4 เล่ม 1"
+  }
+]

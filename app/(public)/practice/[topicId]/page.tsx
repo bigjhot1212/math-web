@@ -15,6 +15,7 @@ export default function PracticeTopicPage() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState<string | null>(null)
+  const [shortAnswer, setShortAnswer] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -95,13 +96,17 @@ export default function PracticeTopicPage() {
   )
 
   const q = questions[current]
-  const isCorrect = selected === q.answer
+  const normalizeAnswer = (value: unknown) => String(value ?? '').trim().replace(/,/g, '').replace(/\s+/g, '').toLowerCase()
+  const acceptedAnswers = [q.answer, ...(q.acceptedAnswers ?? [])].map(normalizeAnswer)
+  const isCorrect = selected !== null && acceptedAnswers.includes(normalizeAnswer(selected))
   const isWrong = selected !== null && !isCorrect
 
   function getElapsedSeconds(questionId: string) {
     const timer = timerRef.current
     if (timer.questionId !== questionId) return 1
     if (timer.runningSince !== null) {
+      // This helper runs only from answer event handlers, never during render.
+      // eslint-disable-next-line react-hooks/purity
       timer.elapsedMs += performance.now() - timer.runningSince
       timer.runningSince = null
     }
@@ -144,6 +149,7 @@ export default function PracticeTopicPage() {
     setSelected(null)
     setShowHint(false)
     setShowSolution(false)
+    setShortAnswer('')
   }
 
   function moveToQuestion(nextQuestion: number) {
@@ -151,6 +157,15 @@ export default function PracticeTopicPage() {
     setSelected(null)
     setShowHint(false)
     setShowSolution(false)
+    setShortAnswer('')
+  }
+
+  function handleShortAnswerSubmit() {
+    const answer = shortAnswer.trim()
+    if (!answer || selected !== null) return
+    const answerIsCorrect = acceptedAnswers.includes(normalizeAnswer(answer))
+    setSelected(answer)
+    void saveProgress(q, answerIsCorrect, showHint)
   }
 
   function renderText(text: string) {
@@ -232,6 +247,50 @@ export default function PracticeTopicPage() {
                 </button>
               )
             })}
+          </div>
+        )}
+
+        {q.type === 'short-answer' && !q.content.choices && (
+          <div className="mb-6 rounded-2xl border border-primary/25 bg-primary/[0.05] p-5">
+            <label htmlFor={`short-answer-${q.id}`} className="mb-2 block text-sm font-medium text-foreground">
+              คำตอบเป็นตัวเลข
+            </label>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <input
+                id={`short-answer-${q.id}`}
+                type="text"
+                inputMode="decimal"
+                autoComplete="off"
+                value={shortAnswer}
+                onChange={event => setShortAnswer(event.target.value)}
+                onKeyDown={event => {
+                  if (event.key === 'Enter') handleShortAnswerSubmit()
+                }}
+                disabled={selected !== null}
+                placeholder="กรอกเฉพาะตัวเลข"
+                aria-describedby={`short-answer-help-${q.id}`}
+                className={`min-h-11 flex-1 rounded-xl border bg-background px-4 py-3 font-mono text-base text-foreground outline-none transition focus:ring-2 focus:ring-primary/20 disabled:opacity-80 ${
+                  selected === null ? 'border-border focus:border-primary' : isCorrect ? 'border-green-500' : 'border-red-500'
+                }`}
+              />
+              <button
+                type="button"
+                onClick={handleShortAnswerSubmit}
+                disabled={!shortAnswer.trim() || selected !== null}
+                className="min-h-11 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                ตรวจคำตอบ
+              </button>
+            </div>
+            <p id={`short-answer-help-${q.id}`} className="mt-2 text-xs text-muted-foreground">
+              ไม่ต้องใส่หน่วยหรือข้อความเพิ่มเติม
+            </p>
+            {selected !== null && (
+              <div className={`mt-4 flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm ${isCorrect ? 'bg-green-500/10 text-green-700 dark:text-green-300' : 'bg-red-500/10 text-red-700 dark:text-red-300'}`}>
+                {isCorrect ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />}
+                <span>{isCorrect ? 'ถูกต้อง' : <>ยังไม่ถูก คำตอบที่ถูกคือ <strong>{String(q.answer)}</strong></>}</span>
+              </div>
+            )}
           </div>
         )}
 

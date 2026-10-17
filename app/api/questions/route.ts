@@ -39,12 +39,18 @@ export async function GET(request: NextRequest) {
     }
 
     const fileContent = fs.readFileSync(filePath, 'utf-8')
+    const m4Book1Path = path.join(process.cwd(), 'content', 'questions', 'ipst-m4-book1-v1.json')
+    const m4Book1Questions = fs.existsSync(m4Book1Path)
+      ? (JSON.parse(fs.readFileSync(m4Book1Path, 'utf-8')) as Question[])
+          .filter(question => question.topicId === topicId)
+      : []
+
     let questions: Question[] = topicId === 'set'
-      ? setChallengeQuestions
+      ? [...setChallengeQuestions, ...m4Book1Questions]
       : topicId === 'logic'
-        ? logicChallengeQuestions
+        ? [...logicChallengeQuestions, ...m4Book1Questions]
         : topicId === 'real-numbers'
-          ? realNumbersChallengeQuestions
+          ? [...realNumbersChallengeQuestions, ...m4Book1Questions]
           : topicId === 'relations-functions'
             ? relationsFunctionsChallengeQuestions
             : topicId === 'exponential-logarithm'
@@ -82,7 +88,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ questions })
 
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to load questions' }, { status: 500 })
   }
 }
