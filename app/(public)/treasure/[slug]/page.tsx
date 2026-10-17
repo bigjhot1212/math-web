@@ -12,6 +12,24 @@ import styles from './treasure-article.module.css'
 type Props = { params: Promise<{ slug: string }> }
 
 const FORMULA_DEMOS: Record<string, { prompt: string; tip: string; substitution: string; answer: string }> = {
+  'trigonometry-formula-guide::สูตรผลบวกเป็นผลคูณ': {
+    prompt: 'จงหาค่า sin 75° + sin 15°',
+    tip: 'เป็นผลบวกของไซน์ จึงใช้มุมเฉลี่ย 45° และครึ่งผลต่าง 30°',
+    substitution: 'sin 75° + sin 15° = 2sin 45° cos 30°; sin 45° = √2/2; cos 30° = √3/2; 2sin 45° cos 30° = √6/2',
+    answer: '√6/2',
+  },
+  'trigonometry-formula-guide::สูตรผลคูณเป็นผลบวก': {
+    prompt: 'จงเปลี่ยน 2sin 75° cos 15° ให้อยู่ในรูปผลบวก',
+    tip: 'จับ A=75° และ B=15° แล้วหาทั้ง A+B กับ A−B',
+    substitution: '2sin 75° cos 15° = sin 90° + sin 60°; sin 90° = 1; sin 60° = √3/2; 2sin 75° cos 15° = (2+√3)/2',
+    answer: '(2+√3)/2',
+  },
+  'trigonometry-formula-guide::ฟังก์ชันผกผันตรีโกณมิติ': {
+    prompt: 'จงหาค่า arcsin(√3/2)',
+    tip: 'หามุมในช่วงค่าหลัก −π/2 ถึง π/2 ที่มีค่าไซน์เท่ากับ √3/2',
+    substitution: 'sin(π/3) = √3/2; (π/3) ∈ [−π/2, π/2]',
+    answer: 'arcsin(√3/2) = π/3',
+  },
   'sequences-series-formula-guide::ผลบวกเลขคณิต': {
     prompt: 'ลำดับ 3, 7, 11, … มี 20 พจน์ จงหาผลบวกทั้งหมด',
     tip: 'โจทย์ให้พจน์แรก ผลต่างร่วม และจำนวนพจน์ จึงเลือกสูตรรูปที่มี a₁, d และ n',

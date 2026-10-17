@@ -128,6 +128,21 @@ function renderScripts(value: string, keyPrefix: string) {
 
   while (index < value.length) {
     const character = value[index]
+    if (character === '(') {
+      const group = readScript(value, index)
+      if (topLevelSlash(group.content) >= 0) {
+        flush()
+        parts.push(
+          <span className={styles.mathGrouped} key={`${keyPrefix}-group-${index}`}>
+            <span aria-hidden="true">(</span>
+            {renderSegment(group.content, `${keyPrefix}-group-content-${index}`)}
+            <span aria-hidden="true">)</span>
+          </span>,
+        )
+        index = group.end
+        continue
+      }
+    }
     let indexedDegree = ''
     let rootIndex = index
     while (rootIndex < value.length && SUPERSCRIPT_DIGITS[value[rootIndex]]) {
