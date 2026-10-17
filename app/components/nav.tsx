@@ -19,7 +19,7 @@ export default async function Nav() {
       <div className="max-w-6xl mx-auto flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2.5 font-heading font-bold text-foreground cursor-pointer">
           <span className="flex h-8 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30">
-            <BrandMark className="h-4 w-7" />
+            <BrandMark className="h-4 w-8" />
           </span>
           <span className="tracking-tight">{BRAND_NAME}</span>
         </Link>

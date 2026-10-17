@@ -59,7 +59,7 @@ export default function LoginPage() {
       <div className="animate-fade-slide-in w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-            <BrandMark className="h-8 w-12" />
+            <BrandMark className="h-8 w-14" />
           </div>
           <h1 className="text-2xl font-heading font-semibold text-foreground mb-1">{BRAND_NAME}</h1>
           <p className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-primary">{BRAND_FULL_NAME}</p>
