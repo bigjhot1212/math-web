@@ -113,18 +113,19 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
                 <div className="text-center">
                   <div className="mx-auto max-w-[320px] overflow-hidden rounded-2xl bg-white p-2">
                     <Image
-                      src="/payment/promptpay-qr.png"
+                      src="/api/payment/promptpay-qr"
                       alt="QR PromptPay สำหรับชำระค่าคอร์ส"
                       width={885}
                       height={1200}
                       sizes="(max-width: 640px) 82vw, 320px"
                       className="h-auto w-full"
                       priority
+                      unoptimized
                     />
                   </div>
                   <p className="mt-3 text-xs leading-5 text-muted-foreground">สแกนด้วยแอปธนาคาร และตรวจชื่อผู้รับให้ตรงกับภาพก่อนยืนยันยอด</p>
                   <a
-                    href="/payment/promptpay-qr.png"
+                    href="/api/payment/promptpay-qr?download=1"
                     download="math-hunters-promptpay.png"
                     className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
                   >
