@@ -37,7 +37,7 @@ const FORMULA_DEMOS: Record<string, { prompt: string; tip: string; substitution:
     answer: 'S_20 = 820',
   },
   'vector-formula-guide::การตั้งฉากของเวกเตอร์': {
-    prompt: 'ถ้า u⃗ = 2î + kĵ − k̂ ตั้งฉากกับ v⃗ = 3î + 2ĵ + 4k̂ จงหาค่า k',
+    prompt: 'ถ้า u⃗ = 2î + kĵ − k̂ ตั้งฉากกับ v⃗ = 3î + 2ĵ + 4k̂ จงหาค่า k',
     tip: 'ตั้งฉากแปลว่า u⃗·v⃗ = 0 จึงคูณองค์ประกอบคู่เดียวกันแล้วรวมกันให้เท่ากับ 0',
     substitution: 'u⃗·v⃗ = 2(3) + k(2) − 1(4); 6 + 2k − 4 = 0; 2k + 2 = 0',
     answer: 'k = −1',
