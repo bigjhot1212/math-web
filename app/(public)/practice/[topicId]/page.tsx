@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Lightbulb, CheckCircle2, XCircle, ArrowLeft, ArrowRight, LogOut, SkipForward } from 'lucide-react'
 import { Question } from '@/lib/types/question'
+import { formatMathForDisplay } from '@/lib/format-math'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
@@ -156,7 +157,7 @@ export default function PracticeTopicPage() {
     const parts = text.split(/(\$[^$]+\$)/)
     return parts.map((part, i) => {
       if (part.startsWith('$') && part.endsWith('$')) {
-        return <InlineMath key={i} math={part.slice(1, -1)} />
+        return <InlineMath key={i} math={formatMathForDisplay(part.slice(1, -1))} />
       }
       return <span key={i}>{part}</span>
     })

@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Dice5, Search } from 'lucide-react'
 import styles from './practice.module.css'
+import { formatMathForDisplay } from '@/lib/format-math'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then((module) => module.InlineMath), { ssr: false })
@@ -90,7 +91,7 @@ const GRADE_TABS: Array<{ id: Grade; label: string; dot: string }> = [
 function renderMath(text: string) {
   return text.split(/(\$[^$]+\$)/).map((part, index) => (
     part.startsWith('$') && part.endsWith('$')
-      ? <InlineMath key={index} math={part.slice(1, -1)} />
+      ? <InlineMath key={index} math={formatMathForDisplay(part.slice(1, -1))} />
       : <span key={index}>{part}</span>
   ))
 }
@@ -246,7 +247,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
                           : 'border-white/20 bg-white/[.06] hover:bg-white/10'
                     }`}
                   >
-                    <InlineMath math={choice} />
+                    <InlineMath math={formatMathForDisplay(choice)} />
                   </button>
                 )
               })}
@@ -322,7 +323,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
                     <span className={styles.topicEnglish}>{topic.nameEn}</span>
                   </span>
                   <span className={styles.bottomGroup}>
-                    <span className={styles.formula}><InlineMath math={topic.formula} /></span>
+                    <span className={styles.formula}><InlineMath math={formatMathForDisplay(topic.formula)} /></span>
                     <span className={styles.progressRow}>
                       <span className={styles.progressTrack}>
                         <span className={styles.progressBar} style={{ width: `${percent}%` }} />

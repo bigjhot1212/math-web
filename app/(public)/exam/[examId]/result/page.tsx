@@ -6,6 +6,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { ArrowRight, BookOpenCheck, CheckCircle2, Target, XCircle } from 'lucide-react'
 import { Question } from '@/lib/types/question'
+import { formatMathForDisplay } from '@/lib/format-math'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
@@ -56,7 +57,7 @@ function renderText(text: string) {
   const parts = text.split(/(\$[^$]+\$)/)
   return parts.map((part, i) =>
     part.startsWith('$') && part.endsWith('$')
-      ? <InlineMath key={i} math={part.slice(1, -1)} />
+      ? <InlineMath key={i} math={formatMathForDisplay(part.slice(1, -1))} />
       : <span key={i}>{part}</span>
   )
 }
