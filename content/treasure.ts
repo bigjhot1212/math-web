@@ -9,6 +9,8 @@ export type TreasureFormula = {
   keywords: string
   caution: string
   mistakes: string
+  // Set on formulas that show up often in exams; the page highlights them
+  examFocus?: string
 }
 
 export type TreasurePair = { label: string; guidance: string }

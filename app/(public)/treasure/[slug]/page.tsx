@@ -36,6 +36,12 @@ const FORMULA_DEMOS: Record<string, { prompt: string; tip: string; substitution:
     substitution: 'a₁ = 3; d = 4; n = 20; S_20 = 20[2(3) + (20−1)4] / 2 = 20(82) / 2',
     answer: 'S_20 = 820',
   },
+  'vector-formula-guide::การตั้งฉากของเวกเตอร์': {
+    prompt: 'ถ้า u⃗ = 2î + kĵ − k̂ ตั้งฉากกับ v⃗ = 3î + 2ĵ + 4k̂ จงหาค่า k',
+    tip: 'ตั้งฉากแปลว่า u⃗·v⃗ = 0 จึงคูณองค์ประกอบคู่เดียวกันแล้วรวมกันให้เท่ากับ 0',
+    substitution: 'u⃗·v⃗ = (2)(3) + (k)(2) + (−1)(4); 6 + 2k − 4 = 0; 2k + 2 = 0',
+    answer: 'k = −1',
+  },
 }
 
 export function generateStaticParams() {
@@ -108,8 +114,9 @@ export default async function TreasureArticlePage({ params }: Props) {
             <section id="formulas">
               <div className={styles.sectionHeading}><span className={styles.mathIcon}>ƒ</span><div><span>จำความหมายก่อนแทนค่า</span><h2>สูตรและแนวคิดสำคัญ</h2></div></div>
               <div className={styles.formulaList}>{resource.formulas.map((formula, index) => (
-                <div className={styles.formulaBlock} key={formula.name}>
-                  <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3></div>
+                <div className={formula.examFocus ? `${styles.formulaBlock} ${styles.formulaBlockFocus}` : styles.formulaBlock} key={formula.name}>
+                  <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3>{formula.examFocus && <strong className={styles.examBadge}>ออกสอบบ่อย</strong>}</div>
+                  {formula.examFocus && <p className={styles.examFocusNote}><MathText value={formula.examFocus} /></p>}
                   <div className={styles.formulaContext}>
                     <p><span>สูตรนี้คืออะไร</span><MathText value={formula.meaning} /></p>
                     <p><span>เอาไว้ใช้เมื่อ</span><MathText value={formula.use} /></p>
