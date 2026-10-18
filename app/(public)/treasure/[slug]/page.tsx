@@ -40,7 +40,7 @@ const FORMULA_DEMOS: Record<string, { prompt: string; tip: string; substitution:
     prompt: 'ให้ A เป็นเมทริกซ์ขนาด 3×3 และ det(A) = 4 ถ้า B ได้จากการสลับแถวที่ 1 กับแถวที่ 2 ของ A จงหา det(2A^T) และ det(B)',
     tip: 'คูณ 2 ทั้งเมทริกซ์ขนาด 3×3 ได้ 2^3 เท่า ทรานสโพสไม่เปลี่ยน det ส่วนการสลับแถวเปลี่ยนเครื่องหมาย',
     substitution: 'det(2A^T) = 2^3 det(A^T) = 8(4) = 32; det(B) = −det(A) = −4',
-    answer: 'det(2A^T) = 32 และ det(B) = −4',
+    answer: 'det(2A^T) = 32; det(B) = −4',
   },
   'vector-formula-guide::การตั้งฉากของเวกเตอร์': {
     prompt: 'ถ้า u⃗ = 2î + kĵ − k̂ ตั้งฉากกับ v⃗ = 3î + 2ĵ + 4k̂ จงหาค่า k',
