@@ -108,7 +108,7 @@ function distanceFigure() {
 }
 
 function slopeFigure() {
-  const p = makePlane({ minX: -0.7, maxX: 7.4, minY: -0.6, maxY: 4.8 })
+  const p = makePlane({ minX: -0.7, maxX: 8.2, minY: -0.6, maxY: 4.8 })
   const line = (x: number) => 0.5 * x + 0.5
   const a: Point = [1, line(1)]
   const b: Point = [5, line(5)]
@@ -125,7 +125,7 @@ function slopeFigure() {
       <Label plane={p} at={a} dx={-6} dy={-14} anchor="end">(x₁, y₁)</Label>
       <Label plane={p} at={b} dx={-10} dy={-14} anchor="end">(x₂, y₂)</Label>
       <Label plane={p} at={[3, a[1]]} dy={24} className={styles.figGuideLabel}>ระยะไป x₂ − x₁</Label>
-      <Label plane={p} at={[5, (a[1] + b[1]) / 2]} dx={12} dy={5} anchor="start" className={styles.figAccentLabel}>ระยะขึ้น y₂ − y₁</Label>
+      <Label plane={p} at={[5, (a[1] + b[1]) / 2]} dx={16} dy={5} anchor="start" className={styles.figAccentLabel}>ระยะขึ้น y₂ − y₁</Label>
     </Figure>
   )
 }
@@ -202,7 +202,7 @@ function circleFigure() {
 }
 
 function parabolaFigure() {
-  const p = makePlane({ minX: -1.6, maxX: 7.3, minY: -0.6, maxY: 5.4 })
+  const p = makePlane({ minX: -2.7, maxX: 7.3, minY: -0.6, maxY: 5.4 })
   const h = 2.5
   const k = 1.5
   const focalLength = 1
@@ -226,7 +226,7 @@ function parabolaFigure() {
       <Label plane={p} at={focus} dx={-12} dy={-6} anchor="end" className={styles.figAccentLabel}>โฟกัส</Label>
       <Label plane={p} at={[h, k + focalLength / 2]} dx={12} dy={5} anchor="start" className={styles.figGuideLabel}>p</Label>
       <Label plane={p} at={[h, k - focalLength / 2]} dx={12} dy={5} anchor="start" className={styles.figGuideLabel}>p</Label>
-      <Label plane={p} at={[-1.5, directrixY]} dy={19} anchor="start" className={styles.figGuideLabel}>ไดเรกตริกซ์</Label>
+      <Label plane={p} at={[-2.6, directrixY]} dy={19} anchor="start" className={styles.figGuideLabel}>ไดเรกตริกซ์</Label>
       <Label plane={p} at={point} dx={12} dy={-4} anchor="start">P</Label>
       <Label plane={p} at={[point[0], (point[1] + directrixY) / 2]} dx={10} anchor="start" className={styles.figAccentLabel}>ระยะเท่ากัน</Label>
     </Figure>
@@ -268,7 +268,7 @@ function ellipseFigure() {
 }
 
 function hyperbolaFigure() {
-  const p = makePlane({ minX: -5.6, maxX: 5.6, minY: -4, maxY: 4 })
+  const p = makePlane({ minX: -5.6, maxX: 5.6, minY: -4.9, maxY: 4 })
   const a = 2
   const b = 2.2
   const c = Math.sqrt(a * a + b * b)
@@ -299,7 +299,7 @@ function hyperbolaFigure() {
       <Label plane={p} at={rightFocus} dy={22} className={styles.figAccentLabel}>F₂</Label>
       <Label plane={p} at={point} dx={10} dy={-6} anchor="start">P</Label>
       <Label plane={p} at={[3.55, slope * 3.55]} dx={-8} dy={4} anchor="end" className={styles.figAsymptoteLabel}>เส้นกำกับ</Label>
-      <Label plane={p} at={[5.5, -1.4]} anchor="end" className={styles.figAccentLabel}>|PF₁ − PF₂| = 2a</Label>
+      <Label plane={p} at={[5.5, -4.55]} anchor="end" className={styles.figAccentLabel}>|PF₁ − PF₂| = 2a</Label>
     </Figure>
   )
 }
