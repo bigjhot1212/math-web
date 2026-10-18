@@ -138,6 +138,47 @@ function renderRadical(radicand: { content: string; end: number }, degree: strin
   )
 }
 
+// Splits on commas that are not inside (), [] or {}.
+function splitTopLevel(value: string) {
+  const items: string[] = []
+  let depth = 0
+  let start = 0
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index]
+    if ('([{'.includes(character)) depth += 1
+    if (')]}'.includes(character)) depth = Math.max(0, depth - 1)
+    if (character === ',' && depth === 0) {
+      items.push(value.slice(start, index))
+      start = index + 1
+    }
+  }
+  items.push(value.slice(start))
+  return items.map((item) => item.trim())
+}
+
+// Reads a matrix written as [[a,b],[c,d]] (one inner bracket per row).
+function readMatrix(value: string, start: number) {
+  if (!value.startsWith('[[', start)) return null
+  const outer = readScript(value, start)
+  const rows = splitTopLevel(outer.content).map((row) => (
+    row.startsWith('[') && row.endsWith(']') ? splitTopLevel(row.slice(1, -1)) : null
+  ))
+  if (!rows.length || rows.some((row) => !row || row.some((cell) => !cell))) return null
+  const columns = rows[0]!.length
+  if (rows.some((row) => row!.length !== columns)) return null
+  return { rows: rows as string[][], end: outer.end }
+}
+
+function renderMatrix(rows: string[][], key: string) {
+  const body = rows.map((row) => row.map(toKatex).join(' & ')).join(' \\\\ ')
+  const html = katex.renderToString(`\\begin{bmatrix}${body}\\end{bmatrix}`, {
+    output: 'html', throwOnError: false, strict: 'ignore',
+  })
+  const label = `เมทริกซ์ ${rows.length}×${rows[0].length}: ${rows.map((row) => row.join(' ')).join(' / ')}`
+
+  return <span className={styles.mathMatrix} aria-label={label} key={key} dangerouslySetInnerHTML={{ __html: html }} />
+}
+
 function renderScripts(value: string, keyPrefix: string) {
   const parts: ReactNode[] = []
   let plain = ''
@@ -150,6 +191,13 @@ function renderScripts(value: string, keyPrefix: string) {
   }
 
   while (index < value.length) {
+    const matrix = readMatrix(value, index)
+    if (matrix) {
+      flush()
+      parts.push(renderMatrix(matrix.rows, `${keyPrefix}-matrix-${index}`))
+      index = matrix.end
+      continue
+    }
     const accented = value.slice(index).match(ACCENTED_SYMBOL)
     if (accented) {
       flush()

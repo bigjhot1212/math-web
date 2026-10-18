@@ -1877,7 +1877,7 @@
       },
       {
         "name": "อินเวอร์ส 2×2",
-        "expression": "A⁻¹=(1/(ad−bc))[[d,−b],[−c,a]]",
+        "expression": "A⁻¹=1/(ad−bc) [[d,−b],[−c,a]]",
         "meaning": "A=[[a,b],[c,d]]",
         "condition": "det(A)≠0",
         "use": "แก้ AX=B และหาพารามิเตอร์",
