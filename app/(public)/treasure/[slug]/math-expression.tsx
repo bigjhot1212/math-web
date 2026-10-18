@@ -163,26 +163,37 @@ function splitTopLevel(value: string) {
 }
 
 // Reads a matrix written as [[a,b],[c,d]] (one inner bracket per row).
+// An augmented matrix marks the divider with |, as in [[1,2|5],[3,4|11]].
 function readMatrix(value: string, start: number) {
   if (!value.startsWith('[[', start)) return null
   const outer = readScript(value, start)
-  const rows = splitTopLevel(outer.content).map((row) => (
-    row.startsWith('[') && row.endsWith(']') ? splitTopLevel(row.slice(1, -1)) : null
-  ))
+  const dividers: number[] = []
+  const rows = splitTopLevel(outer.content).map((row) => {
+    if (!row.startsWith('[') || !row.endsWith(']')) return null
+    const [left, right, extra] = row.slice(1, -1).split('|')
+    if (extra !== undefined) return null
+    const leftCells = splitTopLevel(left)
+    dividers.push(right === undefined ? 0 : leftCells.length)
+    return right === undefined ? leftCells : [...leftCells, ...splitTopLevel(right)]
+  })
   if (!rows.length || rows.some((row) => !row || row.some((cell) => !cell))) return null
   const columns = rows[0]!.length
   if (rows.some((row) => row!.length !== columns)) return null
-  return { rows: rows as string[][], end: outer.end }
+  if (dividers.some((divider) => divider !== dividers[0])) return null
+  return { rows: rows as string[][], divider: dividers[0], end: outer.end }
 }
 
 // A determinant is drawn with vertical bars like the textbook; a plain matrix with square brackets.
-function renderMatrix(rows: string[][], key: string, determinant = false) {
-  const environment = determinant ? 'vmatrix' : 'bmatrix'
+// An augmented matrix (divider > 0) gets a vertical line before column `divider`.
+function renderMatrix(rows: string[][], key: string, determinant = false, divider = 0) {
+  const columns = rows[0].length
   const body = rows.map((row) => row.map(toKatex).join(' & ')).join(' \\\\ ')
-  const html = katex.renderToString(`\\begin{${environment}}${body}\\end{${environment}}`, {
-    output: 'html', throwOnError: false, strict: 'ignore',
-  })
-  const label = `${determinant ? 'ดีเทอร์มิแนนต์ของเมทริกซ์' : 'เมทริกซ์'} ${rows.length}×${rows[0].length}: ${rows.map((row) => row.join(' ')).join(' / ')}`
+  const latex = divider > 0
+    ? `\\left[\\begin{array}{${'c'.repeat(divider)}|${'c'.repeat(columns - divider)}}${body}\\end{array}\\right]`
+    : `\\begin{${determinant ? 'vmatrix' : 'bmatrix'}}${body}\\end{${determinant ? 'vmatrix' : 'bmatrix'}}`
+  const html = katex.renderToString(latex, { output: 'html', throwOnError: false, strict: 'ignore' })
+  const kind = determinant ? 'ดีเทอร์มิแนนต์ของเมทริกซ์' : divider > 0 ? 'เมทริกซ์แต่งเติม' : 'เมทริกซ์'
+  const label = `${kind} ${rows.length}×${columns}: ${rows.map((row) => row.join(' ')).join(' / ')}`
 
   return <span className={styles.mathMatrix} aria-label={label} key={key} dangerouslySetInnerHTML={{ __html: html }} />
 }
@@ -206,7 +217,7 @@ function renderScripts(value: string, keyPrefix: string, leadingSign = true) {
       const determinant = /det\s*$/.test(plain)
       if (determinant) plain = plain.replace(/det\s*$/, '')
       flush()
-      parts.push(renderMatrix(matrix.rows, `${keyPrefix}-matrix-${index}`, determinant))
+      parts.push(renderMatrix(matrix.rows, `${keyPrefix}-matrix-${index}`, determinant, matrix.divider))
       index = matrix.end
       continue
     }
