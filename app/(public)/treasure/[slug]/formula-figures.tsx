@@ -202,7 +202,7 @@ function circleFigure() {
 }
 
 function parabolaFigure() {
-  const p = makePlane({ minX: -2.7, maxX: 7.3, minY: -0.6, maxY: 5.4 })
+  const p = makePlane({ minX: -2.7, maxX: 8, minY: -0.6, maxY: 5.4 })
   const h = 2.5
   const k = 1.5
   const focalLength = 1
