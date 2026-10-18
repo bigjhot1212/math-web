@@ -6,6 +6,7 @@ import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/con
 import FormulaFlashcards from './formula-flashcards'
 import CalculusCoreGuide from './calculus-core-guide'
 import { getFormulaLineLabels } from './formula-line-labels'
+import { FORMULA_FIGURES } from './formula-figures'
 import MathExpression, { MathText } from './math-expression'
 import styles from './treasure-article.module.css'
 
@@ -136,6 +137,13 @@ export default async function TreasureArticlePage({ params }: Props) {
                   <div className={styles.formula}>
                     <MathExpression value={formula.expression} lineLabels={getFormulaLineLabels(resource.slug, formula.name, formula.expression)} />
                   </div>
+                  {FORMULA_FIGURES[`${resource.slug}::${formula.name}`] && (() => {
+                    const figure = FORMULA_FIGURES[`${resource.slug}::${formula.name}`]
+                    return <figure className={styles.formulaFigure}>
+                      {figure.figure()}
+                      <figcaption>{figure.caption}</figcaption>
+                    </figure>
+                  })()}
                   {FORMULA_DEMOS[`${resource.slug}::${formula.name}`] && (() => {
                     const demo = FORMULA_DEMOS[`${resource.slug}::${formula.name}`]
                     return <div className={styles.formulaDemo}>
