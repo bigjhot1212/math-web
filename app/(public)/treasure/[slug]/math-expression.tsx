@@ -175,12 +175,14 @@ function readMatrix(value: string, start: number) {
   return { rows: rows as string[][], end: outer.end }
 }
 
-function renderMatrix(rows: string[][], key: string) {
+// A determinant is drawn with vertical bars like the textbook; a plain matrix with square brackets.
+function renderMatrix(rows: string[][], key: string, determinant = false) {
+  const environment = determinant ? 'vmatrix' : 'bmatrix'
   const body = rows.map((row) => row.map(toKatex).join(' & ')).join(' \\\\ ')
-  const html = katex.renderToString(`\\begin{bmatrix}${body}\\end{bmatrix}`, {
+  const html = katex.renderToString(`\\begin{${environment}}${body}\\end{${environment}}`, {
     output: 'html', throwOnError: false, strict: 'ignore',
   })
-  const label = `เมทริกซ์ ${rows.length}×${rows[0].length}: ${rows.map((row) => row.join(' ')).join(' / ')}`
+  const label = `${determinant ? 'ดีเทอร์มิแนนต์ของเมทริกซ์' : 'เมทริกซ์'} ${rows.length}×${rows[0].length}: ${rows.map((row) => row.join(' ')).join(' / ')}`
 
   return <span className={styles.mathMatrix} aria-label={label} key={key} dangerouslySetInnerHTML={{ __html: html }} />
 }
@@ -200,8 +202,11 @@ function renderScripts(value: string, keyPrefix: string, leadingSign = true) {
   while (index < value.length) {
     const matrix = readMatrix(value, index)
     if (matrix) {
+      // "det[[a,b],[c,d]]" becomes |a b; c d|, so the bars replace the word det
+      const determinant = /det\s*$/.test(plain)
+      if (determinant) plain = plain.replace(/det\s*$/, '')
       flush()
-      parts.push(renderMatrix(matrix.rows, `${keyPrefix}-matrix-${index}`))
+      parts.push(renderMatrix(matrix.rows, `${keyPrefix}-matrix-${index}`, determinant))
       index = matrix.end
       continue
     }
