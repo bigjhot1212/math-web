@@ -14,13 +14,17 @@ const SUPERSCRIPT_DIGITS: Record<string, string> = {
   '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
 }
 
-function formatPlain(value: string) {
-  return value
+function formatPlain(value: string, atStart = false) {
+  const formatted = value
     .replace(OPERATOR, ' $1 ')
     .replace(/([A-Za-z0-9)])~(?=[A-Za-z])/g, '$1 ~ ')
     .replace(/\s+/g, ' ')
     // A minus sign that starts a number, as in (−1) or [−2, 3], stays attached to it
     .replace(/([([,]) ?− /g, '$1−')
+    // After = or another operator the minus is a sign, as in "= −4" or "× −2"
+    .replace(/([=≡⇔↔→⟹∧∨+×÷≤≥<>∈∉]) − /g, '$1 −')
+  // At the very start of an expression the minus is a sign too, as in "−det(A)"
+  return atStart ? formatted.replace(/^ ?− /, '−') : formatted
 }
 
 function readScript(value: string, start: number) {
@@ -181,14 +185,15 @@ function renderMatrix(rows: string[][], key: string) {
   return <span className={styles.mathMatrix} aria-label={label} key={key} dangerouslySetInnerHTML={{ __html: html }} />
 }
 
-function renderScripts(value: string, keyPrefix: string) {
+// leadingSign: whether a minus at the very start is a sign (false when continuing after a fraction)
+function renderScripts(value: string, keyPrefix: string, leadingSign = true) {
   const parts: ReactNode[] = []
   let plain = ''
   let index = 0
 
   function flush() {
     if (!plain) return
-    parts.push(formatPlain(plain))
+    parts.push(formatPlain(plain, leadingSign && parts.length === 0))
     plain = ''
   }
 
@@ -373,7 +378,7 @@ function renderSegment(segment: string, keyPrefix: string) {
       <span aria-hidden="true">{renderScripts(numerator, `${keyPrefix}-numerator`)}</span>
       <span aria-hidden="true">{renderScripts(denominator, `${keyPrefix}-denominator`)}</span>
     </span>,
-    ...(suffix ? renderScripts(` ${suffix}`, `${keyPrefix}-suffix`) : []),
+    ...(suffix ? renderScripts(` ${suffix}`, `${keyPrefix}-suffix`, false) : []),
   ]
 }
 
