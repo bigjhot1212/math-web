@@ -299,7 +299,7 @@ function hyperbolaFigure() {
       <Label plane={p} at={rightFocus} dy={22} className={styles.figAccentLabel}>F₂</Label>
       <Label plane={p} at={point} dx={10} dy={-6} anchor="start">P</Label>
       <Label plane={p} at={[3.55, slope * 3.55]} dx={-8} dy={4} anchor="end" className={styles.figAsymptoteLabel}>เส้นกำกับ</Label>
-      <Label plane={p} at={[5.5, 1.1]} anchor="end" className={styles.figAccentLabel}>|PF₁ − PF₂| = 2a</Label>
+      <Label plane={p} at={[5.5, -1.4]} anchor="end" className={styles.figAccentLabel}>|PF₁ − PF₂| = 2a</Label>
     </Figure>
   )
 }
