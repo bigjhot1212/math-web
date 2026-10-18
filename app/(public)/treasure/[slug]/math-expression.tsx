@@ -19,6 +19,8 @@ function formatPlain(value: string) {
     .replace(OPERATOR, ' $1 ')
     .replace(/([A-Za-z0-9)])~(?=[A-Za-z])/g, '$1 ~ ')
     .replace(/\s+/g, ' ')
+    // A minus sign that starts a number, as in (−1) or [−2, 3], stays attached to it
+    .replace(/([([,]) ?− /g, '$1−')
 }
 
 function readScript(value: string, start: number) {
