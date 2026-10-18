@@ -123,7 +123,7 @@
 .mathEquation { display: grid; min-width: max-content; grid-template-columns: minmax(94px, max-content) 24px minmax(140px, max-content); align-items: center; column-gap: .24em; }
 .mathLhs { justify-self: end; text-align: right; }
 .mathRelation { justify-self: center; padding-inline: .08em; }
-.mathRelationInline { padding-inline: .12em; }
+.mathRelationInline { padding-inline: .42em; }
 .mathRhs, .mathStandalone { min-width: max-content; }
 .mathExpression[data-layout='single'] .mathLine { min-width: 100%; grid-template-columns: 1fr; padding: 19px 22px; }
 .mathExpression[data-layout='single'] .mathLineMeta { display: none; }
