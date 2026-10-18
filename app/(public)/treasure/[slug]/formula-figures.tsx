@@ -146,8 +146,8 @@ function lineFigure() {
       <Dot plane={p} at={point} />
       <Label plane={p} at={point} dx={-18} dy={-4} anchor="end">(x₁, y₁)</Label>
       <Label plane={p} at={[6.6, main(6.6)]} dy={-12} anchor="end" className={styles.figMainLabel}>ความชัน m</Label>
-      <Label plane={p} at={[6.6, parallel(6.6)]} dy={22} anchor="end" className={styles.figGuideLabel}>ขนาน: m เท่ากัน</Label>
-      <Label plane={p} at={[0.75, perpendicular(0.75)]} dx={12} anchor="start" className={styles.figAccentLabel}>ตั้งฉาก: m₁m₂ = −1</Label>
+      <Label plane={p} at={[3.4, parallel(3.4)]} dx={6} dy={26} anchor="start" className={styles.figGuideLabel}>ขนาน: m เท่ากัน</Label>
+      <Label plane={p} at={[1.25, perpendicular(1.25)]} dx={20} anchor="start" className={styles.figAccentLabel}>ตั้งฉาก: m₁m₂ = −1</Label>
     </Figure>
   )
 }
@@ -194,7 +194,7 @@ function circleFigure() {
       <Dot plane={p} at={center} />
       <Dot plane={p} at={onCircle} />
       <Label plane={p} at={center} dy={24}>(h, k)</Label>
-      <Label plane={p} at={onCircle} dx={10} dy={-10} anchor="start">(x, y)</Label>
+      <Label plane={p} at={onCircle} dx={16} dy={-4} anchor="start">(x, y)</Label>
       <Label plane={p} at={[(center[0] + onCircle[0]) / 2, (center[1] + onCircle[1]) / 2]} dx={-4} dy={-10} anchor="end" className={styles.figAccentLabel}>r</Label>
       <Label plane={p} at={tangentFrom} dx={8} dy={4} anchor="start" className={styles.figGuideLabel}>เส้นสัมผัส</Label>
     </Figure>
@@ -299,7 +299,7 @@ function hyperbolaFigure() {
       <Label plane={p} at={rightFocus} dy={22} className={styles.figAccentLabel}>F₂</Label>
       <Label plane={p} at={point} dx={10} dy={-6} anchor="start">P</Label>
       <Label plane={p} at={[3.55, slope * 3.55]} dx={-8} dy={4} anchor="end" className={styles.figAsymptoteLabel}>เส้นกำกับ</Label>
-      <Label plane={p} at={[-5.4, -3.6]} anchor="start" className={styles.figAccentLabel}>|PF₁ − PF₂| = 2a</Label>
+      <Label plane={p} at={[5.5, 1.1]} anchor="end" className={styles.figAccentLabel}>|PF₁ − PF₂| = 2a</Label>
     </Figure>
   )
 }
