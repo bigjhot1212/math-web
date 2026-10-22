@@ -368,8 +368,50 @@ function splitDenominator(value: string) {
   }
 }
 
-function renderSegment(segment: string, keyPrefix: string) {
+// Splits "(x−h)²/a²+(y−k)²/b²" into terms at top-level + and − so each fraction can stack.
+// A sign at the very start belongs to the first term.
+function splitTerms(value: string) {
+  const terms: { sign: string; term: string }[] = []
+  let depth = 0
+  let start = 0
+  let sign = ''
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index]
+    if ('([{'.includes(character)) depth += 1
+    if (')]}'.includes(character)) depth = Math.max(0, depth - 1)
+    if (depth === 0 && (character === '+' || character === '−') && value.slice(start, index).trim()) {
+      terms.push({ sign, term: value.slice(start, index).trim() })
+      sign = character
+      start = index + 1
+    }
+  }
+  terms.push({ sign, term: value.slice(start).trim() })
+  return terms
+}
+
+function countTopLevelSlashes(value: string) {
+  let depth = 0
+  let count = 0
+  for (const character of value) {
+    if ('([{'.includes(character)) depth += 1
+    if (')]}'.includes(character)) depth = Math.max(0, depth - 1)
+    if (character === '/' && depth === 0) count += 1
+  }
+  return count
+}
+
+function renderSegment(segment: string, keyPrefix: string): ReactNode[] {
   const slash = topLevelSlash(segment)
+  if (slash < 0 && countTopLevelSlashes(segment) > 1) {
+    const terms = splitTerms(segment)
+    // Only split when it actually separates the fractions, one per term at most
+    if (terms.length > 1 && terms.every(({ term }) => countTopLevelSlashes(term) <= 1)) {
+      return terms.flatMap(({ sign, term }, index) => [
+        ...(sign ? [<span className={styles.mathTermSign} key={`${keyPrefix}-sign-${index}`}>{sign}</span>] : []),
+        ...renderSegment(term, `${keyPrefix}-term-${index}`),
+      ])
+    }
+  }
   if (slash < 0) return renderScripts(segment, keyPrefix)
 
   let numerator = segment.slice(0, slash).trim()

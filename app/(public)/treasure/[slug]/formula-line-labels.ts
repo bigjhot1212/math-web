@@ -13,6 +13,7 @@ const FORMULA_LINE_LABELS: Record<string, string[]> = {
   'exponential-logarithm-formula-guide::สมการฐานเดียวกัน': ['สมการเลขยกกำลัง', 'สมการลอการิทึม'],
   'exponential-logarithm-formula-guide::อสมการ': ['ฐานมากกว่า 1', 'ฐานอยู่ระหว่าง 0 กับ 1'],
   'analytic-geometry-conics-formula-guide::สมการเส้นตรง': ['สมการจุด–ความชัน', 'สมการเส้นตรงรูปทั่วไป'],
+  'analytic-geometry-conics-formula-guide::พาราโบลา': ['เปิดซ้าย–ขวา (แกนสมมาตรขนานแกน x)', 'เปิดบน–ล่าง (แกนสมมาตรขนานแกน y)'],
   'analytic-geometry-conics-formula-guide::วงรี': ['สมการวงรีมาตรฐาน', 'ความสัมพันธ์ของ a, b และ c'],
   'analytic-geometry-conics-formula-guide::ไฮเพอร์โบลา': ['สมการไฮเพอร์โบลามาตรฐาน', 'ความสัมพันธ์ของ a, b และ c'],
   'trigonometry-formula-guide::เรเดียน': ['ความสัมพันธ์ระหว่างองศากับเรเดียน', 'ความยาวส่วนโค้ง'],

@@ -124,6 +124,7 @@
 .mathLhs { justify-self: end; text-align: right; }
 .mathRelation { justify-self: center; padding-inline: .08em; }
 .mathRelationInline { padding-inline: .42em; }
+.mathTermSign { padding-inline: .32em; }
 .mathRhs, .mathStandalone { min-width: max-content; }
 .mathExpression[data-layout='single'] .mathLine { min-width: 100%; grid-template-columns: 1fr; padding: 19px 22px; }
 .mathExpression[data-layout='single'] .mathLineMeta { display: none; }
