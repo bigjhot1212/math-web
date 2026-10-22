@@ -196,6 +196,17 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
           </button>
         </header>
 
+        <Link
+          href="/premium"
+          className="flex flex-col gap-1 rounded-2xl border border-primary/40 bg-primary/[0.07] px-5 py-4 transition-colors hover:border-primary/75 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <span>
+            <span className="mr-2 rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">Premium</span>
+            <span className="text-sm font-semibold text-foreground">ฝึกข้อสอบเก่าที่หาได้ยาก พร้อมเฉลยละเอียด</span>
+          </span>
+          <span className="text-sm font-semibold text-primary">สำหรับนักเรียนที่ซื้อคอร์ส →</span>
+        </Link>
+
         <section className={`grid gap-5 ${continueTopic ? 'lg:grid-cols-[1fr_1.15fr]' : 'grid-cols-1'}`} aria-label="เริ่มฝึกอย่างรวดเร็ว">
           {continueTopic && continueProgress && (
             <article className="relative flex min-h-64 flex-col gap-4 overflow-hidden rounded-3xl bg-[oklch(0.27_0.09_275)] px-7 py-6 text-white shadow-[0_18px_42px_-28px_oklch(0.08_0.04_275)]">
