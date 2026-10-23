@@ -23,6 +23,10 @@ export const PREMIUM_QUESTION_COLUMNS =
 // Most questions a single practice session loads at once.
 export const PREMIUM_SESSION_LIMIT = 60
 
+// Private storage bucket for question images; content.image holds the path inside it.
+export const PREMIUM_BUCKET = 'premium'
+export const PREMIUM_IMAGE_TTL_SECONDS = 3 * 60 * 60
+
 // "PAT1 มี.ค. 2563 ข้อ 12": shown under each question so students know where it came from.
 export function premiumSourceLabel(row: Pick<PremiumQuestionRow, 'exam' | 'exam_year' | 'exam_round' | 'question_number'>) {
   return [

@@ -123,11 +123,13 @@ export default async function PremiumPage() {
   }
 
   const byExam = new Map<string, Map<number, number>>()
+  const examCounts = new Map<string, number>()
   const byTopic = new Map<string, number>()
   for (const row of rows) {
     const years = byExam.get(row.exam) ?? new Map<number, number>()
     if (row.exam_year) years.set(row.exam_year, (years.get(row.exam_year) ?? 0) + 1)
     byExam.set(row.exam, years)
+    examCounts.set(row.exam, (examCounts.get(row.exam) ?? 0) + 1)
     byTopic.set(row.topic_id, (byTopic.get(row.topic_id) ?? 0) + 1)
   }
 
@@ -141,12 +143,20 @@ export default async function PremiumPage() {
           ฝึกตามชุดข้อสอบ
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[...byExam.entries()].sort(([a], [b]) => a.localeCompare(b, 'th')).map(([exam, years]) => (
+          {[...byExam.entries()].sort(([a], [b]) => a.localeCompare(b, 'th', { numeric: true })).map(([exam, years]) => (
             <div key={exam} className="rounded-2xl border border-border p-5">
               <div className="mb-3 flex items-baseline justify-between gap-3">
                 <h3 className="font-heading text-lg font-bold text-foreground">{exam}</h3>
-                <Link href={practiceHref({ exam })} className="text-xs font-semibold text-primary hover:underline">ฝึกทุกปี</Link>
+                {years.size > 0 && (
+                  <Link href={practiceHref({ exam })} className="text-xs font-semibold text-primary hover:underline">ฝึกทุกปี</Link>
+                )}
               </div>
+              {years.size === 0 && (
+                // a ready-made set (no exam year): one button that runs the whole set in order
+                <Link href={practiceHref({ exam })} className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary hover:text-primary">
+                  เริ่มทำชุดนี้ <span className="text-xs text-muted-foreground">({examCounts.get(exam)} ข้อ)</span>
+                </Link>
+              )}
               <div className="flex flex-wrap gap-2">
                 {[...years.entries()].sort(([a], [b]) => b - a).map(([year, count]) => (
                   <Link key={year} href={practiceHref({ exam, year })} className="rounded-xl border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary hover:text-primary">

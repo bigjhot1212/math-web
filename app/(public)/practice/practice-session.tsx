@@ -218,6 +218,15 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         {q.source && q.tags.includes('past-exam') && (
           <p className="mb-2 text-xs font-semibold tracking-wide text-primary">ที่มา: {q.source}</p>
         )}
+        {q.content.image && (
+          // Past-exam questions are shown exactly as printed; the image comes from a signed URL.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={q.content.image}
+            alt={`โจทย์ข้อ ${current + 1}`}
+            className="mb-4 w-full rounded-2xl border border-border bg-white p-2 sm:p-3"
+          />
+        )}
         <div className="mb-6 text-lg leading-relaxed">
           {renderText(q.content.text)}
         </div>
@@ -231,7 +240,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
 
         {q.content.choices && (
           <div className="flex flex-col gap-3 mb-6">
-            {Object.entries(q.content.choices).map(([key, value]) => {
+            {Object.entries(q.content.choices).filter(([, value]) => value !== '').map(([key, value]) => {
               const isSelectedCorrect = selected === key && isCorrect
               const isSelectedWrong = selected === key && isWrong
               const isRevealedAnswer = showSolution && key === q.answer
@@ -251,8 +260,15 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
                   disabled={selected !== null}
                   aria-pressed={selected === key}
                 >
-                  <span className="font-medium text-sm w-6 text-muted-foreground uppercase shrink-0">{key}.</span>
-                  <span className="text-sm flex-1">{renderText(value as string)}</span>
+                  {q.content.image && /^\d$/.test(value) ? (
+                    // the choices are printed in the question image; the button is just its number
+                    <span className="text-sm font-semibold flex-1">ข้อ {value}</span>
+                  ) : (
+                    <>
+                      <span className="font-medium text-sm w-6 text-muted-foreground uppercase shrink-0">{key}.</span>
+                      <span className="text-sm flex-1">{renderText(value as string)}</span>
+                    </>
+                  )}
                   {(isSelectedCorrect || isRevealedAnswer) && (
                     <CheckCircle2 className="w-4 h-4 shrink-0 text-green-600" aria-hidden="true" />
                   )}

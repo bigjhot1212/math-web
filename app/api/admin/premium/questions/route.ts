@@ -28,8 +28,9 @@ function toRow(item: IncomingQuestion): { row: Record<string, unknown> } | { rea
   if (!answer) return { reason: 'ไม่มีคำตอบ answer' }
   if (type === 'multiple-choice') {
     const choices = content.choices
+    // a four-choice question leaves e as an empty string
     if (!choices || CHOICE_KEYS.some((key) => typeof choices[key] !== 'string')) return { reason: 'ตัวเลือก a–e ไม่ครบ' }
-    if (!CHOICE_KEYS.includes(answer as (typeof CHOICE_KEYS)[number])) return { reason: 'answer ต้องเป็น a–e' }
+    if (!CHOICE_KEYS.includes(answer as (typeof CHOICE_KEYS)[number]) || !choices[answer]) return { reason: 'answer ต้องเป็น a–e ที่มีตัวเลือก' }
   }
 
   const year = Number(item.exam_year)

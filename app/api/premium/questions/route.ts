@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { hasPremiumAccess } from '@/lib/premium-access'
-import { PREMIUM_QUESTION_COLUMNS, PREMIUM_SESSION_LIMIT, toPracticeQuestion, type PremiumQuestionRow } from '@/lib/premium-questions'
+import { PREMIUM_BUCKET, PREMIUM_IMAGE_TTL_SECONDS, PREMIUM_QUESTION_COLUMNS, PREMIUM_SESSION_LIMIT, toPracticeQuestion, type PremiumQuestionRow } from '@/lib/premium-questions'
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
   const topic = searchParams.get('topic')
   const offset = Math.max(0, Number(searchParams.get('offset')) || 0)
 
-  let query = createAdminClient()
+  const admin = createAdminClient()
+  let query = admin
     .from('premium_questions')
     .select(PREMIUM_QUESTION_COLUMNS)
     .eq('published', true)
@@ -38,5 +39,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to load questions' }, { status: 500 })
   }
 
-  return NextResponse.json({ questions: ((data ?? []) as PremiumQuestionRow[]).map(toPracticeQuestion) })
+  const rows = (data ?? []) as PremiumQuestionRow[]
+  // Question images live in the private "premium" bucket; hand out short-lived links only
+  const paths = rows.map(row => row.content.image).filter((image): image is string => !!image && !/^(https?:|data:)/.test(image))
+  if (paths.length) {
+    const { data: signed, error: signError } = await admin.storage.from(PREMIUM_BUCKET).createSignedUrls(paths, PREMIUM_IMAGE_TTL_SECONDS)
+    if (signError) console.error('Failed to sign premium images', signError)
+    const urls = new Map((signed ?? []).map(item => [item.path, item.signedUrl]))
+    for (const row of rows) {
+      if (row.content.image && urls.has(row.content.image)) row.content = { ...row.content, image: urls.get(row.content.image)! }
+    }
+  }
+
+  return NextResponse.json({ questions: rows.map(toPracticeQuestion) })
 }
