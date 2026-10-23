@@ -215,6 +215,12 @@ export default function ExamRoomPage() {
               {renderText(q.content.text)}
             </div>
 
+            <Scratchpad
+              key={`exam-${examId}-${q.id}`}
+              storageKey={`exam:${examId}:${q.id}`}
+              title={`กระดาษทด · ข้อ ${current + 1}`}
+            />
+
             {q.content.choices && (
               <div className="flex flex-col gap-3">
                 {Object.entries(q.content.choices).map(([key, value]) => {
@@ -287,12 +293,6 @@ export default function ExamRoomPage() {
           </div>
         </main>
       </div>
-
-      <Scratchpad
-        key={`exam-${examId}-${q.id}`}
-        storageKey={`exam:${examId}:${q.id}`}
-        title={`กระดาษทด · ข้อ ${current + 1}`}
-      />
 
       {/* Mobile question nav */}
       <div className="md:hidden border-t border-border bg-background p-3 overflow-x-auto">

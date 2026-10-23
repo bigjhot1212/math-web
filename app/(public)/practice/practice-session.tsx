@@ -257,6 +257,12 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           {renderText(q.content.text)}
         </div>
 
+        <Scratchpad
+          key={`practice-${q.id}`}
+          storageKey={`practice:${q.id}`}
+          title={`กระดาษทด · ข้อ ${current + 1}`}
+        />
+
         {showHint && (
           <div className="mb-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start gap-2.5 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200">
             <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
@@ -431,13 +437,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
             </button>
           )}
         </div>
-
       </div>
-      <Scratchpad
-        key={`practice-${q.id}`}
-        storageKey={`practice:${q.id}`}
-        title={`กระดาษทด · ข้อ ${current + 1}`}
-      />
     </main>
   )
 }

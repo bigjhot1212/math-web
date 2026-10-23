@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import {
   Check,
   Eraser,
@@ -51,6 +51,7 @@ function isStroke(value: unknown): value is Stroke {
 }
 
 export default function Scratchpad({ storageKey, title }: Props) {
+  const panelId = useId()
   const [open, setOpen] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
   const [tool, setTool] = useState<Tool>('pen')
@@ -107,6 +108,15 @@ export default function Scratchpad({ storageKey, title }: Props) {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [open])
+
+  useEffect(() => {
+    if (!fullscreen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [fullscreen])
 
   function closeScratchpad() {
     setOpen(false)
@@ -265,17 +275,19 @@ export default function Scratchpad({ storageKey, title }: Props) {
       <button
         type="button"
         className={styles.launcher}
-        onClick={() => setOpen(true)}
-        aria-label="เปิดกระดาษทด"
+        onClick={() => open ? closeScratchpad() : setOpen(true)}
+        aria-label={open ? 'ซ่อนกระดาษทด' : 'เปิดกระดาษทด'}
         aria-expanded={open}
+        aria-controls={panelId}
       >
         <PenLine aria-hidden="true" />
-        <span>กระดาษทด</span>
+        <span>{open ? 'ซ่อนกระดาษทด' : 'เปิดกระดาษทด'}</span>
         {strokes.length > 0 && <span className={styles.savedDot} aria-label="มีรอยทดที่บันทึกไว้" />}
       </button>
 
       {open && (
         <aside
+          id={panelId}
           className={`${styles.drawer} ${fullscreen ? styles.fullscreen : ''}`}
           aria-label={title}
         >
