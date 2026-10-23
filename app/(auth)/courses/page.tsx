@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowRight, BookOpen, CheckCircle2, Clock3, PlayCircle, Sparkles } from 'lucide-react'
+import { claimCourseInvites } from '@/lib/course-invites'
 import { createClient } from '@/lib/supabase/server'
 import { BUNDLES, COURSES } from '@/content/course-videos'
 
@@ -34,6 +35,7 @@ export default async function CoursesPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login?next=/courses')
+  await claimCourseInvites(user)
 
   const [{ data: purchaseRows }, { data: subscription }, { data: pendingRows }] = await Promise.all([
     supabase
