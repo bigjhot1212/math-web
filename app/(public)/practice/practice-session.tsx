@@ -353,13 +353,23 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         {showSolution && (
           <div className="mb-6 p-4 rounded-2xl border border-border bg-muted/30">
             <p className="font-medium text-sm mb-3">วิธีทำ</p>
-            {q.solution.steps.map((step, i) => (
+            {q.solution.steps.map((step, i) => {
+              // "[[img:url]]" is a figure that helps explain the solution
+              const figure = step.match(/^\[\[img:(.+)\]\]$/)?.[1]
+              if (figure) {
+                return (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={i} src={figure} alt="รูปประกอบวิธีทำ" className="my-3 w-full max-w-md rounded-xl border border-border bg-white" />
+                )
+              }
+              return (
               <p key={i} className="text-sm text-muted-foreground mb-2 leading-relaxed">
                 {/* solutions written with their own headings are not numbered again */}
                 {!q.solution.steps.some(item => item.startsWith('**')) && `${i + 1}. `}
                 {renderText(step)}
               </p>
-            ))}
+              )
+            })}
           </div>
         )}
 

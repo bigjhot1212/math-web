@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { hasPremiumAccess } from '@/lib/premium-access'
-import { PREMIUM_BUCKET, PREMIUM_IMAGE_TTL_SECONDS, PREMIUM_QUESTION_COLUMNS, PREMIUM_SESSION_LIMIT, toPracticeQuestion, type PremiumQuestionRow } from '@/lib/premium-questions'
+import { PREMIUM_BUCKET, PREMIUM_IMAGE_TTL_SECONDS, PREMIUM_QUESTION_COLUMNS, PREMIUM_SESSION_LIMIT, SOLUTION_IMAGE_STEP, toPracticeQuestion, type PremiumQuestionRow } from '@/lib/premium-questions'
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
@@ -40,14 +40,33 @@ export async function GET(request: NextRequest) {
   }
 
   const rows = (data ?? []) as PremiumQuestionRow[]
-  // Question images live in the private "premium" bucket; hand out short-lived links only
-  const paths = rows.map(row => row.content.image).filter((image): image is string => !!image && !/^(https?:|data:)/.test(image))
-  if (paths.length) {
-    const { data: signed, error: signError } = await admin.storage.from(PREMIUM_BUCKET).createSignedUrls(paths, PREMIUM_IMAGE_TTL_SECONDS)
+  // Question images and solution figures live in the private "premium" bucket; hand out
+  // short-lived links only
+  const isStoragePath = (path: string) => !/^(https?:|data:)/.test(path)
+  const figurePath = (step: string) => step.match(SOLUTION_IMAGE_STEP)?.[1]
+  const paths = new Set<string>()
+  for (const row of rows) {
+    if (row.content.image && isStoragePath(row.content.image)) paths.add(row.content.image)
+    for (const step of row.solution?.steps ?? []) {
+      const path = figurePath(step)
+      if (path && isStoragePath(path)) paths.add(path)
+    }
+  }
+  if (paths.size) {
+    const { data: signed, error: signError } = await admin.storage.from(PREMIUM_BUCKET).createSignedUrls([...paths], PREMIUM_IMAGE_TTL_SECONDS)
     if (signError) console.error('Failed to sign premium images', signError)
     const urls = new Map((signed ?? []).map(item => [item.path, item.signedUrl]))
     for (const row of rows) {
       if (row.content.image && urls.has(row.content.image)) row.content = { ...row.content, image: urls.get(row.content.image)! }
+      if (row.solution?.steps) {
+        row.solution = {
+          ...row.solution,
+          steps: row.solution.steps.map(step => {
+            const path = figurePath(step)
+            return path && urls.has(path) ? `[[img:${urls.get(path)}]]` : step
+          }),
+        }
+      }
     }
   }
 

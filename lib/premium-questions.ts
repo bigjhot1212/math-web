@@ -27,15 +27,9 @@ export const PREMIUM_SESSION_LIMIT = 60
 export const PREMIUM_BUCKET = 'premium'
 export const PREMIUM_IMAGE_TTL_SECONDS = 15 * 60
 
-// "PAT1 มี.ค. 2563 ข้อ 12": shown under each question so students know where it came from.
-export function premiumSourceLabel(row: Pick<PremiumQuestionRow, 'exam' | 'exam_year' | 'exam_round' | 'question_number'>) {
-  return [
-    row.exam,
-    row.exam_round,
-    row.exam_year ? String(row.exam_year) : null,
-    row.question_number ? `ข้อ ${row.question_number}` : null,
-  ].filter(Boolean).join(' ')
-}
+// A solution step that is only "[[img:path]]" shows a figure; path is inside PREMIUM_BUCKET
+// until the API swaps in a signed link.
+export const SOLUTION_IMAGE_STEP = /^\[\[img:(.+)\]\]$/
 
 export function toPracticeQuestion(row: PremiumQuestionRow): Question {
   return {
@@ -50,7 +44,7 @@ export function toPracticeQuestion(row: PremiumQuestionRow): Question {
     acceptedAnswers: row.accepted_answers ?? undefined,
     hint: row.hint,
     solution: row.solution?.steps ? row.solution : { steps: [] },
+    // no source label: the sets are shown without where each question came from
     tags: ['premium', 'past-exam'],
-    source: premiumSourceLabel(row),
   }
 }
