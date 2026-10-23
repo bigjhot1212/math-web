@@ -33,6 +33,7 @@ type Stroke = {
 type Props = {
   storageKey: string
   title: string
+  question?: React.ReactNode
 }
 
 const COLORS = ['#132d66', '#d7463e'] as const
@@ -50,7 +51,7 @@ function isStroke(value: unknown): value is Stroke {
   )
 }
 
-export default function Scratchpad({ storageKey, title }: Props) {
+export default function Scratchpad({ storageKey, title, question }: Props) {
   const panelId = useId()
   const [open, setOpen] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
@@ -316,6 +317,13 @@ export default function Scratchpad({ storageKey, title }: Props) {
               </button>
             </div>
           </header>
+
+          {fullscreen && question && (
+            <section className={styles.questionPreview} aria-label="โจทย์ข้อปัจจุบัน">
+              <p className={styles.questionLabel}>โจทย์ข้อปัจจุบัน</p>
+              <div className={styles.questionContent}>{question}</div>
+            </section>
+          )}
 
           <div className={styles.toolbar} aria-label="เครื่องมือเขียน">
             <div className={styles.toolGroup}>

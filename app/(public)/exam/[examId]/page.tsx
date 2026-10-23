@@ -219,6 +219,19 @@ export default function ExamRoomPage() {
               key={`exam-${examId}-${q.id}`}
               storageKey={`exam:${examId}:${q.id}`}
               title={`กระดาษทด · ข้อ ${current + 1}`}
+              question={(
+                <div className="space-y-3">
+                  {q.content.image && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={q.content.image}
+                      alt={`โจทย์ข้อ ${current + 1}`}
+                      className="max-h-56 max-w-full rounded-xl bg-white object-contain"
+                    />
+                  )}
+                  <div>{renderText(q.content.text)}</div>
+                </div>
+              )}
             />
 
             {q.content.choices && (
