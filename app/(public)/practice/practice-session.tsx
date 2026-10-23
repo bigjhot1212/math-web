@@ -205,7 +205,12 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
       if (part.startsWith('$') && part.endsWith('$')) {
         return <InlineMath key={i} math={formatMathForDisplay(part.slice(1, -1))} />
       }
-      return <span key={i}>{part}</span>
+      // **label** marks a heading inside worked solutions, e.g. "**ขั้นที่ 1**"
+      return part.split(/(\*\*[^*]+\*\*)/).map((piece, j) =>
+        piece.startsWith('**') && piece.endsWith('**') && piece.length > 4
+          ? <strong key={`${i}-${j}`} className="font-semibold text-foreground">{piece.slice(2, -2)}</strong>
+          : <span key={`${i}-${j}`}>{piece}</span>,
+      )
     })
   }
 
@@ -349,8 +354,10 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           <div className="mb-6 p-4 rounded-2xl border border-border bg-muted/30">
             <p className="font-medium text-sm mb-3">วิธีทำ</p>
             {q.solution.steps.map((step, i) => (
-              <p key={i} className="text-sm text-muted-foreground mb-2">
-                {i + 1}. {renderText(step)}
+              <p key={i} className="text-sm text-muted-foreground mb-2 leading-relaxed">
+                {/* solutions written with their own headings are not numbered again */}
+                {!q.solution.steps.some(item => item.startsWith('**')) && `${i + 1}. `}
+                {renderText(step)}
               </p>
             ))}
           </div>
