@@ -196,7 +196,7 @@
 .formulaBlockFocus { margin: 14px 0; border: 1px solid oklch(0.74 0.15 275 / .55); border-radius: 16px; background: oklch(0.74 0.15 275 / .06); padding: 28px 24px 32px; }
 .formulaBlockFocus + .formulaBlock { border-top: 0; }
 .formulaTitle > .examBadge { align-self: center; border-radius: 999px; background: var(--primary); color: var(--primary-foreground); font-size: 12px; font-weight: 700; padding: 3px 10px; white-space: nowrap; }
-.examFocusNote { margin-top: 12px; border-left: 3px solid var(--primary); padding: 2px 0 2px 12px; color: var(--foreground); font-size: 14px; line-height: 1.7; }
+.examFocusNote { margin-top: 12px; border: 1px solid oklch(0.74 0.15 275 / .3); border-radius: 10px; background: oklch(0.74 0.15 275 / .05); padding: 10px 12px; color: var(--foreground); font-size: 14px; line-height: 1.7; }
 .formulaTitle { display: flex; align-items: baseline; gap: 14px; }
 .formulaTitle > span { color: var(--muted-foreground); font-size: 11px; font-variant-numeric: tabular-nums; }
 .formulaTitle h3 { font-size: 20px; font-weight: 600; }
@@ -241,6 +241,17 @@
 .figAccentLabel { fill: oklch(0.82 0.14 75); font-family: var(--font-math), var(--font-body), serif; font-weight: 600; }
 .figGuideLabel { fill: oklch(0.79 0.105 230); font-family: var(--font-math), var(--font-body), serif; }
 .figAsymptoteLabel { fill: oklch(0.7 0.035 258); font-family: var(--font-body), sans-serif; }
+.figOpenDot { fill: oklch(0.185 0.04 266); stroke: var(--primary); stroke-width: 3; }
+.figOpenDotAccent { fill: oklch(0.185 0.04 266); stroke: oklch(0.82 0.14 75); stroke-width: 3; }
+.figArea { fill: oklch(0.68 0.16 265 / .18); stroke: none; }
+.figSoftFill { fill: oklch(0.79 0.105 230 / .08); stroke: oklch(0.79 0.105 230 / .55); stroke-width: 1.4; }
+.figSlice { fill: oklch(0.82 0.14 75 / .5); stroke: oklch(0.82 0.14 75); stroke-width: 1; }
+.figBox { fill: none; stroke: oklch(0.48 0.045 263); stroke-width: 1.3; }
+.figAxisLine { stroke: oklch(0.5 0.035 260); stroke-width: 1.2; }
+.figMeasure, .figMeasureAccent { fill: none; stroke: oklch(0.79 0.105 230); stroke-width: 2; stroke-linecap: round; }
+.figMeasureAccent { stroke: oklch(0.82 0.14 75); }
+.figMotion, .figMotionDown { fill: none; stroke: oklch(0.79 0.105 230); stroke-width: 2.4; stroke-linecap: round; marker-end: none; }
+.figMotionDown { stroke: oklch(0.82 0.14 75); }
 .mathMatrix { display: inline-block; margin: .2em .18em; vertical-align: middle; color: inherit; white-space: nowrap; }
 .mathMatrix :global(.katex) { color: inherit; font-size: 1em; line-height: 1.2; }
 .summation { display: inline-grid; min-width: 1.65em; grid-template-areas: 'upper' 'symbol' 'lower'; grid-template-rows: auto auto auto; place-items: center; align-self: center; margin-inline: .08em; vertical-align: middle; line-height: 1; }
