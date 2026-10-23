@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Clock3, ListChecks, Target, Flame, ShieldCheck } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, BrainCircuit, Clock3, Flame, ListChecks, ShieldCheck, Target, TrendingDown, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/payment-config'
-import { deduplicateAttempts, formatCompactDuration, formatDuration, getTopicPerformances, getValidTimes, median } from '@/lib/progress-analytics'
+import { analyzeLearningEvidence, type LearningEvidence } from '@/lib/learning-insights'
+import { deduplicateAttempts, formatCompactDuration, formatDuration, getValidTimes, median } from '@/lib/progress-analytics'
+import { getQuestionCatalog, isCorrectQuestionAnswer } from '@/lib/question-catalog'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -38,11 +40,19 @@ type ExamRow = {
   score: number
   total_questions: number
   submitted_at: string
+  question_ids: string[] | null
+  answers: Record<string, unknown> | null
 }
 
-function calculateStreak(rows: ProgressRow[]): number {
-  if (rows.length === 0) return 0
-  const dates = new Set(rows.map(r => r.answered_at?.slice(0, 10)).filter(Boolean))
+const DIFFICULTY_NAMES = {
+  easy: 'พื้นฐาน',
+  medium: 'ระดับกลาง',
+  hard: 'ระดับยาก',
+} as const
+
+function calculateStreak(activityDates: string[]): number {
+  if (activityDates.length === 0) return 0
+  const dates = new Set(activityDates.map(date => date.slice(0, 10)).filter(Boolean))
   const today = new Date()
   const todayStr = today.toISOString().slice(0, 10)
   const cursor = new Date(today)
@@ -60,18 +70,28 @@ function calculateStreak(rows: ProgressRow[]): number {
   return streak
 }
 
-function getAccuracyTrend(rows: ProgressRow[], days = 14) {
+function getAccuracyTrend(rows: LearningEvidence[], days = 14) {
   const today = new Date()
   return Array.from({ length: days }, (_, i) => {
     const d = new Date(today)
     d.setDate(today.getDate() - (days - 1 - i))
     const dateStr = d.toISOString().slice(0, 10)
-    const day = rows.filter(r => r.answered_at?.startsWith(dateStr))
+    const day = rows.filter(row => row.answeredAt.startsWith(dateStr))
     const total = day.length
-    const correct = day.filter(r => r.is_correct).length
+    const correct = day.filter(row => row.isCorrect).length
     const label = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })
     return { dateStr, label, total, accuracy: total > 0 ? Math.round((correct / total) * 100) : null }
   })
+}
+
+function getExamTrend(exams: ExamRow[]): number | null {
+  if (exams.length < 2) return null
+  const latest = exams[0].total_questions > 0 ? Math.round((exams[0].score / exams[0].total_questions) * 100) : 0
+  const previous = exams.slice(1, 4)
+  const previousAverage = Math.round(previous.reduce((sum, exam) => (
+    sum + (exam.total_questions > 0 ? (exam.score / exam.total_questions) * 100 : 0)
+  ), 0) / previous.length)
+  return latest - previousAverage
 }
 
 export default async function DashboardPage() {
@@ -87,37 +107,77 @@ export default async function DashboardPage() {
       .order('answered_at', { ascending: true }),
     supabase
       .from('exam_sessions')
-      .select('id, exam_type, score, total_questions, submitted_at')
+      .select('id, exam_type, score, total_questions, submitted_at, question_ids, answers')
       .eq('user_id', user.id)
       .not('submitted_at', 'is', null)
       .order('submitted_at', { ascending: false })
-      .limit(5),
+      .limit(20),
   ])
 
   const progress = deduplicateAttempts((progressRows ?? []) as ProgressRow[])
-  const exams: ExamRow[] = examRows ?? []
+  const exams = (examRows ?? []) as ExamRow[]
+  const questionCatalog = getQuestionCatalog()
+  const practiceEvidence: LearningEvidence[] = progress.map(row => {
+    const question = questionCatalog.get(row.question_id)
+    return {
+      topicId: row.topic_id,
+      questionId: row.question_id,
+      isCorrect: row.is_correct,
+      source: 'practice',
+      answeredAt: row.answered_at,
+      timeSpentSeconds: row.time_spent_seconds,
+      difficulty: question?.difficulty,
+    }
+  })
+  const examEvidence: LearningEvidence[] = exams.flatMap(exam => (exam.question_ids ?? []).flatMap(questionId => {
+    const question = questionCatalog.get(questionId)
+    if (!question) return []
+    return [{
+      topicId: question.topicId,
+      questionId: `${exam.id}:${questionId}`,
+      isCorrect: isCorrectQuestionAnswer(question, exam.answers?.[questionId]),
+      source: 'exam' as const,
+      answeredAt: exam.submitted_at,
+      timeSpentSeconds: null,
+      difficulty: question.difficulty,
+    }]
+  }))
+  const evidence = [...practiceEvidence, ...examEvidence]
+  const insights = analyzeLearningEvidence(evidence)
+  const analyzedTopics = insights.filter(topic => topic.total >= 5).length
+  const primaryFocus = insights.find(topic => topic.status === 'focus')
+    ?? insights.find(topic => topic.status === 'developing')
+    ?? insights.find(topic => topic.status === 'collecting')
+    ?? insights[0]
 
-  const totalAnswered = progress.length
-  const totalCorrect = progress.filter(p => p.is_correct).length
+  const totalAnswered = evidence.length
+  const totalCorrect = evidence.filter(item => item.isCorrect).length
   const overallAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
-  const streak = calculateStreak(progress)
-  const trend = getAccuracyTrend(progress, 14)
+  const streak = calculateStreak(evidence.map(item => item.answeredAt))
+  const trend = getAccuracyTrend(evidence, 14)
   const overallMedianSeconds = median(getValidTimes(progress))
-  const topicStats = getTopicPerformances(progress).filter(topic => topic.total >= 2)
-  const weakTopics = topicStats
-    .filter(topic => topic.status !== 'strong' && topic.status !== 'collecting')
-    .sort((a, b) => a.priority - b.priority || a.accuracy - b.accuracy)
+  const weakTopics = insights
+    .filter(topic => topic.status === 'focus' || topic.status === 'developing')
     .slice(0, 5)
-  const strongTopics = topicStats
+  const strongTopics = insights
     .filter(topic => topic.status === 'strong')
     .sort((a, b) => b.accuracy - a.accuracy || (a.medianSeconds ?? Infinity) - (b.medianSeconds ?? Infinity))
     .slice(0, 3)
+  const examTrend = getExamTrend(exams)
+  const latestExam = exams[0]
+  const latestExamAccuracy = latestExam?.total_questions > 0
+    ? Math.round((latestExam.score / latestExam.total_questions) * 100)
+    : null
 
   const displayName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'คุณ'
+  const focusName = primaryFocus ? TOPIC_NAMES[primaryFocus.topicId] ?? primaryFocus.topicId : null
+  const focusDifficulty = primaryFocus?.weakestDifficulty
+    ? DIFFICULTY_NAMES[primaryFocus.weakestDifficulty]
+    : null
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-10">
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-5xl">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
@@ -158,7 +218,7 @@ export default async function DashboardPage() {
             </span>
             <p className="text-xs text-muted-foreground mb-1">โจทย์ทั้งหมด</p>
             <p className="text-3xl font-heading font-bold text-foreground tabular-nums">{totalAnswered}</p>
-            <p className="text-xs text-muted-foreground mt-1">ข้อที่ทำแล้ว</p>
+            <p className="text-xs text-muted-foreground mt-1">แบบฝึกและข้อสอบรวมกัน</p>
           </div>
           <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
             <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
@@ -189,6 +249,130 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted-foreground mt-1">ค่ามัธยฐานของเวลาที่ทำจริง</p>
           </div>
         </div>
+
+        <section className="mb-8 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+          <header className="flex flex-col gap-4 border-b border-border p-5 sm:flex-row sm:items-start sm:justify-between md:p-6">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-2.5">
+                <BrainCircuit className="size-5 text-primary" aria-hidden="true" />
+                <h2 className="font-heading text-lg font-semibold text-foreground">วิเคราะห์เพื่อพัฒนาต่อ</h2>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                รวมผลจากแบบฝึกหัด {practiceEvidence.length} ข้อ และข้อสอบ {examEvidence.length} ข้อ เพื่อหาเรื่องที่ควรลงมือฝึกต่อจริง ๆ
+              </p>
+            </div>
+            <span className="w-fit rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary tabular-nums">
+              วิเคราะห์ได้ {analyzedTopics}/14 บท
+            </span>
+          </header>
+
+          {primaryFocus && focusName ? (
+            <>
+              <div className="grid md:grid-cols-[1.15fr_.85fr]">
+                <div className="p-5 md:p-6 md:pr-8">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      primaryFocus.status === 'focus'
+                        ? 'bg-red-500/10 text-red-600'
+                        : primaryFocus.status === 'developing'
+                          ? 'bg-amber-500/10 text-amber-600'
+                          : primaryFocus.status === 'strong'
+                            ? 'bg-green-500/10 text-green-600'
+                            : 'bg-muted text-muted-foreground'
+                    }`}>
+                      {primaryFocus.statusLabel}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{primaryFocus.confidenceLabel}</span>
+                  </div>
+                  <h3 className="mt-4 font-heading text-xl font-semibold text-foreground">
+                    เริ่มพัฒนาที่ “{focusName}”
+                  </h3>
+                  <p className="mt-2 max-w-[65ch] text-sm leading-6 text-muted-foreground">
+                    ทำถูก {primaryFocus.correct} จาก {primaryFocus.total} ข้อ ({primaryFocus.accuracy}%)
+                    {focusDifficulty && primaryFocus.weakestDifficultyAccuracy !== null
+                      ? ` โดยโจทย์${focusDifficulty}ยังทำได้ ${primaryFocus.weakestDifficultyAccuracy}%`
+                      : ''}
+                    {primaryFocus.trendDelta !== null
+                      ? primaryFocus.trendDelta >= 0
+                        ? ` และ 5 ข้อล่าสุดดีขึ้น ${primaryFocus.trendDelta} จุดเปอร์เซ็นต์`
+                        : ` แต่ 5 ข้อล่าสุดลดลง ${Math.abs(primaryFocus.trendDelta)} จุดเปอร์เซ็นต์`
+                      : ''}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground tabular-nums">
+                    <span>แบบฝึก {primaryFocus.practiceTotal} ข้อ</span>
+                    <span>ข้อสอบ {primaryFocus.examTotal} ข้อ</span>
+                    <span>เวลามัธยฐาน {formatDuration(primaryFocus.medianSeconds)}</span>
+                  </div>
+                  <Link
+                    href={`/practice/${primaryFocus.topicId}`}
+                    className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
+                  >
+                    ฝึกบทนี้ต่อ
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </Link>
+                </div>
+
+                <div className="border-t border-border bg-muted/30 p-5 md:border-l md:border-t-0 md:p-6">
+                  <h3 className="font-heading text-base font-semibold text-foreground">แผนฝึกรอบถัดไป</h3>
+                  <ol className="mt-4 space-y-4">
+                    <li className="grid grid-cols-[1.75rem_1fr] gap-3 text-sm leading-6 text-muted-foreground">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-background font-semibold text-foreground tabular-nums">1</span>
+                      <span>ทบทวนสูตรและตัวอย่างของบทนี้ โดยเน้น{focusDifficulty ? `โจทย์${focusDifficulty}` : 'จุดที่ตอบผิดล่าสุด'}</span>
+                    </li>
+                    <li className="grid grid-cols-[1.75rem_1fr] gap-3 text-sm leading-6 text-muted-foreground">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-background font-semibold text-foreground tabular-nums">2</span>
+                      <span>ทำเพิ่มอย่างน้อย 5 ข้อ และอ่านเฉลยทุกข้อที่ผิดก่อนข้าม</span>
+                    </li>
+                    <li className="grid grid-cols-[1.75rem_1fr] gap-3 text-sm leading-6 text-muted-foreground">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-background font-semibold text-foreground tabular-nums">3</span>
+                      <span>{primaryFocus.examTotal > 0 ? 'กลับไปลองข้อสอบจับเวลา แล้วเทียบผลรอบใหม่' : 'ลองแบบทดสอบพื้นฐาน เพื่อเช็กว่านำไปใช้ในข้อสอบได้หรือยัง'}</span>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+
+              <dl className="grid divide-y divide-border border-t border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                <div className="p-4 md:px-6">
+                  <dt className="text-xs text-muted-foreground">แนวโน้มของบทนี้</dt>
+                  <dd className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-foreground">
+                    {primaryFocus.trendDelta === null ? (
+                      'รอข้อมูลอีกเล็กน้อย'
+                    ) : primaryFocus.trendDelta >= 0 ? (
+                      <><TrendingUp className="size-4 text-green-600" aria-hidden="true" /> ดีขึ้น {primaryFocus.trendDelta} จุด</>
+                    ) : (
+                      <><TrendingDown className="size-4 text-red-500" aria-hidden="true" /> ลดลง {Math.abs(primaryFocus.trendDelta)} จุด</>
+                    )}
+                  </dd>
+                </div>
+                <div className="p-4 md:px-6">
+                  <dt className="text-xs text-muted-foreground">ข้อสอบล่าสุด</dt>
+                  <dd className="mt-1 text-sm font-semibold text-foreground tabular-nums">
+                    {latestExamAccuracy === null ? 'ยังไม่มีผลสอบ' : `${latestExamAccuracy}%`}
+                    {examTrend !== null
+                      ? examTrend >= 0
+                        ? ` · ดีขึ้น ${examTrend} จุด`
+                        : ` · ลดลง ${Math.abs(examTrend)} จุด`
+                      : ''}
+                  </dd>
+                </div>
+                <div className="p-4 md:px-6">
+                  <dt className="text-xs text-muted-foreground">หลักฐานที่ใช้</dt>
+                  <dd className="mt-1 text-sm font-semibold text-foreground tabular-nums">{primaryFocus.total} ข้อในบทนี้</dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <div className="flex flex-col items-start gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="font-heading text-base font-semibold text-foreground">เริ่มทำข้อแรกเพื่อให้ระบบรู้จักคุณ</h3>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">เมื่อมีข้อมูลอย่างน้อย 5 ข้อในหนึ่งบท ระบบจะเริ่มแนะนำแนวทางที่เหมาะกับผลจริง</p>
+              </div>
+              <Link href="/practice" className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                เริ่มฝึกโจทย์ <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            </div>
+          )}
+        </section>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           {/* Accuracy trend */}
@@ -229,7 +413,7 @@ export default async function DashboardPage() {
           {/* Weak topics */}
           <div style={{ animationDelay: '80ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
             <h2 className="text-sm font-semibold text-foreground mb-1">หัวข้อที่ควรฝึกต่อ</h2>
-            <p className="mb-4 text-xs text-muted-foreground">วิเคราะห์ร่วมกันจากความถูกต้องและเวลาต่อข้อ</p>
+            <p className="mb-4 text-xs text-muted-foreground">รวมคำตอบจากแบบฝึกหัดและข้อสอบ</p>
             {weakTopics.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 {totalAnswered === 0
@@ -246,7 +430,7 @@ export default async function DashboardPage() {
                   >
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm text-foreground group-hover:text-primary transition-colors">{TOPIC_NAMES[t.topicId] ?? t.topicId}</span>
-                      <span className="mt-0.5 block text-xs text-muted-foreground">{t.statusLabel}</span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">{t.statusLabel} · {t.confidenceLabel}</span>
                     </span>
                     <span className="shrink-0 text-right text-xs text-muted-foreground">
                       <span className="block font-semibold tabular-nums text-foreground">{t.accuracy}%</span>
@@ -272,7 +456,7 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                {exams.map(exam => {
+                {exams.slice(0, 5).map(exam => {
                   const pct = exam.total_questions > 0
                     ? Math.round((exam.score / exam.total_questions) * 100)
                     : 0
@@ -308,8 +492,11 @@ export default async function DashboardPage() {
 
           {/* Strong topics */}
           <div style={{ animationDelay: '200ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
-            <h2 className="text-sm font-semibold text-foreground mb-1">หัวข้อที่ทำได้ดี</h2>
-            <p className="mb-4 text-xs text-muted-foreground">แม่นอย่างน้อย 80% และใช้เวลาไม่เกิน 3 นาทีต่อข้อ</p>
+            <div className="flex items-center gap-2">
+              <BookOpenCheck className="size-4 text-green-600" aria-hidden="true" />
+              <h2 className="text-sm font-semibold text-foreground">หัวข้อที่ทำได้ดี</h2>
+            </div>
+            <p className="mb-4 mt-1 text-xs text-muted-foreground">แม่นอย่างน้อย 80% จากข้อมูลรวม</p>
             {strongTopics.length === 0 ? (
               <p className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</p>
             ) : (
