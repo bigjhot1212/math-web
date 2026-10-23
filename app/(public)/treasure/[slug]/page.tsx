@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Chec
 import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/content/treasure'
 import FormulaFlashcards from './formula-flashcards'
 import CalculusCoreGuide from './calculus-core-guide'
+import UnitCircleGuide from './unit-circle-guide'
 import { getFormulaLineLabels } from './formula-line-labels'
 import { FORMULA_FIGURES } from './formula-figures'
 import MathExpression, { MathText } from './math-expression'
@@ -78,6 +79,7 @@ export default async function TreasureArticlePage({ params }: Props) {
   const next = TREASURE_RESOURCES[(currentIndex + 1) % TREASURE_RESOURCES.length]
   const sections = [
     ['overview', 'ภาพรวม'],
+    ...(resource.slug === 'trigonometry-formula-guide' ? [['unit-circle', 'วงกลมหนึ่งหน่วย']] : []),
     ...(resource.slug === 'calculus-formula-guide' ? [['calculus-core', 'พื้นฐานแคลคูลัส']] : []),
     ['formulas', 'สูตรสำคัญ'],
     ['flashcards', 'Flash Cards'],
@@ -123,6 +125,7 @@ export default async function TreasureArticlePage({ params }: Props) {
             </section>
 
             {resource.slug === 'calculus-formula-guide' && <CalculusCoreGuide />}
+            {resource.slug === 'trigonometry-formula-guide' && <UnitCircleGuide />}
 
             <section id="formulas">
               <div className={styles.sectionHeading}><span className={styles.mathIcon}>ƒ</span><div><span>จำความหมายก่อนแทนค่า</span><h2>สูตรและแนวคิดสำคัญ</h2></div></div>
