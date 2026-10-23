@@ -33,6 +33,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
     runningSince: null,
   })
   const savedQuestionsRef = useRef(new Set<string>())
+  const refreshedImagesRef = useRef(new Set<string>())
 
   useEffect(() => {
     fetch(questionsUrl)
@@ -51,6 +52,10 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         if (!data) return
         setQuestions(data.questions)
         setLoading(false)
+        // Image links are short-lived; fetch them all now so later questions still show
+        for (const question of data.questions as Question[]) {
+          if (question.content.image) new Image().src = question.content.image
+        }
       })
   }, [questionsUrl, returnPath, lockedPath])
 
@@ -180,6 +185,20 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
     void saveProgress(q, answerIsCorrect, showHint)
   }
 
+  // An expired image link: ask the API for fresh links once and swap in this question's image
+  function refreshImage(questionId: string) {
+    if (refreshedImagesRef.current.has(questionId)) return
+    refreshedImagesRef.current.add(questionId)
+    fetch(questionsUrl)
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        const fresh = (data?.questions as Question[] | undefined)?.find(item => item.id === questionId)
+        if (!fresh?.content.image) return
+        setQuestions(items => items.map(item => (item.id === questionId ? { ...item, content: { ...item.content, image: fresh.content.image } } : item)))
+      })
+      .catch(error => console.error('Unable to refresh question image', error))
+  }
+
   function renderText(text: string) {
     const parts = text.split(/(\$[^$]+\$)/)
     return parts.map((part, i) => {
@@ -225,6 +244,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
             src={q.content.image}
             alt={`โจทย์ข้อ ${current + 1}`}
             className="mb-4 w-full rounded-2xl border border-border bg-white p-2 sm:p-3"
+            onError={() => refreshImage(q.id)}
           />
         )}
         <div className="mb-6 text-lg leading-relaxed">
