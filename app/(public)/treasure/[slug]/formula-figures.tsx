@@ -52,6 +52,28 @@ function Segment({ plane, from, to, className }: { plane: Plane; from: Point; to
   return <line className={className} x1={plane.x(from[0])} y1={plane.y(from[1])} x2={plane.x(to[0])} y2={plane.y(to[1])} />
 }
 
+function ArrowSegment({ plane, from, to }: { plane: Plane; from: Point; to: Point }) {
+  const x1 = plane.x(from[0])
+  const y1 = plane.y(from[1])
+  const x2 = plane.x(to[0])
+  const y2 = plane.y(to[1])
+  const angle = Math.atan2(y2 - y1, x2 - x1)
+  const headLength = 13
+  const headWidth = 6.5
+  const baseX = x2 - Math.cos(angle) * headLength
+  const baseY = y2 - Math.sin(angle) * headLength
+  const normalX = -Math.sin(angle) * headWidth
+  const normalY = Math.cos(angle) * headWidth
+  const points = `${x2},${y2} ${baseX + normalX},${baseY + normalY} ${baseX - normalX},${baseY - normalY}`
+
+  return (
+    <g>
+      <line className={styles.figMotion} x1={x1} y1={y1} x2={x2} y2={y2} />
+      <polygon className={styles.figArrowHead} points={points} />
+    </g>
+  )
+}
+
 function Dot({ plane, at, className = styles.figDot }: { plane: Plane; at: Point; className?: string }) {
   return <circle className={className} cx={plane.x(at[0])} cy={plane.y(at[1])} r={4.5} />
 }
@@ -320,8 +342,10 @@ function limitMeaningFigure() {
       <Label plane={p} at={[a, limit]} dx={14} dy={5} anchor="start" className={styles.figMainLabel}>L</Label>
       <Label plane={p} at={[a, 3.75]} dx={14} dy={5} anchor="start" className={styles.figAccentLabel}>f(a)</Label>
       <Label plane={p} at={[a, 0]} dy={20}>a</Label>
-      <path className={styles.figMotion} d={`M${p.at([-0.9, curve(-0.9)])}L${p.at([0.35, curve(0.35)])}`} />
-      <path className={styles.figMotion} d={`M${p.at([2.9, curve(2.9)])}L${p.at([1.65, curve(1.65)])}`} />
+      <ArrowSegment plane={p} from={[-1.05, curve(-1.05)]} to={[0.55, curve(0.55)]} />
+      <ArrowSegment plane={p} from={[3.05, curve(3.05)]} to={[1.45, curve(1.45)]} />
+      <Label plane={p} at={[-0.25, curve(-0.25)]} dy={-18} className={styles.figGuideLabel}>x → a⁻</Label>
+      <Label plane={p} at={[2.25, curve(2.25)]} dy={-18} className={styles.figGuideLabel}>x → a⁺</Label>
     </Figure>
   )
 }
