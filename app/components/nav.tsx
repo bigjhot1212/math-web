@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import UserMenu from './user-menu'
 import CartIcon from './cart-icon'
-import { BookMarked } from 'lucide-react'
+import { BookMarked, Crown } from 'lucide-react'
 import BrandMark from './brand-mark'
 import { BRAND_NAME } from '@/lib/brand'
 
@@ -37,9 +37,16 @@ export default async function Nav() {
               {label}
             </Link>
           ))}
+          <Link href="/premium" className="inline-flex items-center gap-1.5 rounded-xl bg-amber-400 px-3.5 py-2 text-sm font-semibold text-amber-950 shadow-sm shadow-amber-500/30 transition-colors hover:bg-amber-300 cursor-pointer">
+            <Crown className="size-4" aria-hidden="true" />
+            Premium
+          </Link>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
+          <Link href="/premium" className="flex size-11 items-center justify-center rounded-xl text-amber-500 transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden" aria-label="ข้อสอบพรีเมียม">
+            <Crown className="size-5" />
+          </Link>
           <Link href="/treasure" className="flex size-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden" aria-label="ขุมทรัพย์">
             <BookMarked className="size-5" />
           </Link>

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import { Dice5, Search } from 'lucide-react'
+import { Crown, Dice5, Search } from 'lucide-react'
 import styles from './practice.module.css'
 import { formatMathForDisplay } from '@/lib/format-math'
 import 'katex/dist/katex.min.css'
@@ -198,13 +198,36 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
 
         <Link
           href="/premium"
-          className="flex flex-col gap-1 rounded-2xl border border-primary/40 bg-primary/[0.07] px-5 py-4 transition-colors hover:border-primary/75 sm:flex-row sm:items-center sm:justify-between"
+          className="group relative overflow-hidden rounded-3xl border border-amber-400/70 bg-gradient-to-br from-amber-50 via-amber-100 to-orange-100 px-6 py-6 shadow-[0_18px_42px_-26px_rgb(180_120_0/0.7)] transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-amber-500/50 dark:from-[oklch(0.27_0.06_75)] dark:via-[oklch(0.22_0.05_65)] dark:to-[oklch(0.19_0.04_50)] sm:px-8"
         >
-          <span>
-            <span className="mr-2 rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">Premium</span>
-            <span className="text-sm font-semibold text-foreground">ฝึกข้อสอบเก่าที่หาได้ยาก พร้อมเฉลยละเอียด</span>
-          </span>
-          <span className="text-sm font-semibold text-primary">สำหรับนักเรียนที่ซื้อคอร์ส →</span>
+          <Crown
+            className="pointer-events-none absolute -right-6 -top-8 h-44 w-44 rotate-12 text-amber-400/25 dark:text-amber-300/10"
+            aria-hidden="true"
+          />
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold tracking-wide text-amber-950">
+                <Crown className="h-3.5 w-3.5" aria-hidden="true" />
+                PREMIUM · สำหรับนักเรียนที่ซื้อคอร์ส
+              </p>
+              <h2 className="text-xl font-semibold leading-snug text-amber-950 dark:text-amber-50 sm:text-2xl">
+                ชุดข้อสอบพรีเมียม A-Level พร้อมเฉลยละเอียดทุกข้อ
+              </h2>
+              <p className="mt-1.5 text-sm leading-6 text-amber-900/80 dark:text-amber-100/75">
+                ข้อสอบเก่าที่หาได้ยาก จัดเป็นชุดละ 30 ข้อตามโครงสร้าง A-Level คณิต 1 ทำเสร็จแล้วดูวิธีทำได้ทันที
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {['ชุดละ 30 ข้อ', 'ปรนัย 25 + อัตนัย 5', 'เฉลยแสดงวิธีทำ'].map((label) => (
+                  <span key={label} className="rounded-full border border-amber-500/40 bg-white/60 px-3 py-1 text-xs font-semibold text-amber-900 dark:bg-white/[.06] dark:text-amber-100">
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <span className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-amber-500 px-6 py-3 text-sm font-bold text-amber-950 shadow-sm transition-colors group-hover:bg-amber-400">
+              เข้าคลังข้อสอบพรีเมียม →
+            </span>
+          </div>
         </Link>
 
         <section className={`grid gap-5 ${continueTopic ? 'lg:grid-cols-[1fr_1.15fr]' : 'grid-cols-1'}`} aria-label="เริ่มฝึกอย่างรวดเร็ว">
