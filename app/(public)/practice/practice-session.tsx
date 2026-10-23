@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { Lightbulb, CheckCircle2, XCircle, ArrowLeft, ArrowRight, LogOut, SkipForward } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import { formatMathForDisplay } from '@/lib/format-math'
+import Scratchpad from '@/app/components/scratchpad'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
@@ -432,6 +433,11 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         </div>
 
       </div>
+      <Scratchpad
+        key={`practice-${q.id}`}
+        storageKey={`practice:${q.id}`}
+        title={`กระดาษทด · ข้อ ${current + 1}`}
+      />
     </main>
   )
 }

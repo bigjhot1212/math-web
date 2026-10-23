@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Check, ExternalLink, KeyRound, Lightbulb, ListChecks, Target } from 'lucide-react'
 import { getTreasureResource, TREASURE_ALIASES, TREASURE_RESOURCES } from '@/content/treasure'
 import FormulaFlashcards from './formula-flashcards'
+import FormulaTopics from './formula-topics'
 import CalculusCoreGuide from './calculus-core-guide'
 import UnitCircleGuide from './unit-circle-guide'
 import { getFormulaLineLabels } from './formula-line-labels'
@@ -129,9 +130,13 @@ export default async function TreasureArticlePage({ params }: Props) {
 
             <section id="formulas">
               <div className={styles.sectionHeading}><span className={styles.mathIcon}>ƒ</span><div><span>จำความหมายก่อนแทนค่า</span><h2>สูตรและแนวคิดสำคัญ</h2></div></div>
-              <div className={styles.formulaList}>{resource.formulas.map((formula, index) => (
-                <div className={formula.examFocus ? `${styles.formulaBlock} ${styles.formulaBlockFocus}` : styles.formulaBlock} key={formula.name}>
-                  <div className={styles.formulaTitle}><span>{String(index + 1).padStart(2, '0')}</span><h3>{formula.name}</h3>{formula.examFocus && <strong className={styles.examBadge}>ออกสอบบ่อย</strong>}</div>
+              <FormulaTopics topics={resource.formulas.map((formula, index) => ({
+                id: `formula-${index + 1}`,
+                number: String(index + 1).padStart(2, '0'),
+                title: formula.name,
+                preview: <MathText value={formula.meaning} />,
+                examFocus: formula.examFocus,
+                content: <>
                   {formula.examFocus && <p className={styles.examFocusNote}><MathText value={formula.examFocus} /></p>}
                   <div className={styles.formulaContext}>
                     <p><span>สูตรนี้คืออะไร</span><MathText value={formula.meaning} /></p>
@@ -177,8 +182,8 @@ export default async function TreasureArticlePage({ params }: Props) {
                     <p><AlertTriangle aria-hidden="true" /> <span><strong>ระวัง</strong><MathText value={formula.caution} /></span></p>
                     <p><Lightbulb aria-hidden="true" /> <span><strong>พลาดบ่อย</strong><MathText value={formula.mistakes} /></span></p>
                   </div>
-                </div>
-              ))}</div>
+                </>,
+              }))} />
             </section>
 
             <section id="flashcards">

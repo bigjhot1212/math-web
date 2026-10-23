@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import { ArrowLeft, ArrowRight, LogOut } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import { formatMathForDisplay } from '@/lib/format-math'
+import Scratchpad from '@/app/components/scratchpad'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
@@ -286,6 +287,12 @@ export default function ExamRoomPage() {
           </div>
         </main>
       </div>
+
+      <Scratchpad
+        key={`exam-${examId}-${q.id}`}
+        storageKey={`exam:${examId}:${q.id}`}
+        title={`กระดาษทด · ข้อ ${current + 1}`}
+      />
 
       {/* Mobile question nav */}
       <div className="md:hidden border-t border-border bg-background p-3 overflow-x-auto">
