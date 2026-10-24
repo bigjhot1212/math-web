@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import PracticeSession from '../../practice/practice-session'
 
 export const metadata: Metadata = {
-  title: 'ฝึกข้อสอบเก่า | Math Hunters Premium',
+  title: 'แบบฝึกหัดรวมบท | Math Hunters Premium',
 }
 
 type SearchParams = Promise<{ exam?: string; year?: string; topic?: string }>
@@ -21,7 +21,7 @@ export default async function PremiumPracticePage({ searchParams }: { searchPara
       exitPath="/premium"
       returnPath={`/premium/practice?${query}`}
       lockedPath="/premium"
-      emptyMessage="ยังไม่มีข้อสอบในชุดนี้"
+      emptyMessage="ยังไม่มีแบบฝึกหัดในชุดนี้"
     />
   )
 }

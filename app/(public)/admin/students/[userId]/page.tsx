@@ -1,10 +1,18 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { ArrowLeft, BookOpenCheck, Clock3, GraduationCap, MapPin, Target } from 'lucide-react'
+import { ArrowLeft, BookOpenCheck, CheckCircle2, Clock3, GraduationCap, MapPin, Target } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdminEmail } from '@/lib/payment-config'
 import { deduplicateAttempts, formatDuration, getTopicPerformances, getValidTimes, median } from '@/lib/progress-analytics'
+import { COURSES } from '@/content/course-videos'
+import {
+  buildConfirmationMap,
+  getPaymentLabel,
+  getPurchaseConfirmation,
+  type AdminPurchaseRow,
+  type ConfirmedTransferRow,
+} from '@/lib/admin-course-purchases'
 
 const TOPIC_NAMES: Record<string, string> = {
   set: 'เซต', logic: 'ตรรกศาสตร์', 'real-numbers': 'จำนวนจริง', 'relations-functions': 'ความสัมพันธ์และฟังก์ชัน',
@@ -21,6 +29,10 @@ function formatDate(value: string) {
   return new Date(value).toLocaleString('th-TH', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
+function formatBaht(value: number) {
+  return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(value)
+}
+
 export default async function AdminStudentDetailPage({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = await params
   const supabase = await createClient()
@@ -28,14 +40,19 @@ export default async function AdminStudentDetailPage({ params }: { params: Promi
   if (!user || !isAdminEmail(user.email)) redirect('/')
 
   const admin = createAdminClient()
-  const [profileResult, progressResult, examResult, authResult] = await Promise.all([
+  const [profileResult, progressResult, examResult, authResult, purchasesResult, transfersResult] = await Promise.all([
     admin.from('student_profiles').select('*').eq('user_id', userId).maybeSingle(),
     admin.from('user_progress').select('id, topic_id, question_id, is_correct, answered_at, time_spent_seconds').eq('user_id', userId).order('answered_at', { ascending: false }),
     admin.from('exam_sessions').select('id, exam_type, score, total_questions, submitted_at').eq('user_id', userId).not('submitted_at', 'is', null).order('submitted_at', { ascending: false }),
     admin.auth.admin.getUserById(userId),
+    admin.from('topic_purchases').select('user_id, topic_id, price_thb, payment_method').eq('user_id', userId),
+    admin.from('bank_transfer_requests').select('user_id, topic_id, bundle_id, confirmed_at').eq('user_id', userId).eq('status', 'confirmed'),
   ])
   const profile = profileResult.data
-  if (!profile) notFound()
+  const authUser = authResult.data.user
+  const purchases = (purchasesResult.data ?? []) as AdminPurchaseRow[]
+  const transfers = (transfersResult.data ?? []) as ConfirmedTransferRow[]
+  if (!profile && !authUser && purchases.length === 0) notFound()
 
   const progress = deduplicateAttempts((progressResult.data ?? []) as ProgressRow[])
   const exams = (examResult.data ?? []) as ExamRow[]
@@ -43,18 +60,36 @@ export default async function AdminStudentDetailPage({ params }: { params: Promi
   const accuracy = progress.length > 0 ? Math.round((correct / progress.length) * 100) : null
   const overallMedianSeconds = median(getValidTimes(progress))
   const topicStats = getTopicPerformances(progress).sort((a, b) => a.priority - b.priority || b.total - a.total)
+  const confirmationByPurchase = buildConfirmationMap(transfers)
+  const purchaseTotal = purchases.reduce((sum, purchase) => sum + (purchase.price_thb ?? 0), 0)
+  const displayName = profile?.full_name || authUser?.user_metadata?.full_name || authUser?.email?.split('@')[0] || 'ยังไม่กรอกชื่อ'
 
   return (
     <main className="min-h-screen bg-background px-5 py-8 sm:px-8 md:py-10">
       <div className="mx-auto max-w-6xl">
         <Link href="/admin/students" className="mb-7 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"><ArrowLeft className="size-4" aria-hidden="true" />กลับไปรายชื่อนักเรียน</Link>
-        <header className="mb-8 border-b border-border pb-7"><h1 className="font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground">{profile.full_name}</h1><p className="mt-2 text-sm text-muted-foreground">{authResult.data.user?.email ?? 'ไม่พบอีเมล'}</p></header>
+        <header className="mb-8 flex flex-col gap-4 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between"><div><h1 className="font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground">{displayName}</h1><p className="mt-2 text-sm text-muted-foreground">{authUser?.email ?? 'ไม่พบอีเมล'}</p></div>{purchases.length > 0 && <div className="flex items-center gap-2 text-sm font-medium text-green-700 dark:text-green-400"><CheckCircle2 className="size-4" aria-hidden="true" />เปิดสิทธิ์แล้ว {purchases.length} คอร์ส</div>}</header>
 
         <section aria-label="ข้อมูลนักเรียน" className="mb-8 grid gap-5 border-b border-border pb-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><GraduationCap className="size-4" aria-hidden="true" />ชั้นเรียน</p><p className="mt-2 font-medium text-foreground">{profile.grade}</p></div>
-          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><MapPin className="size-4" aria-hidden="true" />จังหวัด</p><p className="mt-2 font-medium text-foreground">{profile.province}</p></div>
-          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><Target className="size-4" aria-hidden="true" />คณะเป้าหมาย</p><p className="mt-2 font-medium text-foreground">{profile.desired_faculty}</p></div>
-          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><BookOpenCheck className="size-4" aria-hidden="true" />มหาวิทยาลัยเป้าหมาย</p><p className="mt-2 font-medium text-foreground">{profile.desired_university}</p></div>
+          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><GraduationCap className="size-4" aria-hidden="true" />ชั้นเรียน</p><p className="mt-2 font-medium text-foreground">{profile?.grade ?? 'ยังไม่กรอก'}</p></div>
+          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><MapPin className="size-4" aria-hidden="true" />จังหวัด</p><p className="mt-2 font-medium text-foreground">{profile?.province ?? 'ยังไม่กรอก'}</p></div>
+          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><Target className="size-4" aria-hidden="true" />คณะเป้าหมาย</p><p className="mt-2 font-medium text-foreground">{profile?.desired_faculty ?? 'ยังไม่กรอก'}</p></div>
+          <div><p className="flex items-center gap-2 text-xs text-muted-foreground"><BookOpenCheck className="size-4" aria-hidden="true" />มหาวิทยาลัยเป้าหมาย</p><p className="mt-2 font-medium text-foreground">{profile?.desired_university ?? 'ยังไม่กรอก'}</p></div>
+        </section>
+
+        <section aria-labelledby="purchases-heading" className="mb-10">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div><h2 id="purchases-heading" className="text-lg font-semibold text-foreground">คอร์สและการชำระเงิน</h2><p className="mt-1 text-sm text-muted-foreground">ตรวจสอบสิทธิ์ที่เปิดให้ พร้อมช่องทางและวันที่ยืนยัน</p></div>
+            {purchases.length > 0 && <p className="text-sm text-muted-foreground">ยอดที่บันทึก <span className="font-semibold tabular-nums text-foreground">{formatBaht(purchaseTotal)}</span></p>}
+          </div>
+          {purchases.length === 0 ? <div className="rounded-2xl border border-dashed border-border px-5 py-10 text-center text-sm text-muted-foreground">ยังไม่มีประวัติการซื้อคอร์ส</div> : (
+            <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">{purchases.map(purchase => { const confirmedAt = getPurchaseConfirmation(purchase, confirmationByPurchase); return (
+              <div key={purchase.topic_id} className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div><p className="font-medium text-foreground">{COURSES[purchase.topic_id]?.name ?? purchase.topic_id}</p><p className="mt-1 text-xs text-muted-foreground">{getPaymentLabel(purchase.payment_method)}{confirmedAt ? ` · ยืนยัน ${formatDate(confirmedAt)}` : ''}</p></div>
+                <div className="flex items-center justify-between gap-4 sm:justify-end"><span className="inline-flex rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-700 dark:text-green-400">เปิดสิทธิ์แล้ว</span><span className="min-w-20 text-right font-semibold tabular-nums text-foreground">{formatBaht(purchase.price_thb ?? 0)}</span></div>
+              </div>
+            )})}</div>
+          )}
         </section>
 
         <section aria-labelledby="summary-heading" className="mb-10">

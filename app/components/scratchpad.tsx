@@ -37,7 +37,7 @@ type Props = {
 }
 
 const COLORS = ['#132d66', '#d7463e'] as const
-const WIDTHS = [2.5, 4.5, 7] as const
+const WIDTHS = [1.25, 2.5, 4.5] as const
 const MAX_STROKES = 250
 
 function isStroke(value: unknown): value is Stroke {
@@ -370,7 +370,7 @@ export default function Scratchpad({ storageKey, title, question }: Props) {
                   key={option}
                   className={`${styles.widthButton} ${width === option ? styles.selected : ''}`}
                   onClick={() => setWidth(option)}
-                  aria-label={`เส้นขนาด ${option === WIDTHS[0] ? 'เล็ก' : option === WIDTHS[1] ? 'กลาง' : 'ใหญ่'}`}
+                  aria-label={`เส้นขนาด ${option === WIDTHS[0] ? 'เล็กมาก' : option === WIDTHS[1] ? 'เล็ก' : 'กลาง'}`}
                   aria-pressed={width === option}
                 >
                   <span style={{ width: option + 2, height: option + 2 }} />

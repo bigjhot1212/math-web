@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ArrowRight, BookOpen, CheckCircle2, Clock3, PlayCircle, Sparkles } from 'lucide-react'
+import { ArrowRight, BookOpen, CheckCircle2, Clock3, ExternalLink, PlayCircle, Sparkles } from 'lucide-react'
 import { claimCourseInvites } from '@/lib/course-invites'
+import { getClassroomUrl } from '@/lib/classroom-links'
 import { createClient } from '@/lib/supabase/server'
 import { BUNDLES, COURSES } from '@/content/course-videos'
 
@@ -134,6 +135,7 @@ export default async function CoursesPage() {
             {ownedCourses.map(({ id, course, purchase }, index) => {
               const lessonCount = course.curriculum?.reduce((sum, section) => sum + section.items.length, 0) ?? 0
               const mark = COURSE_MARKS[id] ?? course.nameEn.slice(0, 2).toUpperCase()
+              const classroomUrl = getClassroomUrl(id, course.classroomId)
               return (
                 <article
                   key={id}
@@ -152,17 +154,30 @@ export default async function CoursesPage() {
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Online course</p>
                     <h2 className="mt-1 font-heading text-lg font-bold text-foreground">{course.name}</h2>
                     <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">{course.desc}</p>
-                    <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
+                    <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                       <p className="text-xs text-muted-foreground">
                         {lessonCount > 0 ? `${lessonCount} หัวข้อ` : purchase?.payment_method === 'bank_transfer' ? 'ยืนยันการชำระแล้ว' : 'เข้าถึงเนื้อหาครบ'}
                       </p>
-                      <Link
-                        href={`/course/${id}`}
-                        className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
-                      >
-                        <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                        เข้าเรียน
-                      </Link>
+                      <div className="flex flex-wrap gap-2">
+                        {classroomUrl && (
+                          <a
+                            href={classroomUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-primary/35 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+                          >
+                            เปิด Classroom
+                            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                          </a>
+                        )}
+                        <Link
+                          href={`/course/${id}`}
+                          className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
+                        >
+                          <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                          เข้าเรียน
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </article>

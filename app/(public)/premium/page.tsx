@@ -7,8 +7,8 @@ import { hasPremiumAccess } from '@/lib/premium-access'
 import { COURSES } from '@/content/course-videos'
 
 export const metadata: Metadata = {
-  title: 'ฝึกโจทย์พรีเมียม ข้อสอบเก่า | Math Hunters',
-  description: 'คลังข้อสอบเก่าที่หาได้ยาก สำหรับนักเรียนที่ซื้อคอร์ส',
+  title: 'แบบฝึกหัดรวมบท A-Level | Math Hunters',
+  description: 'แบบฝึกหัดรวมบท A-Level พร้อมเฉลยละเอียด สำหรับนักเรียนที่ซื้อคอร์ส',
 }
 
 type CatalogRow = { exam: string; exam_year: number | null; topic_id: string }
@@ -48,9 +48,9 @@ function Shell({ children }: { children: React.ReactNode }) {
             <Crown className="h-4 w-4" aria-hidden="true" />
             Premium
           </div>
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">ฝึกโจทย์พรีเมียม ข้อสอบเก่า</h1>
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">แบบฝึกหัดรวมบท A-Level</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-            คลังข้อสอบเก่าที่หาได้ยาก พร้อมเฉลยละเอียด สำหรับนักเรียนที่ซื้อคอร์สกับเรา
+            แบบฝึกหัดรวมบทพร้อมเฉลยละเอียด สำหรับนักเรียนที่ซื้อคอร์สกับเรา
           </p>
         </header>
         {children}
@@ -97,13 +97,13 @@ export default async function PremiumPage() {
     return (
       <Shell>
         <Notice
-          title="ฝึกโจทย์พรีเมียมสำหรับนักเรียนที่ซื้อคอร์ส"
+          title="แบบฝึกหัดรวมบทสำหรับนักเรียนที่ซื้อคอร์ส"
           actions={<>
             <Link href="/pricing" className={primaryButton}>ดูคอร์สทั้งหมด <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
             <Link href="/practice" className={secondaryButton}>ฝึกโจทย์ทั่วไป</Link>
           </>}
         >
-          <p>ซื้อคอร์สใดก็ได้อย่างน้อย 1 คอร์ส เพื่อปลดล็อกคลังข้อสอบเก่าทั้งหมด</p>
+          <p>ซื้อคอร์สใดก็ได้อย่างน้อย 1 คอร์ส เพื่อปลดล็อกแบบฝึกหัดรวมบททั้งหมด</p>
           <p>ถ้าคุณลงทะเบียนเรียนกับเราก่อนมีเว็บไซต์ ตรวจสอบว่าบัญชีนี้ใช้อีเมลเดียวกับที่ลงทะเบียนไว้ (บัญชีนี้คือ <strong className="text-foreground">{user.email}</strong>) และยืนยันอีเมลแล้ว หากยังเข้าไม่ได้ ติดต่อเราทาง Instagram</p>
         </Notice>
       </Shell>
@@ -116,7 +116,7 @@ export default async function PremiumPage() {
     return (
       <Shell>
         <section className="rounded-2xl border border-border p-8 text-center text-sm text-muted-foreground">
-          กำลังเตรียมคลังข้อสอบเก่า เร็ว ๆ นี้
+          กำลังเตรียมแบบฝึกหัดรวมบท เร็ว ๆ นี้
         </section>
       </Shell>
     )
@@ -135,12 +135,12 @@ export default async function PremiumPage() {
 
   return (
     <Shell>
-      <p className="mb-8 text-sm text-muted-foreground">ทั้งหมด <strong className="text-foreground">{rows.length.toLocaleString('th-TH')}</strong> ข้อ เลือกฝึกตามชุดข้อสอบหรือตามบทก็ได้</p>
+      <p className="mb-8 text-sm text-muted-foreground">ทั้งหมด <strong className="text-foreground">{rows.length.toLocaleString('th-TH')}</strong> ข้อ เลือกฝึกตามชุดหรือตามบทก็ได้</p>
 
       <section className="mb-10">
         <h2 className="mb-4 flex items-center gap-2 font-heading text-xl font-bold text-foreground">
           <ScrollText className="h-5 w-5 text-primary" aria-hidden="true" />
-          ฝึกตามชุดข้อสอบ
+          ฝึกตามชุด
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {[...byExam.entries()].sort(([a], [b]) => a.localeCompare(b, 'th', { numeric: true })).map(([exam, years]) => (

@@ -91,6 +91,7 @@ export const COURSES: Record<string, CourseConfig> = {
     desc: 'ตะลุยโจทย์จริง 15 ปีย้อนหลัง พร้อมเทคนิคอ่าน Keyword และจุดหลอกข้อสอบ',
     status: 'available',
     zone: 'special',
+    classroomId: 'ODc1NjI4NDU5MTg1',
     price: 1490,
     curriculum: [
       {

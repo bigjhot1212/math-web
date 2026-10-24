@@ -2,11 +2,13 @@ import { notFound, redirect } from 'next/navigation'
 import { ArrowLeft, Clapperboard, ExternalLink, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { COURSES } from '@/content/course-videos'
+import { getClassroomUrl } from '@/lib/classroom-links'
 
 export default async function CoursePage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
   const course = COURSES[topicId]
   if (!course || course.status === 'coming_soon') notFound()
+  const classroomUrl = getClassroomUrl(topicId, course.classroomId)
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -58,14 +60,14 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
           </div>
         )}
 
-        {course.classroomId && (
+        {classroomUrl && (
           <div className="mt-6 p-4 rounded-2xl border border-border bg-card/70 backdrop-blur-xl flex items-center justify-between transition-all duration-300 hover:shadow-[0_0_20px_-8px_var(--primary)]">
             <div>
               <p className="text-sm font-medium text-foreground">Google Classroom</p>
               <p className="text-xs text-muted-foreground">เนื้อหา วิดีโอ และแบบฝึกหัดเพิ่มเติม</p>
             </div>
             <a
-              href={`https://classroom.google.com/c/${course.classroomId}`}
+              href={classroomUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"

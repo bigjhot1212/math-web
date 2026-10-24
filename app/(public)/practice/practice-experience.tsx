@@ -211,10 +211,10 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
                 PREMIUM · สำหรับนักเรียนที่ซื้อคอร์ส
               </p>
               <h2 className="text-xl font-semibold leading-snug text-amber-950 dark:text-amber-50 sm:text-2xl">
-                ชุดข้อสอบพรีเมียม A-Level พร้อมเฉลยละเอียดทุกข้อ
+                แบบฝึกหัดรวมบท A-Level พร้อมเฉลยละเอียดทุกข้อ
               </h2>
               <p className="mt-1.5 text-sm leading-6 text-amber-900/80 dark:text-amber-100/75">
-                ข้อสอบเก่าที่หาได้ยาก จัดเป็นชุดละ 30 ข้อตามโครงสร้าง A-Level คณิต 1 ทำเสร็จแล้วดูวิธีทำได้ทันที
+                แบบฝึกหัดรวมบท ชุดละ 30 ข้อ ทำเสร็จแล้วดูวิธีทำได้ทันที
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {['ชุดละ 30 ข้อ', 'ปรนัย 25 + อัตนัย 5', 'เฉลยแสดงวิธีทำ'].map((label) => (
@@ -225,7 +225,7 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
               </div>
             </div>
             <span className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-amber-500 px-6 py-3 text-sm font-bold text-amber-950 shadow-sm transition-colors group-hover:bg-amber-400">
-              เข้าคลังข้อสอบพรีเมียม →
+              เข้าแบบฝึกหัดรวมบท →
             </span>
           </div>
         </Link>
