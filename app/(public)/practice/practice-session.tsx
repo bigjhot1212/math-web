@@ -6,6 +6,7 @@ import { Lightbulb, CheckCircle2, XCircle, ArrowLeft, ArrowRight, LogOut, SkipFo
 import { Question } from '@/lib/types/question'
 import { formatMathForDisplay } from '@/lib/format-math'
 import Scratchpad from '@/app/components/scratchpad'
+import { TrainingFeedback } from '@/app/components/adventure/training-feedback'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
@@ -28,6 +29,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
   const [showHint, setShowHint] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [saveState, setSaveState] = useState<{ questionId: string; status: 'saving' | 'saved' | 'error' } | null>(null)
   const timerRef = useRef<{ questionId: string | null; elapsedMs: number; runningSince: number | null }>({
     questionId: null,
     elapsedMs: 0,
@@ -134,6 +136,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
   async function saveProgress(question: Question, answerIsCorrect: boolean, hintUsed: boolean) {
     if (savedQuestionsRef.current.has(question.id)) return
     savedQuestionsRef.current.add(question.id)
+    setSaveState({ questionId: question.id, status: 'saving' })
 
     try {
       const response = await fetch('/api/progress', {
@@ -149,8 +152,10 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         }),
       })
       if (!response.ok) throw new Error('Progress request failed')
+      setSaveState({ questionId: question.id, status: 'saved' })
     } catch (error) {
       savedQuestionsRef.current.delete(question.id)
+      setSaveState({ questionId: question.id, status: 'error' })
       console.error('Unable to save practice progress', error)
     }
   }
@@ -218,6 +223,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
   return (
     <main className="min-h-screen bg-background p-6 md:p-12">
       <div className="max-w-2xl mx-auto">
+        <h1 className="sr-only">ภารกิจฝึกโจทย์</h1>
 
         <div className="mb-6 flex items-center justify-between gap-4">
           <span className="text-sm text-muted-foreground">
@@ -235,7 +241,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
 
         <div className="h-1.5 bg-muted rounded-full mb-8 overflow-hidden">
           <div
-            className="h-full bg-primary rounded-full transition-all duration-500 shadow-[0_0_8px_0_var(--primary)]"
+            className="h-full bg-primary rounded-full transition-all duration-500 "
             style={{ width: `${((current + 1) / questions.length) * 100}%` }}
           />
         </div>
@@ -249,7 +255,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           <img
             src={q.content.image}
             alt={`โจทย์ข้อ ${current + 1}`}
-            className="mb-4 w-full rounded-2xl border border-border bg-white p-2 sm:p-3"
+            className="mb-4 w-full rounded-lg border border-border bg-white p-2 sm:p-3"
             onError={() => refreshImage(q.id)}
           />
         )}
@@ -269,7 +275,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
                 <img
                   src={q.content.image}
                   alt={`โจทย์ข้อ ${current + 1}`}
-                  className="max-h-56 max-w-full rounded-xl bg-white object-contain"
+                  className="max-h-56 max-w-full rounded-lg bg-white object-contain"
                   onError={() => refreshImage(q.id)}
                 />
               )}
@@ -279,7 +285,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         />
 
         {showHint && (
-          <div className="mb-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start gap-2.5 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200">
+          <div className="mb-4 p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start gap-2.5">
             <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
             <span>{q.hint}</span>
           </div>
@@ -292,10 +298,10 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
               const isSelectedWrong = selected === key && isWrong
               const isRevealedAnswer = showSolution && key === q.answer
 
-              let className = "flex items-center gap-3 p-4 rounded-2xl border transition-all "
-              if (isSelectedCorrect) className += "border-green-500 bg-green-50 dark:bg-green-950"
-              else if (isSelectedWrong) className += "border-red-500 bg-red-50 dark:bg-red-950"
-              else if (isRevealedAnswer) className += "border-green-500 bg-green-50 dark:bg-green-950"
+              let className = "flex items-center gap-3 p-4 rounded-lg border transition-all "
+              if (isSelectedCorrect) className += "border-green-500 bg-green-50"
+              else if (isSelectedWrong) className += "border-red-500 bg-red-50"
+              else if (isRevealedAnswer) className += "border-green-500 bg-green-50"
               else className += "border-border hover:border-primary hover:bg-accent/50 cursor-pointer"
 
               return (
@@ -317,10 +323,10 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
                     </>
                   )}
                   {(isSelectedCorrect || isRevealedAnswer) && (
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-green-600" aria-hidden="true" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-green-700" aria-hidden="true" />
                   )}
                   {isSelectedWrong && (
-                    <XCircle className="w-4 h-4 shrink-0 text-red-600" aria-hidden="true" />
+                    <XCircle className="w-4 h-4 shrink-0 text-red-700" aria-hidden="true" />
                   )}
                 </button>
               )
@@ -329,7 +335,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         )}
 
         {q.type === 'short-answer' && !q.content.choices && (
-          <div className="mb-6 rounded-2xl border border-primary/25 bg-primary/[0.05] p-5">
+          <div className="mb-6 rounded-lg border border-primary/25 bg-primary/[0.05] p-5">
             <label htmlFor={`short-answer-${q.id}`} className="mb-2 block text-sm font-medium text-foreground">
               คำตอบเป็นตัวเลข
             </label>
@@ -347,7 +353,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
                 disabled={selected !== null}
                 placeholder="กรอกเฉพาะตัวเลข"
                 aria-describedby={`short-answer-help-${q.id}`}
-                className={`min-h-11 flex-1 rounded-xl border bg-background px-4 py-3 font-mono text-base text-foreground outline-none transition focus:ring-2 focus:ring-primary/20 disabled:opacity-80 ${
+                className={`min-h-11 flex-1 rounded-lg border bg-background px-4 py-3 font-mono text-base text-foreground outline-none transition focus:ring-2 focus:ring-primary/20 disabled:opacity-80 ${
                   selected === null ? 'border-border focus:border-primary' : isCorrect ? 'border-green-500' : 'border-red-500'
                 }`}
               />
@@ -355,7 +361,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
                 type="button"
                 onClick={handleShortAnswerSubmit}
                 disabled={!shortAnswer.trim() || selected !== null}
-                className="min-h-11 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45"
+                className="min-h-11 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45"
               >
                 ตรวจคำตอบ
               </button>
@@ -364,7 +370,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
               ไม่ต้องใส่หน่วยหรือข้อความเพิ่มเติม
             </p>
             {selected !== null && (
-              <div className={`mt-4 flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm ${isCorrect ? 'bg-green-500/10 text-green-700 dark:text-green-300' : 'bg-red-500/10 text-red-700 dark:text-red-300'}`}>
+              <div className={`mt-4 flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm ${isCorrect ? 'bg-green-500/10 text-green-700' : 'bg-red-500/10 text-red-700'}`}>
                 {isCorrect ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />}
                 <span>{isCorrect ? 'ถูกต้อง' : <>ยังไม่ถูก คำตอบที่ถูกคือ <strong>{String(q.answer)}</strong></>}</span>
               </div>
@@ -373,7 +379,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
         )}
 
         {showSolution && (
-          <div className="mb-6 p-4 rounded-2xl border border-border bg-muted/30">
+          <div className="mb-6 p-4 rounded-lg border border-border bg-muted/30">
             <p className="font-medium text-sm mb-3">วิธีทำ</p>
             {q.solution.steps.map((step, i) => {
               // "[[img:url]]" is a figure that helps explain the solution
@@ -381,7 +387,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
               if (figure) {
                 return (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img key={i} src={figure} alt="รูปประกอบวิธีทำ" className="my-3 w-full max-w-md rounded-xl border border-border bg-white" />
+                  <img key={i} src={figure} alt="รูปประกอบวิธีทำ" className="my-3 w-full max-w-md rounded-lg border border-border bg-white" />
                 )
               }
               return (
@@ -395,12 +401,13 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           </div>
         )}
 
+        {selected !== null && saveState?.questionId === q.id && <TrainingFeedback key={q.id} status={saveState.status} correct={isCorrect} />}
         <div className="flex gap-3 flex-wrap">
           {current > 0 && (
             <button
               type="button"
               onClick={() => moveToQuestion(current - 1)}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent active:scale-[0.98] transition-transform cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent active:scale-[0.98] transition-transform cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               ย้อนกลับ
@@ -409,7 +416,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           {isWrong && !showHint && (
             <button
               onClick={() => setShowHint(true)}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors cursor-pointer"
             >
               <Lightbulb className="w-4 h-4" aria-hidden="true" />
               ดู Hint
@@ -418,7 +425,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           {selected && !showSolution && (
             <button
               onClick={() => setShowSolution(true)}
-              className="px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
+              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors cursor-pointer"
             >
               ดูเฉลย
             </button>
@@ -426,7 +433,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           {selected && current < questions.length - 1 && (
             <button
               onClick={handleNext}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
               ข้อถัดไป
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -435,7 +442,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
           {selected && current === questions.length - 1 && (
             <button
               onClick={() => window.location.href = exitPath}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
               เสร็จสิ้น
               <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
@@ -445,7 +452,7 @@ export default function PracticeSession({ questionsUrl, exitPath, returnPath, lo
             <button
               type="button"
               onClick={() => moveToQuestion(current + 1)}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent active:scale-[0.98] transition-transform cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent active:scale-[0.98] transition-transform cursor-pointer"
             >
               ข้ามข้อ
               <SkipForward className="w-4 h-4" aria-hidden="true" />

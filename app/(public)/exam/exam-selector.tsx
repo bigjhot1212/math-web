@@ -87,17 +87,17 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
       <div className="max-w-5xl mx-auto">
 
         <div className="mb-10">
-          <h1 className="text-3xl font-heading font-semibold text-foreground mb-2">แบบทดสอบและข้อสอบจำลอง</h1>
+          <h1 className="text-3xl font-heading font-semibold text-foreground mb-2">สนามสอบจำลอง</h1>
           <p className="text-muted-foreground">เริ่มจากเช็กพื้นฐานรายบท แล้วค่อยวางแผนฝึกให้ตรงจุด</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-2xl border border-destructive/30 bg-destructive/10 text-destructive text-sm text-center">
+          <div className="mb-6 p-4 rounded-lg border border-destructive/30 bg-destructive/10 text-destructive text-sm text-center">
             {error}
           </div>
         )}
 
-        <section className="animate-fade-slide-in mb-12 overflow-hidden rounded-[2rem] border border-primary/35 bg-card shadow-[0_22px_70px_-42px_var(--primary)]">
+        <section className="animate-fade-slide-in mb-12 overflow-hidden rounded-lg border border-primary/35 bg-card ">
           <div className="grid lg:grid-cols-[1.35fr_0.65fr]">
             <div className="p-7 md:p-10">
               <div className="mb-5 flex items-center gap-3">
@@ -143,7 +143,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                 type="button"
                 onClick={() => startExam(BASIC_DIAGNOSTIC_TYPE)}
                 disabled={loading !== null}
-                className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
                 {loading === BASIC_DIAGNOSTIC_TYPE ? 'กำลังเตรียมแบบทดสอบ...' : 'เริ่มทดสอบพื้นฐาน'}
                 {loading !== BASIC_DIAGNOSTIC_TYPE && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
@@ -187,10 +187,10 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
               <div
                 key={exam.type}
                 style={{ animationDelay: `${i * 60}ms` }}
-                className={`animate-fade-slide-in p-6 rounded-3xl border-2 bg-card/70 backdrop-blur-xl transition-all duration-300 ${
+                className={`animate-fade-slide-in p-6 rounded-lg border-2 bg-card/70 transition-all duration-300 ${
                   locked
                     ? 'border-primary/35 opacity-75'
-                    : 'border-primary/30 hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_0_28px_-8px_var(--primary)]'
+                    : 'border-primary/30 hover:border-primary '
                 }`}
               >
                 <div className="flex items-center gap-2 mb-3">
@@ -214,7 +214,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                   <button
                     type="button"
                     disabled
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-primary/50 text-primary rounded-xl text-sm font-medium opacity-80 cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-primary/50 text-primary rounded-lg text-sm font-medium opacity-80 cursor-not-allowed"
                   >
                     <Lock className="w-4 h-4" aria-hidden="true" />
                     ยังไม่เปิดใช้งาน
@@ -222,7 +222,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                 ) : locked ? (
                   <Link
                     href="/pricing"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-primary/50 text-primary rounded-xl text-sm font-medium hover:bg-primary/10 transition-colors cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-primary/50 text-primary rounded-lg text-sm font-medium hover:bg-primary/10 transition-colors cursor-pointer"
                   >
                     <Lock className="w-4 h-4" aria-hidden="true" />
                     อัปเกรดเป็น Premium
@@ -231,7 +231,7 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
                   <button
                     onClick={() => startExam(exam.type)}
                     disabled={loading !== null}
-                    className="w-full px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
                   >
                     {loading === exam.type ? 'กำลังโหลด...' : 'เริ่มสอบ'}
                   </button>

@@ -61,7 +61,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function Notice({ title, children, actions }: { title: string; children: React.ReactNode; actions: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-primary/30 bg-primary/[0.06] p-6 sm:p-8">
+    <section className="rounded-lg border border-primary/30 bg-primary/[0.06] p-6 sm:p-8">
       <div className="mb-3 flex items-center gap-2 text-primary">
         <Lock className="h-5 w-5" aria-hidden="true" />
         <h2 className="font-heading text-xl font-bold text-foreground">{title}</h2>
@@ -72,8 +72,8 @@ function Notice({ title, children, actions }: { title: string; children: React.R
   )
 }
 
-const primaryButton = 'inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]'
-const secondaryButton = 'inline-flex items-center gap-2 rounded-xl border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted'
+const primaryButton = 'inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]'
+const secondaryButton = 'inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted'
 
 export default async function PremiumPage() {
   const supabase = await createClient()
@@ -115,7 +115,7 @@ export default async function PremiumPage() {
   if (!rows.length) {
     return (
       <Shell>
-        <section className="rounded-2xl border border-border p-8 text-center text-sm text-muted-foreground">
+        <section className="rounded-lg border border-border p-8 text-center text-sm text-muted-foreground">
           กำลังเตรียมแบบฝึกหัดรวมบท เร็ว ๆ นี้
         </section>
       </Shell>
@@ -144,7 +144,7 @@ export default async function PremiumPage() {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {[...byExam.entries()].sort(([a], [b]) => a.localeCompare(b, 'th', { numeric: true })).map(([exam, years]) => (
-            <div key={exam} className="rounded-2xl border border-border p-5">
+            <div key={exam} className="rounded-lg border border-border p-5">
               <div className="mb-3 flex items-baseline justify-between gap-3">
                 <h3 className="font-heading text-lg font-bold text-foreground">{exam}</h3>
                 {years.size > 0 && (
@@ -153,13 +153,13 @@ export default async function PremiumPage() {
               </div>
               {years.size === 0 && (
                 // a ready-made set (no exam year): one button that runs the whole set in order
-                <Link href={practiceHref({ exam })} className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary hover:text-primary">
+                <Link href={practiceHref({ exam })} className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary hover:text-primary">
                   เริ่มทำชุดนี้ <span className="text-xs text-muted-foreground">({examCounts.get(exam)} ข้อ)</span>
                 </Link>
               )}
               <div className="flex flex-wrap gap-2">
                 {[...years.entries()].sort(([a], [b]) => b - a).map(([year, count]) => (
-                  <Link key={year} href={practiceHref({ exam, year })} className="rounded-xl border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary hover:text-primary">
+                  <Link key={year} href={practiceHref({ exam, year })} className="rounded-lg border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:border-primary hover:text-primary">
                     {year} <span className="text-xs text-muted-foreground">({count} ข้อ)</span>
                   </Link>
                 ))}
@@ -173,7 +173,7 @@ export default async function PremiumPage() {
         <h2 className="mb-4 font-heading text-xl font-bold text-foreground">ฝึกตามบท</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[...byTopic.entries()].sort(([, a], [, b]) => b - a).map(([topic, count]) => (
-            <Link key={topic} href={practiceHref({ topic })} className="flex items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-sm transition-colors hover:border-primary">
+            <Link key={topic} href={practiceHref({ topic })} className="flex items-center justify-between gap-3 rounded-lg border border-border px-4 py-3 text-sm transition-colors hover:border-primary">
               <span className="font-medium text-foreground">{COURSES[topic]?.name ?? topic}</span>
               <span className="text-xs text-muted-foreground">{count} ข้อ</span>
             </Link>

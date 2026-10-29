@@ -1,0 +1,22 @@
+[
+  {
+    "atlasButtons": 7,
+    "scroll": 320,
+    "width": 320
+  },
+  {
+    "atlasButtons": 7,
+    "scroll": 390,
+    "width": 390
+  },
+  {
+    "atlasButtons": 7,
+    "scroll": 768,
+    "width": 768
+  },
+  {
+    "atlasButtons": 7,
+    "scroll": 1440,
+    "width": 1440
+  }
+]

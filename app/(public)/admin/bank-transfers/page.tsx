@@ -35,9 +35,9 @@ export default async function AdminBankTransfersPage() {
   return (
     <main className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="text-2xl font-heading font-bold text-foreground">รายการโอนเงินรอตรวจสอบ</h1>
-          <Link href="/admin/students" className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent">ดูข้อมูลนักเรียน</Link>
+          <Link href="/admin/students" className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent">ดูข้อมูลนักเรียน</Link>
         </div>
 
         {withUrls.length === 0 ? (
@@ -45,10 +45,10 @@ export default async function AdminBankTransfersPage() {
         ) : (
           <div className="space-y-4">
             {withUrls.map((r) => (
-              <div key={r.id} className="rounded-3xl border border-border bg-card/70 backdrop-blur-xl p-5 flex flex-col sm:flex-row gap-4">
+              <div key={r.id} className="rounded-lg border border-border bg-card/70 p-5 flex flex-col sm:flex-row gap-4">
                 {r.signedUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={r.signedUrl} alt="สลิปการโอนเงิน" className="w-full sm:w-40 h-40 object-contain rounded-xl border border-border bg-background" />
+                  <img src={r.signedUrl} alt="สลิปการโอนเงิน" className="w-full sm:w-40 h-40 object-contain rounded-lg border border-border bg-background" />
                 )}
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground">{r.courseName}</p>

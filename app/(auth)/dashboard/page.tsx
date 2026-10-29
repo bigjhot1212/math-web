@@ -1,6 +1,9 @@
+import HunterLicense from '@/app/components/adventure/hunter-license'
+import WorldExplorer from '@/app/components/adventure/world-explorer'
+import { buildTopicProgress } from '@/lib/adventure-topics'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, BookOpenCheck, BrainCircuit, Clock3, Flame, ListChecks, ShieldCheck, Target, TrendingDown, TrendingUp } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, BrainCircuit, ShieldCheck, TrendingDown, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/payment-config'
 import { analyzeLearningEvidence, type LearningEvidence } from '@/lib/learning-insights'
@@ -176,20 +179,20 @@ export default async function DashboardPage() {
     : null
 
   return (
-    <main className="min-h-screen bg-background p-6 md:p-10">
-      <div className="mx-auto max-w-5xl">
+    <main className="adventure-page min-h-screen p-5 md:p-8">
+      <div className="mx-auto max-w-7xl">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
             <p className="text-sm text-muted-foreground mb-1">สวัสดี, {displayName}</p>
-            <h1 className="text-2xl font-heading font-semibold text-foreground">ความก้าวหน้าของคุณ</h1>
+            <h1 className="text-2xl font-heading font-semibold text-foreground">ศูนย์บัญชาการ</h1>
           </div>
           <div className="flex gap-3">
             {isAdminEmail(user.email) && (
               <Link
                 href="/admin/students"
-                className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4" aria-hidden="true" />
                 แอดมิน
@@ -197,60 +200,65 @@ export default async function DashboardPage() {
             )}
             <Link
               href="/practice"
-              className="px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
+              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors cursor-pointer"
             >
               ฝึกโจทย์
             </Link>
             <Link
               href="/exam"
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
               สอบจำลอง
             </Link>
           </div>
         </div>
 
+        <div className="dashboard-world-layout">
+          <div className="dashboard-map">
+        <WorldExplorer progress={buildTopicProgress(progress)} signedIn recommendedTopicId={primaryFocus?.topicId} />
+          </div>
+        <div className="dashboard-loadout">
+        <section className="next-mission" aria-labelledby="next-mission-title">
+          <div>
+            <h2 id="next-mission-title">{focusName ? `ภารกิจถัดไป · ${focusName}` : 'เริ่มภารกิจแรกของคุณ'}</h2>
+            <p>{focusName ? 'เลือกจากผลการฝึกและข้อสอบที่มีอยู่ ทบทวนจุดที่ยังไม่แม่น แล้วลองทำต่ออีกครั้ง' : 'เลือกบทที่อยากฝึก แล้วระบบจะใช้ผลจริงช่วยให้เห็นว่าควรพัฒนาตรงไหนต่อ'}</p>
+          </div>
+          <Link href={primaryFocus ? `/practice/${primaryFocus.topicId}` : '/practice'}>{focusName ? 'ฝึกบทนี้ต่อ' : 'เลือกภารกิจฝึกโจทย์'}<ArrowRight className="size-4" aria-hidden="true" /></Link>
+        </section>
+
+        <HunterLicense name={user.user_metadata?.full_name ?? displayName} avatarUrl={user.user_metadata?.avatar_url} answered={totalAnswered} accuracy={totalAnswered > 0 ? overallAccuracy : null} streak={streak} />
+        </div>
+        </div>
+
         {/* Stat cards */}
         <div className="grid grid-cols-2 gap-4 mb-8 lg:grid-cols-4">
-          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-            <span className="w-9 h-9 rounded-xl bg-chart-3/15 text-chart-3 flex items-center justify-center mb-3">
-              <ListChecks className="w-4.5 h-4.5" aria-hidden="true" />
-            </span>
+          <div className="p-5 rounded-lg border border-border bg-card">
             <p className="text-xs text-muted-foreground mb-1">โจทย์ทั้งหมด</p>
             <p className="text-3xl font-heading font-bold text-foreground tabular-nums">{totalAnswered}</p>
             <p className="text-xs text-muted-foreground mt-1">แบบฝึกและข้อสอบรวมกัน</p>
           </div>
-          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
-              <Target className="w-4.5 h-4.5" aria-hidden="true" />
-            </span>
+          <div className="p-5 rounded-lg border border-border bg-card">
             <p className="text-xs text-muted-foreground mb-1">ความแม่นยำ</p>
-            <p className={`text-3xl font-heading font-bold tabular-nums ${overallAccuracy >= 80 ? 'text-green-600' : overallAccuracy >= 60 ? 'text-amber-600' : 'text-red-500'}`}>
+            <p className={`text-3xl font-heading font-bold tabular-nums ${overallAccuracy >= 80 ? 'text-green-700' : overallAccuracy >= 60 ? 'text-amber-700' : 'text-red-700'}`}>
               {totalAnswered > 0 ? `${overallAccuracy}%` : '—'}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {totalCorrect}/{totalAnswered} ข้อถูก
             </p>
           </div>
-          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-            <span className="w-9 h-9 rounded-xl bg-cta/10 text-cta flex items-center justify-center mb-3">
-              <Flame className="w-4.5 h-4.5" aria-hidden="true" />
-            </span>
+          <div className="p-5 rounded-lg border border-border bg-card">
             <p className="text-xs text-muted-foreground mb-1">Streak</p>
             <p className="text-3xl font-heading font-bold text-foreground tabular-nums">{streak}</p>
             <p className="text-xs text-muted-foreground mt-1">วันติดต่อกัน</p>
           </div>
-          <div className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-            <span className="w-9 h-9 rounded-xl bg-chart-2/15 text-chart-2 flex items-center justify-center mb-3">
-              <Clock3 className="w-4.5 h-4.5" aria-hidden="true" />
-            </span>
+          <div className="p-5 rounded-lg border border-border bg-card">
             <p className="text-xs text-muted-foreground mb-1">เวลาต่อข้อ</p>
             <p className="text-2xl font-heading font-bold text-foreground tabular-nums">{formatCompactDuration(overallMedianSeconds)}</p>
             <p className="text-xs text-muted-foreground mt-1">ค่ามัธยฐานของเวลาที่ทำจริง</p>
           </div>
         </div>
 
-        <section className="mb-8 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <section className="mb-8 overflow-hidden rounded-lg border border-border bg-card ">
           <header className="flex flex-col gap-4 border-b border-border p-5 sm:flex-row sm:items-start sm:justify-between md:p-6">
             <div className="max-w-2xl">
               <div className="flex items-center gap-2.5">
@@ -273,11 +281,11 @@ export default async function DashboardPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                       primaryFocus.status === 'focus'
-                        ? 'bg-red-500/10 text-red-600'
+                        ? 'bg-red-500/10 text-red-700'
                         : primaryFocus.status === 'developing'
-                          ? 'bg-amber-500/10 text-amber-600'
+                          ? 'bg-amber-500/10 text-amber-700'
                           : primaryFocus.status === 'strong'
-                            ? 'bg-green-500/10 text-green-600'
+                            ? 'bg-green-500/10 text-green-700'
                             : 'bg-muted text-muted-foreground'
                     }`}>
                       {primaryFocus.statusLabel}
@@ -305,7 +313,7 @@ export default async function DashboardPage() {
                   </div>
                   <Link
                     href={`/practice/${primaryFocus.topicId}`}
-                    className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
+                    className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
                   >
                     ฝึกบทนี้ต่อ
                     <ArrowRight className="size-4" aria-hidden="true" />
@@ -338,9 +346,9 @@ export default async function DashboardPage() {
                     {primaryFocus.trendDelta === null ? (
                       'รอข้อมูลอีกเล็กน้อย'
                     ) : primaryFocus.trendDelta >= 0 ? (
-                      <><TrendingUp className="size-4 text-green-600" aria-hidden="true" /> ดีขึ้น {primaryFocus.trendDelta} จุด</>
+                      <><TrendingUp className="size-4 text-green-700" aria-hidden="true" /> ดีขึ้น {primaryFocus.trendDelta} จุด</>
                     ) : (
-                      <><TrendingDown className="size-4 text-red-500" aria-hidden="true" /> ลดลง {Math.abs(primaryFocus.trendDelta)} จุด</>
+                      <><TrendingDown className="size-4 text-red-700" aria-hidden="true" /> ลดลง {Math.abs(primaryFocus.trendDelta)} จุด</>
                     )}
                   </dd>
                 </div>
@@ -367,7 +375,7 @@ export default async function DashboardPage() {
                 <h3 className="font-heading text-base font-semibold text-foreground">เริ่มทำข้อแรกเพื่อให้ระบบรู้จักคุณ</h3>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">เมื่อมีข้อมูลอย่างน้อย 5 ข้อในหนึ่งบท ระบบจะเริ่มแนะนำแนวทางที่เหมาะกับผลจริง</p>
               </div>
-              <Link href="/practice" className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              <Link href="/practice" className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 เริ่มฝึกโจทย์ <ArrowRight className="size-4" aria-hidden="true" />
               </Link>
             </div>
@@ -376,7 +384,7 @@ export default async function DashboardPage() {
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           {/* Accuracy trend */}
-          <div className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
+          <div className="animate-fade-slide-in p-5 rounded-lg border border-border bg-card ">
             <h2 className="text-sm font-semibold text-foreground mb-4">ความแม่นยำ 14 วันที่ผ่านมา</h2>
             {totalAnswered === 0 ? (
               <p className="text-sm text-muted-foreground">ยังไม่มีข้อมูล เริ่มทำโจทย์เลย!</p>
@@ -411,7 +419,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Weak topics */}
-          <div style={{ animationDelay: '80ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
+          <div style={{ animationDelay: '80ms' }} className="animate-fade-slide-in p-5 rounded-lg border border-border bg-card ">
             <h2 className="text-sm font-semibold text-foreground mb-1">หัวข้อที่ควรฝึกต่อ</h2>
             <p className="mb-4 text-xs text-muted-foreground">รวมคำตอบจากแบบฝึกหัดและข้อสอบ</p>
             {weakTopics.length === 0 ? (
@@ -445,7 +453,7 @@ export default async function DashboardPage() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Exam history */}
-          <div style={{ animationDelay: '140ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
+          <div style={{ animationDelay: '140ms' }} className="animate-fade-slide-in p-5 rounded-lg border border-border bg-card ">
             <h2 className="text-sm font-semibold text-foreground mb-4">ประวัติการสอบ</h2>
             {exams.length === 0 ? (
               <div className="text-sm text-muted-foreground">
@@ -479,7 +487,7 @@ export default async function DashboardPage() {
                         <span className="text-sm text-muted-foreground">
                           {exam.score}/{exam.total_questions}
                         </span>
-                        <span className={`text-sm font-semibold ${pct >= 80 ? 'text-green-600' : pct >= 60 ? 'text-amber-600' : 'text-red-500'}`}>
+                        <span className={`text-sm font-semibold ${pct >= 80 ? 'text-green-700' : pct >= 60 ? 'text-amber-700' : 'text-red-700'}`}>
                           {pct}%
                         </span>
                       </div>
@@ -491,9 +499,9 @@ export default async function DashboardPage() {
           </div>
 
           {/* Strong topics */}
-          <div style={{ animationDelay: '200ms' }} className="animate-fade-slide-in p-5 rounded-3xl border border-border bg-card shadow-sm">
+          <div style={{ animationDelay: '200ms' }} className="animate-fade-slide-in p-5 rounded-lg border border-border bg-card ">
             <div className="flex items-center gap-2">
-              <BookOpenCheck className="size-4 text-green-600" aria-hidden="true" />
+              <BookOpenCheck className="size-4 text-green-700" aria-hidden="true" />
               <h2 className="text-sm font-semibold text-foreground">หัวข้อที่ทำได้ดี</h2>
             </div>
             <p className="mb-4 mt-1 text-xs text-muted-foreground">แม่นอย่างน้อย 80% จากข้อมูลรวม</p>

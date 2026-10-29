@@ -1,5 +1,7 @@
 'use client'
 
+import { ResultReveal } from '@/app/components/adventure/training-feedback'
+
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
@@ -96,9 +98,9 @@ export default function ExamResultPage() {
   const percentage = maximumPoints > 0 ? Math.round((earnedPoints / maximumPoints) * 100) : 0
 
   const scoreColor =
-    percentage >= 80 ? 'text-green-600' :
-    percentage >= 60 ? 'text-amber-600' :
-    'text-red-600'
+    percentage >= 80 ? 'text-green-700' :
+    percentage >= 60 ? 'text-amber-700' :
+    'text-red-700'
 
   const scoreLabel =
     percentage >= 80 ? 'พื้นฐานพร้อมต่อยอด' :
@@ -130,11 +132,12 @@ export default function ExamResultPage() {
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-12">
+      <h1 className="sr-only">ผลสอบจำลอง</h1>
       <div className="max-w-4xl mx-auto">
 
         {/* Score hero */}
-        <div className="animate-fade-slide-in text-center py-10 mb-10 border-b border-border relative">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-4">
+        <ResultReveal confirmed={Boolean(session.submitted_at)}><div className="text-center py-10 mb-10 border-b border-border relative">
+          <p className="text-xs text-muted-foreground mb-4">
             {EXAM_NAMES[session.exam_type] ?? session.exam_type} · ผลสอบ
           </p>
           <div className={`font-heading text-8xl font-bold mb-3 tabular-nums ${scoreColor}`}>{percentage}%</div>
@@ -147,11 +150,12 @@ export default function ExamResultPage() {
           </p>
         </div>
 
+        </ResultReveal>
         {isBasicDiagnostic && (
           <section className="mb-10 grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl border border-green-500/25 bg-green-500/[0.06] p-6">
+            <div className="rounded-lg border border-green-500/25 bg-green-500/[0.06] p-6">
               <div className="flex items-center gap-3">
-                <BookOpenCheck className="h-5 w-5 text-green-600" aria-hidden="true" />
+                <BookOpenCheck className="h-5 w-5 text-green-700" aria-hidden="true" />
                 <h2 className="font-heading text-lg font-semibold text-foreground">พื้นฐานที่พร้อมต่อยอด</h2>
               </div>
               {strongTopics.length > 0 ? (
@@ -172,7 +176,7 @@ export default function ExamResultPage() {
               )}
             </div>
 
-            <div className="rounded-3xl border border-primary/30 bg-primary/[0.06] p-6">
+            <div className="rounded-lg border border-primary/30 bg-primary/[0.06] p-6">
               <div className="flex items-center gap-3">
                 <Target className="h-5 w-5 text-primary" aria-hidden="true" />
                 <h2 className="font-heading text-lg font-semibold text-foreground">ควรเริ่มทบทวนจากตรงนี้</h2>
@@ -207,8 +211,8 @@ export default function ExamResultPage() {
         )}
 
         {/* Topic breakdown */}
-        <div className="mb-10 p-5 rounded-3xl border border-border bg-card shadow-sm">
-          <h2 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">
+        <div className="mb-10 p-5 rounded-lg border border-border bg-card ">
+          <h2 className="text-sm font-semibold text-foreground mb-5 ">
             ผลตามหัวข้อ
           </h2>
           <div className="flex flex-col gap-4">
@@ -248,7 +252,7 @@ export default function ExamResultPage() {
 
         {/* Per-question review */}
         <div className="mb-12">
-          <h2 className="text-sm font-semibold text-foreground mb-5 uppercase tracking-wider">
+          <h2 className="text-sm font-semibold text-foreground mb-5 ">
             รายละเอียดแต่ละข้อ
           </h2>
           <div className="flex flex-col gap-3">
@@ -259,15 +263,15 @@ export default function ExamResultPage() {
                 <div
                   key={q.id}
                   style={{ animationDelay: `${Math.min(i * 25, 300)}ms` }}
-                  className={`animate-fade-slide-in p-4 rounded-2xl border ${
+                  className={`animate-fade-slide-in p-4 rounded-lg border ${
                     correct
-                      ? 'border-green-200 bg-green-50 dark:bg-green-950/30 dark:border-green-800'
-                      : 'border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800'
+                      ? 'border-green-200 bg-green-50'
+                      : 'border-red-200 bg-red-50'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <span className="text-xs text-muted-foreground">ข้อ {i + 1}</span>
-                    <span className={`flex items-center gap-1 text-xs font-semibold ${correct ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className={`flex items-center gap-1 text-xs font-semibold ${correct ? 'text-green-700' : 'text-red-700'}`}>
                       {correct ? (
                         <><CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> ถูก</>
                       ) : (
@@ -282,11 +286,11 @@ export default function ExamResultPage() {
                     <div className="flex gap-5 mt-2 text-xs text-muted-foreground">
                       <span>
                         คำตอบของคุณ:{' '}
-                        <strong className="text-red-600">{userAns ?? 'ไม่ได้ตอบ'}</strong>
+                        <strong className="text-red-700">{userAns ?? 'ไม่ได้ตอบ'}</strong>
                       </span>
                       <span>
                         เฉลย:{' '}
-                        <strong className="text-green-600">{q.answer}</strong>
+                        <strong className="text-green-700">{q.answer}</strong>
                       </span>
                     </div>
                   )}
@@ -299,13 +303,13 @@ export default function ExamResultPage() {
         <div className="flex gap-4 justify-center">
           <Link
             href="/exam"
-            className="px-6 py-3 border border-border rounded-xl text-sm hover:bg-accent transition-colors cursor-pointer"
+            className="px-6 py-3 border border-border rounded-lg text-sm hover:bg-accent transition-colors cursor-pointer"
           >
             สอบอีกครั้ง
           </Link>
           <Link
             href="/practice"
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-xl text-sm hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
           >
             ฝึกโจทย์ตามหัวข้อ
           </Link>

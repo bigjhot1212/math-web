@@ -1,65 +1,20 @@
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import UserMenu from './user-menu'
-import CartIcon from './cart-icon'
-import { BookMarked, Crown } from 'lucide-react'
-import BrandMark from './brand-mark'
-import { BRAND_NAME } from '@/lib/brand'
+import { isAdminEmail } from '@/lib/payment-config'
+import AppShell from './app-shell'
 
-export default async function Nav() {
+export default async function Nav({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
-  const name = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'User'
-  const email = user?.email ?? ''
-  const avatarUrl = user?.user_metadata?.avatar_url ?? null
-
   return (
-    <header className="sticky top-0 z-20 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-      <div className="max-w-6xl mx-auto flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 font-heading font-bold text-foreground cursor-pointer">
-          <span className="flex h-8 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/30">
-            <BrandMark className="h-4 w-8" />
-          </span>
-          <span className="tracking-tight">{BRAND_NAME}</span>
-        </Link>
-
-        <nav className="hidden items-center gap-1 rounded-2xl bg-muted/70 p-1 md:flex">
-          {[
-            ['ฝึกโจทย์', '/practice'],
-            ['สอบจำลอง', '/exam'],
-            ['ขุมทรัพย์', '/treasure'],
-            ...(user ? [['คอร์สของฉัน', '/courses']] : []),
-            ['Dashboard', '/dashboard'],
-            ['คอร์ส', '/pricing'],
-          ].map(([label, href]) => (
-            <Link key={href} href={href} className="rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-background hover:text-primary cursor-pointer">
-              {label}
-            </Link>
-          ))}
-          <Link href="/premium" className="inline-flex items-center gap-1.5 rounded-xl bg-amber-400 px-3.5 py-2 text-sm font-semibold text-amber-950 shadow-sm shadow-amber-500/30 transition-colors hover:bg-amber-300 cursor-pointer">
-            <Crown className="size-4" aria-hidden="true" />
-            Premium
-          </Link>
-        </nav>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <Link href="/premium" className="flex size-11 items-center justify-center rounded-xl text-amber-500 transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden" aria-label="ข้อสอบพรีเมียม">
-            <Crown className="size-5" />
-          </Link>
-          <Link href="/treasure" className="flex size-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden" aria-label="ขุมทรัพย์">
-            <BookMarked className="size-5" />
-          </Link>
-          <CartIcon />
-          {user ? (
-            <UserMenu name={name} email={email} avatarUrl={avatarUrl} />
-          ) : (
-            <Link href="/login" className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/25 transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer">
-              เข้าสู่ระบบ
-            </Link>
-          )}
-        </div>
-      </div>
-    </header>
+    <AppShell
+      user={user ? {
+        name: user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'นักเรียน',
+        email: user.email ?? '',
+        avatarUrl: user.user_metadata?.avatar_url ?? null,
+      } : null}
+      isAdmin={isAdminEmail(user?.email)}
+    >
+      {children}
+    </AppShell>
   )
 }

@@ -10,8 +10,8 @@ The selected structure is an exam-trap field guide: one featured dossier followe
 
 ## Visual Translation
 
-- Inherit the established cool dark MathPrep world, typography, border language, and accents.
-- Use mathematical marks as calm editorial identifiers, not decorative generated imagery.
+- Inherit the approved Math Hunters island adventure at the library entry: illustrated observatory cover, emerald identity, gold frame, and warm reading surfaces. Retain IBM Plex Sans Thai headings and Noto Sans Thai body text. Keep diagrams and equations legible with dark semantic ink colours.
+- Generated scenery belongs at the entry cover; mathematical marks, formulas, and chapter text remain selectable HTML/SVG with quiet article layouts.
 - Use lines, numbered sections, and compact metadata to feel like an annotated study archive.
 - Preserve long-form readability on mobile and desktop.
 
