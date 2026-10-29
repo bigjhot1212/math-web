@@ -1,4 +1,16 @@
 import type { Metadata } from "next";
+import "@fontsource/ibm-plex-sans-thai/500.css";
+import "@fontsource/ibm-plex-sans-thai/600.css";
+import "@fontsource/ibm-plex-sans-thai/700.css";
+import "@fontsource/noto-sans-thai/400.css";
+import "@fontsource/noto-sans-thai/500.css";
+import "@fontsource/noto-sans-thai/600.css";
+import "@fontsource/noto-sans-thai/700.css";
+import "@fontsource/stix-two-text/400.css";
+import "@fontsource/stix-two-text/500.css";
+import "@fontsource/stix-two-text/600.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/600.css";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import Nav from "./components/nav";

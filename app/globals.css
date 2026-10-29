@@ -53,8 +53,8 @@
 }
 
 :root {
-  --font-heading: "Thonburi", "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
-  --font-body: "Thonburi", "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
+  --font-heading: "IBM Plex Sans Thai", "Thonburi", "Leelawadee UI", Tahoma, sans-serif;
+  --font-body: "Noto Sans Thai", "Thonburi", "Leelawadee UI", Tahoma, sans-serif;
   --font-math: "STIX Two Text", "Cambria Math", Georgia, serif;
   --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
   --background: #F7F6EF;
