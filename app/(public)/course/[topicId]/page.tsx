@@ -41,7 +41,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
         </div>
 
         {course.videoId ? (
-          <div className="rounded-3xl overflow-hidden border border-border aspect-video shadow-sm">
+          <div className="rounded-lg overflow-hidden border border-border aspect-video ">
             <iframe
               src={`https://www.youtube.com/embed/${course.videoId}`}
               title={course.name}
@@ -51,8 +51,8 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
             />
           </div>
         ) : (
-          <div className="rounded-3xl border-2 border-dashed border-border aspect-video flex flex-col items-center justify-center gap-3 text-muted-foreground bg-card/40">
-            <span className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+          <div className="rounded-lg border-2 border-dashed border-border aspect-video flex flex-col items-center justify-center gap-3 text-muted-foreground bg-card/40">
+            <span className="w-14 h-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
               <Clapperboard className="w-7 h-7" aria-hidden="true" />
             </span>
             <p className="text-sm font-medium">วิดีโอกำลังจะมาเร็วๆ นี้</p>
@@ -61,7 +61,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
         )}
 
         {classroomUrl && (
-          <div className="mt-6 p-4 rounded-2xl border border-border bg-card/70 backdrop-blur-xl flex items-center justify-between transition-all duration-300 hover:shadow-[0_0_20px_-8px_var(--primary)]">
+          <div className="mt-6 p-4 rounded-lg border border-border bg-card/70 flex items-center justify-between transition-all duration-300 ">
             <div>
               <p className="text-sm font-medium text-foreground">Google Classroom</p>
               <p className="text-xs text-muted-foreground">เนื้อหา วิดีโอ และแบบฝึกหัดเพิ่มเติม</p>
@@ -70,7 +70,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
               href={classroomUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
             >
               เปิด Classroom
               <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
@@ -79,7 +79,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
         )}
 
         {course.curriculum && course.curriculum.length > 0 && (
-          <div className="mt-6 p-5 rounded-3xl border border-border bg-card/70 backdrop-blur-xl">
+          <div className="mt-6 p-5 rounded-lg border border-border bg-card/70 ">
             <div className="flex items-center gap-2 mb-4">
               <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
               <h2 className="text-sm font-heading font-semibold text-foreground">เนื้อหาในคอร์ส</h2>
@@ -88,7 +88,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
               {course.curriculum.map((section, sIdx) => (
                 <div key={sIdx}>
                   {section.title && (
-                    <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">{section.title}</p>
+                    <p className="text-xs font-semibold text-primary  mb-2">{section.title}</p>
                   )}
                   <ol className="space-y-1.5">
                     {section.items.map((item, i) => (

@@ -93,7 +93,7 @@ export default async function StudentsAdminPage() {
             <h1 className="font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground">ความก้าวหน้าของนักเรียน</h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">เปิดดูข้อมูลเป้าหมาย ผลการฝึก และประวัติการสอบของนักเรียนแต่ละคนได้จากหน้านี้</p>
           </div>
-          <Link href="/admin/bank-transfers" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">ตรวจสลิปการโอน</Link>
+          <Link href="/admin/bank-transfers" className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">ตรวจสลิปการโอน</Link>
         </header>
 
         <div className="mb-5 grid gap-4 border-y border-border py-4 sm:grid-cols-3">
@@ -103,27 +103,46 @@ export default async function StudentsAdminPage() {
         </div>
 
         {summaries.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border px-6 py-14 text-center">
+          <div className="rounded-lg border border-dashed border-border px-6 py-14 text-center">
             <h2 className="font-semibold text-foreground">ยังไม่มีข้อมูลนักเรียน</h2>
             <p className="mt-2 text-sm text-muted-foreground">เมื่อนักเรียนกรอกโปรไฟล์ รายชื่อจะปรากฏที่นี่</p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-border bg-card">
-            <table className="w-full min-w-[1080px] text-left text-sm">
+          <>
+          <div className="grid gap-4 xl:hidden" aria-label="รายชื่อนักเรียน">
+            {summaries.map(student => (
+              <article key={student.user_id} className="min-w-0 rounded-lg border border-border bg-card p-5">
+                <Link href={`/admin/students/${student.user_id}`} className="font-heading text-lg font-semibold text-primary underline-offset-4 hover:underline">{student.full_name}</Link>
+                <p className="mt-1 break-all text-xs text-muted-foreground">{student.email ?? 'ยังไม่มีอีเมล'} · {student.grade}</p>
+                <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                  <div><dt className="text-xs text-muted-foreground">การเรียน</dt><dd className="mt-1">{student.answered} ข้อ · {student.examCount} สนาม</dd></div>
+                  <div><dt className="text-xs text-muted-foreground">ความแม่นยำ</dt><dd className="mt-1">{student.accuracy === null ? 'ยังไม่มีข้อมูล' : `${student.accuracy}%`}</dd></div>
+                  <div><dt className="text-xs text-muted-foreground">การชำระเงิน</dt><dd className="mt-1">{student.purchases.length > 0 ? `ชำระแล้ว ${formatBaht(student.purchaseTotal)}` : 'ยังไม่มีคอร์ส'}</dd></div>
+                  <div><dt className="text-xs text-muted-foreground">ใช้งานล่าสุด</dt><dd className="mt-1">{formatActivity(student.lastActivity)}</dd></div>
+                </dl>
+                <p className="mt-4 text-sm text-muted-foreground">คอร์สที่เปิดสิทธิ์: {student.purchases.length > 0 ? student.purchases.map(purchase => COURSES[purchase.topic_id]?.name ?? purchase.topic_id).join(', ') : 'ยังไม่มีคอร์ส'}</p>
+                {student.latestConfirmation && <p className="mt-2 text-xs text-muted-foreground">ยืนยันล่าสุด {formatActivity(student.latestConfirmation)}</p>}
+                <Link href={`/admin/students/${student.user_id}`} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">ดูความก้าวหน้า<ChevronRight className="size-4" aria-hidden="true" /></Link>
+              </article>
+            ))}
+          </div>
+          <div role="region" aria-label="รายชื่อนักเรียน เลื่อนแนวนอนเพื่อดูข้อมูลทั้งหมด" tabIndex={0} className="hidden max-w-full overflow-x-auto rounded-lg border border-border bg-card xl:block">
+            <table className="w-full min-w-[900px] text-left text-sm">
               <thead className="border-b border-border bg-muted/40 text-muted-foreground"><tr><th className="px-5 py-3.5 font-medium">นักเรียน</th><th className="px-4 py-3.5 font-medium">ชั้น</th><th className="px-4 py-3.5 font-medium">คอร์สที่เปิดสิทธิ์</th><th className="px-4 py-3.5 font-medium">การชำระเงิน</th><th className="px-4 py-3.5 font-medium">การเรียน</th><th className="px-4 py-3.5 font-medium">ใช้งานล่าสุด</th><th className="w-14 px-4 py-3.5"><span className="sr-only">ดูรายละเอียด</span></th></tr></thead>
               <tbody>{summaries.map(student => (
                 <tr key={student.user_id} className="border-b border-border last:border-0 hover:bg-accent/40">
                   <td className="px-5 py-4"><Link href={`/admin/students/${student.user_id}`} className="font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:underline">{student.full_name}</Link>{student.email && <p className="mt-0.5 text-xs text-muted-foreground">{student.email}</p>}</td>
                   <td className="px-4 py-4 text-muted-foreground">{student.grade}</td>
                   <td className="max-w-72 px-4 py-4">{student.purchases.length > 0 ? <><p className="line-clamp-2 font-medium text-foreground">{student.purchases.slice(0, 2).map(purchase => COURSES[purchase.topic_id]?.name ?? purchase.topic_id).join(', ')}</p>{student.purchases.length > 2 && <p className="mt-1 text-xs text-muted-foreground">และอีก {student.purchases.length - 2} คอร์ส</p>}</> : <span className="text-muted-foreground">ยังไม่มีคอร์ส</span>}</td>
-                  <td className="px-4 py-4">{student.purchases.length > 0 ? <><span className="inline-flex rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-700 dark:text-green-400">ชำระแล้ว</span><p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{formatBaht(student.purchaseTotal)}{student.latestConfirmation ? ` · ${formatActivity(student.latestConfirmation)}` : ''}</p></> : <span className="text-muted-foreground">—</span>}</td>
-                  <td className="px-4 py-4"><p className="tabular-nums text-foreground">{student.answered} ข้อ · {student.examCount} สนาม</p><p className={`mt-1 text-xs font-semibold tabular-nums ${student.accuracy === null ? 'text-muted-foreground' : student.accuracy >= 80 ? 'text-green-600' : student.accuracy >= 60 ? 'text-amber-600' : 'text-red-500'}`}>{student.accuracy === null ? 'ยังไม่มีข้อมูลความแม่นยำ' : `แม่นยำ ${student.accuracy}%`}</p></td>
+                  <td className="px-4 py-4">{student.purchases.length > 0 ? <><span className="inline-flex rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-700">ชำระแล้ว</span><p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{formatBaht(student.purchaseTotal)}{student.latestConfirmation ? ` · ${formatActivity(student.latestConfirmation)}` : ''}</p></> : <span className="text-muted-foreground">—</span>}</td>
+                  <td className="px-4 py-4"><p className="tabular-nums text-foreground">{student.answered} ข้อ · {student.examCount} สนาม</p><p className={`mt-1 text-xs font-semibold tabular-nums ${student.accuracy === null ? 'text-muted-foreground' : student.accuracy >= 80 ? 'text-green-700' : student.accuracy >= 60 ? 'text-amber-700' : 'text-red-700'}`}>{student.accuracy === null ? 'ยังไม่มีข้อมูลความแม่นยำ' : `แม่นยำ ${student.accuracy}%`}</p></td>
                   <td className="px-4 py-4 text-muted-foreground">{formatActivity(student.lastActivity)}</td>
-                  <td className="px-4 py-4"><Link href={`/admin/students/${student.user_id}`} aria-label={`ดูความก้าวหน้าของ ${student.full_name}`} className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
+                  <td className="px-4 py-4"><Link href={`/admin/students/${student.user_id}`} aria-label={`ดูความก้าวหน้าของ ${student.full_name}`} className="inline-flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"><ChevronRight className="size-4" aria-hidden="true" /></Link></td>
                 </tr>
               ))}</tbody>
             </table>
           </div>
+          </>
         )}
       </div>
     </main>

@@ -5,8 +5,8 @@ import { useState } from 'react'
 // Vercel caps request bodies at ~4.5 MB, so big question files are sent in slices.
 const UPLOAD_SLICE = 300
 
-const box = 'rounded-2xl border border-border p-6'
-const button = 'rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50'
+const box = 'min-w-0 rounded-lg border border-border bg-card p-5 sm:p-6'
+const button = 'rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50'
 
 export function InviteForm() {
   const [emails, setEmails] = useState('')
@@ -44,14 +44,16 @@ export function InviteForm() {
         value={emails}
         onChange={(event) => setEmails(event.target.value)}
         rows={6}
+        aria-label="อีเมลนักเรียน"
         placeholder={'student1@gmail.com\nstudent2@hotmail.com'}
-        className="mb-3 w-full rounded-xl border border-border bg-background p-3 font-mono text-sm text-foreground outline-none focus:border-primary"
+        className="mb-3 w-full rounded-lg border border-border bg-background p-3 font-mono text-sm text-foreground outline-none focus:border-primary"
       />
       <input
+        aria-label="หมายเหตุ"
         value={note}
         onChange={(event) => setNote(event.target.value)}
         placeholder="หมายเหตุ เช่น รุ่นปี 2568 (ไม่บังคับ)"
-        className="mb-4 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+        className="mb-4 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
       />
       <button type="button" onClick={submit} disabled={busy} className={button}>{busy ? 'กำลังบันทึก...' : 'บันทึกอีเมล'}</button>
       {result && <p className="mt-3 text-sm text-muted-foreground">{result}</p>}
@@ -115,6 +117,7 @@ export function QuestionImportForm() {
       <p className="mb-4 text-sm text-muted-foreground">อัปโหลดไฟล์ JSON ของโจทย์ ข้อที่มี id ซ้ำจะถูกอัปเดต จึงอัปโหลดไฟล์เดิมซ้ำหลังแก้ไขได้</p>
       <input
         type="file"
+        aria-label="ไฟล์ข้อสอบ JSON"
         accept="application/json,.json"
         onChange={(event) => setFile(event.target.files?.[0] ?? null)}
         className="mb-4 block text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-muted file:px-3 file:py-2 file:text-sm file:text-foreground"

@@ -15,28 +15,14 @@ import {
 } from 'lucide-react'
 import { COURSES, ZONE_LABELS } from '@/content/course-videos'
 import styles from './home.module.css'
+import AdventureHero from './components/adventure/adventure-hero'
+import AdventureAtlas from './components/adventure/adventure-atlas'
+import { AnimatedContent } from './components/adventure/adventure-effects'
+import CourseArtwork from './(public)/pricing/course-artwork'
 
 const availableCourses = Object.entries(COURSES)
   .filter(([, course]) => course.status === 'available')
   .map(([id, course]) => ({ id, ...course }))
-
-const courseMarks: Record<string, string> = {
-  'foundation-high-school': 'x',
-  'a-level-math-1-intensive': 'A¹',
-  trigonometry: 'θ',
-  'sequences-series': 'Σ',
-  calculus: '∫',
-  'statistics-distributions': 'σ',
-}
-
-const courseColors = [
-  'oklch(0.27 0.09 275)',
-  'oklch(0.22 0.07 255)',
-  'oklch(0.24 0.07 225)',
-  'oklch(0.22 0.065 195)',
-  'oklch(0.235 0.07 285)',
-  'oklch(0.23 0.06 245)',
-]
 
 const practiceTopics = [
   ['เซต', '50 ข้อ'],
@@ -48,103 +34,31 @@ const practiceTopics = [
 export default function Home() {
   return (
     <main className={`${styles.page} flex-1 overflow-hidden bg-background`}>
-      <section className={styles.hero}>
-        <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[1.06fr_0.94fr] lg:px-14 lg:py-28">
-          <div>
-            <p className={styles.leadLine}>เข้าใจสิ่งที่โจทย์ทดสอบ ก่อนรีบหาคำตอบ</p>
-            <h1 className="mt-5 max-w-[760px] text-balance font-heading text-[2.6rem] font-semibold leading-[1.16] tracking-[-0.03em] text-foreground sm:text-[3.5rem] lg:text-[4rem]">
-              ถ้าอยากยื่นคณะโดยไม่ต้องมองคะแนน<br />ก็ต้องทำโจทย์โดยไม่ต้องดูเวลาเหมือนกัน
-            </h1>
-            <p className="mt-6 max-w-[620px] text-pretty text-lg leading-8 text-muted-foreground">
-              ฝึกทีละบท จับเวลาสอบจริง และดูความก้าวหน้าของตัวเองในที่เดียว เพื่อให้ทุกครั้งที่ทำโจทย์พาเราเข้าใกล้ความฝันมากขึ้น
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/practice" className={styles.primaryButton}>
-                เริ่มฝึกโจทย์ฟรี <ArrowRight aria-hidden="true" className="size-4" />
-              </Link>
-              <Link href="/pricing" className={styles.secondaryButton}>
-                ดูคอร์สทั้งหมด
-              </Link>
-            </div>
-
-            <dl className="mt-11 grid max-w-[590px] grid-cols-3 border-t border-border pt-6">
-              <div>
-                <dt className="font-heading text-2xl font-semibold text-foreground">14 บท</dt>
-                <dd className="mt-1 text-sm text-muted-foreground">ครบ ม.4–ม.6</dd>
-              </div>
-              <div className="border-x border-border px-5 sm:px-8">
-                <dt className="font-heading text-2xl font-semibold text-foreground">700 ข้อ</dt>
-                <dd className="mt-1 text-sm text-muted-foreground">บทละ 50 ข้อ</dd>
-              </div>
-              <div className="pl-5 sm:pl-8">
-                <dt className="font-heading text-2xl font-semibold text-foreground">98/100</dt>
-                <dd className="mt-1 text-sm text-muted-foreground">คะแนนผู้สอน</dd>
-              </div>
-            </dl>
-          </div>
-
-          <div className={styles.heroStage} aria-label="ตัวอย่างประสบการณ์เรียนใน Math Hunters Association">
-            <div className={styles.scoreCard}>
-              <div className="flex items-center justify-between gap-3 text-sm font-semibold text-white/80">
-                <span>A-LEVEL MATH 1</span>
-                <span>คะแนนผู้สอน</span>
-              </div>
-              <div className="mt-3 flex items-baseline gap-2">
-                <strong className="font-heading text-[5.6rem] font-semibold leading-none tracking-[-0.04em]">98</strong>
-                <span className="font-heading text-2xl text-white/65">/100</span>
-              </div>
-              <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/20">
-                <div className="h-full w-[98%] rounded-full bg-[oklch(0.76_0.13_220)]" />
-              </div>
-              <p className="mt-3 text-sm leading-6 text-white/85">พี่สอนให้มองโจทย์แบบเดียวกับตอนอยู่ในห้องสอบจริง</p>
-            </div>
-
-            <div className={styles.questionCard}>
-              <div className="flex items-center justify-between gap-3 text-xs font-bold">
-                <span className="text-primary">ตัวอย่างโจทย์ · แคลคูลัส</span>
-                <span className="text-muted-foreground">ข้อ 1 จาก 50</span>
-              </div>
-              <p className="mt-5 text-lg leading-8 text-foreground">
-                จงหา <span className="font-math text-2xl italic">lim</span><sub className="font-math">x→2</sub>{' '}
-                <span className="inline-flex flex-col align-middle font-math text-xl italic leading-tight">
-                  <span className="border-b border-foreground px-1">x² − 4</span><span className="px-1 text-center">x − 2</span>
-                </span>
-              </p>
-              <div className="mt-5 grid grid-cols-4 gap-2 font-math">
-                {['0', '2', '4', 'ไม่มีลิมิต'].map((choice) => (
-                  <span key={choice} className={choice === '4' ? styles.correctChoice : styles.choice}>{choice}</span>
-                ))}
-              </div>
-              <p className="mt-4 rounded-xl bg-accent px-4 py-3 text-sm leading-6 text-accent-foreground">
-                <strong>จุดหลอก:</strong> ได้ 0/0 ไม่ได้แปลว่าไม่มีลิมิต — ลองแยกตัวประกอบก่อน
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AdventureHero />
+      <AdventureAtlas />
 
       <section className="mx-auto max-w-[1280px] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
         <div className="max-w-3xl">
-          <h2 className="text-balance font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">ทุกเครื่องมือที่ต้องใช้ ตั้งแต่ข้อแรกจนถึงวันสอบ</h2>
+          <h2 className="text-balance font-heading text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">เส้นทางฝึกของฮันเตอร์</h2>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">เลือกเริ่มจากสิ่งที่ต้องการวันนี้ แล้วระบบจะเก็บผลการฝึกไว้ให้กลับมาดูต่อได้</p>
         </div>
 
-        <div className={styles.featureGrid}>
+        <AnimatedContent className={styles.featureGrid}>
           <Link href="/practice" className={`${styles.featurePanel} ${styles.practicePanel}`}>
             <div className="flex items-center justify-between gap-4">
-              <span className={styles.panelLabel}><BookOpenCheck className="size-4" /> ฝึกโจทย์แยกบท</span>
+              <span className={styles.panelLabel}><BookOpenCheck className="size-4" /> ภารกิจฝึกโจทย์</span>
               <span className="font-mono text-sm text-white/70">14 × 50</span>
             </div>
             <h3 className="mt-8 max-w-md font-heading text-3xl font-semibold leading-tight text-white">ฝึกเฉพาะบทที่ยังไม่แม่นได้เลย</h3>
             <p className="mt-3 max-w-xl leading-7 text-white/75">เลือกหัวข้อ ม.4–ม.6 ทำโจทย์พร้อมเฉลย และกลับมาทำต่อจากจุดเดิมได้</p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {practiceTopics.map(([topic, progress]) => (
-                <div key={topic} className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm text-white">
+                <div key={topic} className="flex items-center justify-between rounded-lg bg-white/10 px-4 py-3 text-sm text-white">
                   <span>{topic}</span><span className="font-mono text-white/65">{progress}</span>
                 </div>
               ))}
             </div>
-            <span className="mt-7 inline-flex items-center gap-2 font-semibold text-[oklch(0.82_0.1_220)]">เลือกบทที่อยากฝึก <ArrowRight className="size-4" /></span>
+            <span className="mt-7 inline-flex items-center gap-2 font-semibold text-white">เลือกบทที่อยากฝึก <ArrowRight className="size-4" /></span>
           </Link>
 
           <Link href="/exam" className={`${styles.featurePanel} ${styles.examPanel}`}>
@@ -152,15 +66,15 @@ export default function Home() {
               <span className="flex items-center gap-2 text-sm font-semibold text-white/80"><Clock3 className="size-4" /> สอบจำลอง</span>
               <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">จับเวลาจริง</span>
             </div>
-            <div className="mt-10 font-mono text-5xl font-semibold tabular-nums text-[oklch(0.8_0.11_220)]">90:00</div>
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full w-[72%] rounded-full bg-[oklch(0.72_0.14_220)]" /></div>
+            <div className="mt-10 font-mono text-5xl font-semibold tabular-nums text-white">90:00</div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full w-[72%] rounded-full bg-white" /></div>
             <h3 className="mt-9 font-heading text-2xl font-semibold text-white">ซ้อมก่อนลงสนามจริง</h3>
             <p className="mt-2 leading-7 text-white/65">ทำข้อสอบตามเวลา ส่งคำตอบ แล้วดูผลแยกตามหัวข้อเพื่อรู้ว่าควรกลับไปเติมตรงไหน</p>
           </Link>
 
           <Link href="/dashboard" className={`${styles.featurePanel} ${styles.dashboardPanel}`}>
             <div className="flex items-center justify-between">
-              <span className={styles.darkLabel}><BarChart3 className="size-4" /> Dashboard</span>
+              <span className={styles.darkLabel}><BarChart3 className="size-4" /> ศูนย์บัญชาการ</span>
               <ChevronRight className="size-5 text-primary" />
             </div>
             <h3 className="mt-7 font-heading text-2xl font-semibold text-foreground">เห็นพัฒนาการ ไม่ต้องเดา</h3>
@@ -170,7 +84,7 @@ export default function Home() {
                 <span key={index} className="rounded-t-md bg-primary/80" style={{ height: `${height}%` }} />
               ))}
             </div>
-            <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>7 วันที่ผ่านมา</span><span className="font-mono font-semibold text-[oklch(0.75_0.11_195)]">84% วันนี้</span></div>
+            <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>ตัวอย่างความก้าวหน้า 7 วัน</span><span className="font-mono font-semibold text-primary">ตัวอย่าง 84%</span></div>
           </Link>
 
           <Link href="/courses" className={`${styles.featurePanel} ${styles.libraryPanel}`}>
@@ -191,7 +105,7 @@ export default function Home() {
               <span>∪</span><span>⇒</span><span>lim</span><span>σ²</span>
             </div>
           </Link>
-        </div>
+        </AnimatedContent>
       </section>
 
       <section className="border-y border-border bg-card">
@@ -205,14 +119,11 @@ export default function Home() {
           </div>
 
           <div className={styles.courseGrid}>
-            {availableCourses.map((course, index) => {
+            {availableCourses.map((course) => {
               const lessonCount = course.curriculum?.reduce((sum, section) => sum + section.items.length, 0) ?? 0
               return (
                 <Link key={course.id} href="/pricing" className={styles.courseCard}>
-                  <div className={styles.courseCover} style={{ backgroundColor: courseColors[index % courseColors.length] }}>
-                    <span className={styles.courseMark}>{courseMarks[course.id] ?? '∑'}</span>
-                    <span className={styles.zoneChip}>{ZONE_LABELS[course.zone]}</span>
-                  </div>
+                  <div className={styles.courseCover}><CourseArtwork courseId={course.id} courseName={course.name} featured /><span className={styles.zoneChip}>{ZONE_LABELS[course.zone]}</span></div>
                   <div className="flex flex-1 flex-col p-5">
                     <h3 className="font-heading text-lg font-semibold leading-snug text-foreground">{course.name}</h3>
                     <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">{course.desc}</p>
@@ -239,8 +150,8 @@ export default function Home() {
                 ['ส่งหลักฐาน', 'อัปโหลดสลิปจากหน้า Checkout', ReceiptText],
                 ['รับสิทธิ์เข้าเรียน', 'พี่ยืนยันแล้วคอร์สจะเข้าคลังของคุณ', ShieldCheck],
               ].map(([title, description, Icon], index) => (
-                <div key={String(title)} className="grid grid-cols-[42px_1fr] items-start gap-3 rounded-2xl bg-background p-4">
-                  <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="size-5" /></span>
+                <div key={String(title)} className="grid grid-cols-[42px_1fr] items-start gap-3 rounded-lg bg-background p-4">
+                  <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><Icon className="size-5" /></span>
                   <div><p className="font-semibold text-foreground">{index + 1}. {String(title)}</p><p className="mt-0.5 text-sm text-muted-foreground">{String(description)}</p></div>
                 </div>
               ))}
@@ -256,7 +167,7 @@ export default function Home() {
             </div>
             <div className="space-y-3">
               {['สอนให้เริ่มคิดเมื่อเจอโจทย์ไม่คุ้น', 'ชี้ Keyword และจุดหลอกที่ออกซ้ำ', 'ดูแลต่อได้ผ่าน Instagram'].map((item) => (
-                <p key={item} className="flex items-start gap-3 text-white/85"><Check className="mt-0.5 size-5 shrink-0 text-[oklch(0.78_0.12_220)]" />{item}</p>
+                <p key={item} className="flex items-start gap-3 text-white/85"><Check className="mt-0.5 size-5 shrink-0 text-white" />{item}</p>
               ))}
             </div>
             <a href="https://ig.me/m/j.3ra_" target="_blank" rel="noopener noreferrer" className={styles.instagramButton}>
@@ -267,7 +178,7 @@ export default function Home() {
       </section>
 
       <section className="px-5 pb-20 sm:px-8 lg:px-14 lg:pb-28">
-        <div className="mx-auto flex max-w-[1168px] flex-col items-start justify-between gap-8 rounded-[2rem] bg-[oklch(0.22_0.08_280)] px-7 py-10 text-white sm:px-10 lg:flex-row lg:items-center lg:px-14 lg:py-12">
+        <div className="mx-auto flex max-w-[1168px] flex-col items-start justify-between gap-8 rounded-lg bg-primary px-7 py-10 text-white sm:px-10 lg:flex-row lg:items-center lg:px-14 lg:py-12">
           <div>
             <h2 className="font-heading text-3xl font-semibold sm:text-4xl">เริ่มจากข้อเดียวก็ได้</h2>
             <p className="mt-3 max-w-2xl text-lg leading-8 text-white/65">เลือกบทที่ยังไม่มั่นใจ หรือเข้าห้องสอบจำลองเพื่อดูว่าควรกลับไปเติมตรงไหนก่อน</p>

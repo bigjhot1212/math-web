@@ -31,10 +31,13 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
     .toUpperCase()
 
   return (
-    <div ref={ref} className="relative ml-2">
+    <div ref={ref} onKeyDown={event => { if (event.key === 'Escape') setOpen(false) }} className="relative ml-2">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden border-2 border-border hover:border-primary transition-colors cursor-pointer"
+        aria-label="เมนูบัญชีของฉัน"
+        aria-expanded={open}
+        onKeyDown={event => { if (event.key === 'Escape') setOpen(false) }}
+        className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden border-2 border-border hover:border-primary transition-colors cursor-pointer"
       >
         {avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -47,7 +50,7 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
       </button>
 
       {open && (
-        <div className="animate-fade-slide-in absolute right-0 top-10 w-52 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-lg py-1 z-50">
+        <div className="animate-fade-slide-in absolute right-0 top-10 w-52 rounded-lg border border-border bg-card/95 py-1 z-50">
           <div className="px-4 py-2.5 border-b border-border">
             <p className="text-sm font-medium text-foreground truncate">{name}</p>
             <p className="text-xs text-muted-foreground truncate">{email}</p>
@@ -64,7 +67,7 @@ export default function UserMenu({ name, email, avatarUrl }: Props) {
             onClick={() => setOpen(false)}
             className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors cursor-pointer"
           >
-            Dashboard
+            ศูนย์บัญชาการ
           </Link>
           <Link
             href="/profile"

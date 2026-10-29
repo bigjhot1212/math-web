@@ -45,7 +45,7 @@ export default function CartClient({ isLoggedIn, purchasedTopicIds }: Props) {
         <h1 className="text-2xl font-heading font-bold text-foreground mb-6">ตะกร้าของคุณ</h1>
 
         {items.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border p-10 text-center text-muted-foreground">
+          <div className="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground">
             <ShoppingCart className="w-8 h-8 mx-auto mb-3" aria-hidden="true" />
             <p className="text-sm mb-4">ยังไม่มีคอร์สในตะกร้า</p>
             <a href="/pricing" className="text-sm text-primary hover:underline cursor-pointer">เลือกคอร์ส →</a>
@@ -54,7 +54,7 @@ export default function CartClient({ isLoggedIn, purchasedTopicIds }: Props) {
           <>
             <div className="space-y-3 mb-6">
               {payable.map(({ id, course }) => (
-                <div key={id} className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-border bg-card/70">
+                <div key={id} className="flex items-center justify-between gap-3 p-4 rounded-lg border border-border bg-card/70">
                   <div>
                     <p className="text-sm font-medium text-foreground">{course.name}</p>
                     <p className="text-xs text-muted-foreground">{course.nameEn}</p>
@@ -73,7 +73,7 @@ export default function CartClient({ isLoggedIn, purchasedTopicIds }: Props) {
               ))}
 
               {owned.map(({ id, course }) => (
-                <div key={id} className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-border bg-muted/30 opacity-70">
+                <div key={id} className="flex items-center justify-between gap-3 p-4 rounded-lg border border-border bg-muted/30 opacity-70">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
                     <div>
@@ -93,14 +93,14 @@ export default function CartClient({ isLoggedIn, purchasedTopicIds }: Props) {
             </div>
 
             {payable.length > 0 && (
-              <div className="rounded-3xl border border-border bg-card/70 backdrop-blur-xl p-5">
+              <div className="rounded-lg border border-border bg-card/70 p-5">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm text-muted-foreground">ยอดรวม ({payable.length} คอร์ส)</span>
                   <span className="text-xl font-heading font-bold text-cta tabular-nums">฿{total}</span>
                 </div>
                 <button
                   onClick={handleCheckout}
-                  className="w-full px-4 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+                  className="w-full px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
                 >
                   ดำเนินการชำระเงิน
                 </button>

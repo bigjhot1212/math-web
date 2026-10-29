@@ -1,3 +1,4 @@
+import { buildTopicProgress } from '@/lib/adventure-topics'
 import { createClient } from '@/lib/supabase/server'
 import PracticeExperience, { type TopicProgress } from './practice-experience'
 
@@ -7,13 +8,11 @@ type ProgressRow = {
   created_at: string
 }
 
-const TOTAL_QUESTIONS = 50
-
 export default async function PracticePage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const progress: Record<string, TopicProgress> = {}
+  let progress: Record<string, TopicProgress> = {}
   let lastTopicId: string | null = null
 
   if (user) {
@@ -27,19 +26,7 @@ export default async function PracticePage() {
     const rows = (data ?? []) as ProgressRow[]
     lastTopicId = rows[0]?.topic_id ?? null
 
-    const completedByTopic = new Map<string, Set<string>>()
-    for (const row of rows) {
-      const completed = completedByTopic.get(row.topic_id) ?? new Set<string>()
-      completed.add(row.question_id)
-      completedByTopic.set(row.topic_id, completed)
-    }
-
-    for (const [topicId, completed] of completedByTopic) {
-      progress[topicId] = {
-        done: Math.min(completed.size, TOTAL_QUESTIONS),
-        total: TOTAL_QUESTIONS,
-      }
-    }
+    progress = buildTopicProgress(rows)
   }
 
   const today = new Date()

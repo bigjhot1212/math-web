@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-background px-6 py-12">
-      <article className="mx-auto max-w-3xl rounded-3xl border border-border bg-card p-7 shadow-sm md:p-10">
+      <article className="mx-auto max-w-3xl rounded-lg border border-border bg-card p-7 md:p-10">
         <Link href="/" className="text-sm font-medium text-primary hover:underline">← กลับ Math Hunters</Link>
         <h1 className="mt-6 font-heading text-3xl font-bold text-foreground">นโยบายความเป็นส่วนตัว</h1>
         <p className="mt-2 text-sm text-muted-foreground">ปรับปรุงล่าสุด: 21 กันยายน 2569</p>

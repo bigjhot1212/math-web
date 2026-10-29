@@ -11,7 +11,7 @@ const universities = ['จุฬาลงกรณ์มหาวิทยาล
 function SearchableField({ name, label, options, placeholder, defaultValue }: { name: string; label: string; options: string[]; placeholder: string; defaultValue?: string }) {
   const listId = `${name}-options`
   return <label className="text-sm font-medium text-foreground">{label}
-    <div className="relative mt-1.5"><input name={name} required list={listId} defaultValue={defaultValue} placeholder={placeholder} autoComplete="off" className="w-full rounded-xl border border-border bg-background px-3 py-2.5 pr-9 text-sm outline-none focus:border-primary" />
+    <div className="relative mt-1.5"><input name={name} required list={listId} defaultValue={defaultValue} placeholder={placeholder} autoComplete="off" className="w-full rounded-lg border border-border bg-background px-3 py-2.5 pr-9 text-sm outline-none focus:border-primary" />
       <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">⌄</span></div>
     <datalist id={listId}>{options.map((option) => <option key={option} value={option} />)}</datalist>
   </label>
@@ -45,14 +45,14 @@ export default function StudentProfileForm({ next, defaultName, defaults = {}, m
 
   return (
     <main className="min-h-screen bg-background flex items-center justify-center p-6">
-      <form onSubmit={submit} className="w-full max-w-xl rounded-3xl border border-border bg-card p-7 shadow-sm md:p-9">
+      <form onSubmit={submit} className="w-full max-w-xl rounded-lg border border-border bg-card p-7 md:p-9">
         <p className="text-sm font-medium text-primary mb-2">{mode === 'edit' ? 'โปรไฟล์ของฉัน' : 'ยินดีต้อนรับสู่ Math Hunters'}</p>
         <h1 className="font-heading text-2xl font-bold text-foreground">{mode === 'edit' ? 'อัปเดตข้อมูลของน้อง' : 'ขอรู้จักกันอีกนิด'}</h1>
         <p className="mt-2 text-sm text-muted-foreground">ข้อมูลนี้ช่วยให้พี่เข้าใจเป้าหมายของน้อง ๆ และพัฒนาคอร์สให้ตรงจุดขึ้น</p>
 
         <div className="mt-7 grid gap-4 sm:grid-cols-2">
           <label className="sm:col-span-2 text-sm font-medium text-foreground">ชื่อ-นามสกุล
-            <input name="fullName" required defaultValue={defaultName} className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary" />
+            <input name="fullName" required defaultValue={defaultName} className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary" />
           </label>
           <SearchableField name="grade" label="กำลังเรียนชั้น" options={grades} placeholder="พิมพ์หรือเลือกชั้นเรียน" defaultValue={defaults.grade} />
           <SearchableField name="province" label="จังหวัด" options={provinces} placeholder="พิมพ์ค้นหาจังหวัด" defaultValue={defaults.province} />
@@ -60,7 +60,7 @@ export default function StudentProfileForm({ next, defaultName, defaults = {}, m
           <SearchableField name="desiredUniversity" label="มหาวิทยาลัยที่อยากเข้า" options={universities} placeholder="พิมพ์ค้นหามหาวิทยาลัย" defaultValue={defaults.desiredUniversity} />
         </div>
         {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
-        <button disabled={saving} className="mt-7 w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60">
+        <button disabled={saving} className="mt-7 w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60">
           {saving ? 'กำลังบันทึก...' : mode === 'edit' ? 'บันทึกการเปลี่ยนแปลง' : 'บันทึกและเริ่มฝึกโจทย์'}
         </button>
       </form>

@@ -17,11 +17,12 @@ export default function CartIcon() {
   return (
     <Link
       href="/cart"
-      className="relative px-3 py-1.5 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+      aria-label={`ตะกร้าคอร์ส ${count} รายการ`}
+      className="relative flex min-h-11 min-w-11 items-center justify-center px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors cursor-pointer"
     >
       <ShoppingCart className="w-4.5 h-4.5" aria-hidden="true" />
       {count > 0 && (
-        <span className="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-cta text-cta-foreground text-[10px] font-semibold flex items-center justify-center">
+        <span className="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-cta text-cta-foreground text-xs font-semibold flex items-center justify-center">
           {count}
         </span>
       )}

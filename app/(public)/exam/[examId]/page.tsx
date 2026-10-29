@@ -1,5 +1,6 @@
 'use client'
 
+import { Dialog } from 'radix-ui'
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
@@ -142,23 +143,24 @@ export default function ExamRoomPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <h1 className="sr-only">สนามสอบจำลอง</h1>
       {/* Top bar */}
-      <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur px-4 py-3 flex items-center justify-between gap-4">
+      <header className="exam-session-header sticky z-10 border-b border-border bg-background px-4 py-3 grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:flex sm:items-center sm:justify-between">
         <span className="text-sm text-muted-foreground">
           ตอบแล้ว{' '}
           <span className="font-medium text-foreground">{answeredCount}</span>
           /{examData.questions.length}
         </span>
 
-        <span className={`font-mono text-xl font-semibold tabular-nums transition-colors ${isCritical ? 'text-red-600 animate-pulse' : isLowTime ? 'text-amber-600' : 'text-foreground'}`}>
+        <span className={`font-mono text-xl font-semibold tabular-nums transition-colors ${isCritical ? 'text-red-700 animate-pulse' : isLowTime ? 'text-amber-700' : 'text-foreground'}`}>
           {formatTime(timeLeft)}
         </span>
 
-        <div className="flex items-center gap-2">
+        <div className="col-span-2 flex items-center justify-end gap-2 sm:col-auto">
           <button
             onClick={() => router.push('/exam')}
             disabled={submitting}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-2 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 border border-border rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
             <LogOut className="w-4 h-4" aria-hidden="true" />
             ออกจากข้อสอบ
@@ -167,14 +169,14 @@ export default function ExamRoomPage() {
             onClick={() => router.push('/exam')}
             disabled={submitting}
             aria-label="ออกจากข้อสอบ"
-            className="sm:hidden p-2 border border-border rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
+            className="sm:hidden p-2 border border-border rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
             <LogOut className="w-4 h-4" aria-hidden="true" />
           </button>
           <button
             onClick={() => setShowConfirm(true)}
             disabled={submitting}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
           >
             ส่งข้อสอบ
           </button>
@@ -192,7 +194,7 @@ export default function ExamRoomPage() {
                 onClick={() => setCurrent(i)}
                 className={`h-8 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                   i === current
-                    ? 'bg-primary text-primary-foreground shadow-[0_0_10px_-2px_var(--primary)]'
+                    ? 'bg-primary text-primary-foreground '
                     : answers[qn.id]
                     ? 'bg-primary/15 text-primary hover:bg-primary/25'
                     : 'border border-border text-muted-foreground hover:bg-accent'
@@ -226,7 +228,7 @@ export default function ExamRoomPage() {
                     <img
                       src={q.content.image}
                       alt={`โจทย์ข้อ ${current + 1}`}
-                      className="max-h-56 max-w-full rounded-xl bg-white object-contain"
+                      className="max-h-56 max-w-full rounded-lg bg-white object-contain"
                     />
                   )}
                   <div>{renderText(q.content.text)}</div>
@@ -242,9 +244,9 @@ export default function ExamRoomPage() {
                     <button
                       key={key}
                       onClick={() => setAnswers(prev => ({ ...prev, [q.id]: key }))}
-                      className={`flex items-center gap-3 p-4 rounded-2xl border text-left w-full transition-all cursor-pointer ${
+                      className={`flex items-center gap-3 p-4 rounded-lg border text-left w-full transition-all cursor-pointer ${
                         selected
-                          ? 'border-primary bg-primary/10 shadow-[0_0_16px_-6px_var(--primary)]'
+                          ? 'border-primary bg-primary/10 '
                           : 'border-border hover:border-primary/50 hover:bg-accent/50'
                       }`}
                     >
@@ -259,7 +261,7 @@ export default function ExamRoomPage() {
             )}
 
             {q.type === 'short-answer' && !q.content.choices && (
-              <div className="rounded-2xl border border-primary/25 bg-primary/5 p-5">
+              <div className="rounded-lg border border-primary/25 bg-primary/5 p-5">
                 <label htmlFor={`answer-${q.id}`} className="block text-sm font-medium text-foreground mb-2">
                   ระบายคำตอบที่เป็นตัวเลข
                 </label>
@@ -271,7 +273,7 @@ export default function ExamRoomPage() {
                   value={answers[q.id] ?? ''}
                   onChange={event => setAnswers(prev => ({ ...prev, [q.id]: event.target.value }))}
                   placeholder="กรอกคำตอบ เช่น 12 หรือ 3.5"
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-lg font-mono text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-lg font-mono text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
                 <p className="mt-2 text-xs text-muted-foreground">กรอกเฉพาะตัวเลข ไม่ต้องใส่หน่วย</p>
               </div>
@@ -281,7 +283,7 @@ export default function ExamRoomPage() {
               <button
                 onClick={() => setCurrent(c => Math.max(0, c - 1))}
                 disabled={current === 0}
-                className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                className="flex items-center gap-1.5 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
               >
                 <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                 ก่อนหน้า
@@ -289,7 +291,7 @@ export default function ExamRoomPage() {
               {current < examData.questions.length - 1 ? (
                 <button
                   onClick={() => setCurrent(c => c + 1)}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
                 >
                   ถัดไป
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -297,7 +299,7 @@ export default function ExamRoomPage() {
               ) : (
                 <button
                   onClick={() => setShowConfirm(true)}
-                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
+                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
                 >
                   ส่งข้อสอบ
                 </button>
@@ -316,7 +318,7 @@ export default function ExamRoomPage() {
               onClick={() => setCurrent(i)}
               className={`h-8 w-8 shrink-0 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 i === current
-                  ? 'bg-primary text-primary-foreground shadow-[0_0_10px_-2px_var(--primary)]'
+                  ? 'bg-primary text-primary-foreground '
                   : answers[qn.id]
                   ? 'bg-primary/15 text-primary'
                   : 'border border-border text-muted-foreground'
@@ -329,40 +331,41 @@ export default function ExamRoomPage() {
       </div>
 
       {/* Confirm modal */}
-      {showConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-slide-in">
-          <div className="bg-card/90 backdrop-blur-xl rounded-3xl border border-border p-6 max-w-sm w-full shadow-2xl">
-            <h2 className="text-lg font-heading font-semibold mb-2 text-foreground">ยืนยันการส่งข้อสอบ</h2>
-            <p className="text-sm text-muted-foreground mb-1">
+      <Dialog.Root open={showConfirm} onOpenChange={setShowConfirm}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-card p-6">
+            <Dialog.Title className="text-lg font-heading font-semibold mb-2 text-foreground">ยืนยันการส่งข้อสอบ</Dialog.Title>
+            <Dialog.Description className="text-sm text-muted-foreground mb-1">
               คุณตอบแล้ว{' '}
               <span className="font-medium text-foreground">{answeredCount}</span>{' '}
               จาก{' '}
               <span className="font-medium text-foreground">{examData.questions.length}</span>{' '}
               ข้อ
-            </p>
+            </Dialog.Description>
             {answeredCount < examData.questions.length && (
-              <p className="text-sm text-amber-600 mb-4">
+              <p className="text-sm text-amber-700 mb-4">
                 ยังมี {examData.questions.length - answeredCount} ข้อที่ยังไม่ได้ตอบ
               </p>
             )}
             <div className="flex gap-3 mt-5">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 px-4 py-2 text-sm border border-border rounded-xl hover:bg-accent transition-colors cursor-pointer"
+                className="flex-1 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors cursor-pointer"
               >
                 ยกเลิก
               </button>
               <button
                 onClick={() => { setShowConfirm(false); handleSubmit() }}
                 disabled={submitting}
-                className="flex-1 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-xl hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
               >
                 {submitting ? 'กำลังส่ง...' : 'ยืนยัน'}
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   )
 }

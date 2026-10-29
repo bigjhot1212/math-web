@@ -59,7 +59,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
         <h1 className="text-2xl font-heading font-bold text-foreground mb-2">ชำระด้วยการโอนธนาคาร</h1>
         <p className="mb-6 text-sm leading-6 text-muted-foreground">โอนตามยอดด้านล่างแล้วแนบสลิป ทีมงานจะตรวจสอบและเปิดคอร์สให้ภายใน 24 ชั่วโมง</p>
 
-        <div className="rounded-3xl border border-border bg-card/70 backdrop-blur-xl p-6 mb-6">
+        <div className="rounded-lg border border-border bg-card/70 p-6 mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">คอร์ส</span>
             <span className="text-sm font-medium text-foreground">{name}</span>
@@ -75,25 +75,25 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-2xl border border-destructive/30 bg-destructive/10 text-destructive text-sm text-center">
+          <div role="alert" className="mb-6 p-4 rounded-lg border border-destructive/30 bg-destructive/10 text-destructive text-sm text-center">
             {error}
           </div>
         )}
 
         {bankSubmitted ? (
-          <div className="rounded-3xl border border-primary/30 bg-primary/5 p-6 text-center">
+          <div role="status" className="rounded-lg border border-primary/30 bg-primary/5 p-6 text-center">
             <CheckCircle2 className="w-8 h-8 text-primary mx-auto mb-3" aria-hidden="true" />
             <p className="text-sm font-medium text-foreground mb-1">ส่งหลักฐานการโอนแล้ว</p>
             <p className="text-xs text-muted-foreground">ทีมงานจะตรวจสอบและเปิดคอร์สให้ภายใน 24 ชั่วโมง</p>
           </div>
         ) : (
-          <div className="rounded-3xl border border-border bg-card/70 overflow-hidden">
+          <div className="rounded-lg border border-border bg-card/70 overflow-hidden">
             <div className="grid grid-cols-2 gap-1 border-b border-border bg-muted/40 p-1.5" aria-label="เลือกวิธีดูข้อมูลการชำระเงิน">
               <button
                 type="button"
                 aria-pressed={paymentGuide === 'qr'}
                 onClick={() => setPaymentGuide('qr')}
-                className={`flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${paymentGuide === 'qr' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${paymentGuide === 'qr' ? 'bg-card text-primary ' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <QrCode className="h-4 w-4" aria-hidden="true" />
                 สแกน QR
@@ -102,7 +102,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
                 type="button"
                 aria-pressed={paymentGuide === 'bank'}
                 onClick={() => setPaymentGuide('bank')}
-                className={`flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${paymentGuide === 'bank' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${paymentGuide === 'bank' ? 'bg-card text-primary ' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <Landmark className="h-4 w-4" aria-hidden="true" />
                 เลขบัญชี
@@ -111,7 +111,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
             <div className="space-y-4 p-5">
               {paymentGuide === 'qr' ? (
                 <div className="text-center">
-                  <div className="mx-auto max-w-[320px] overflow-hidden rounded-2xl bg-white p-2">
+                  <div className="mx-auto max-w-[320px] overflow-hidden rounded-lg bg-white p-2">
                     <Image
                       src="/api/payment/promptpay-qr"
                       alt="QR PromptPay สำหรับชำระค่าคอร์ส"
@@ -127,14 +127,14 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
                   <a
                     href="/api/payment/promptpay-qr?download=1"
                     download="math-hunters-promptpay.png"
-                    className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                    className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-3 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
                   >
                     <Download className="h-4 w-4" aria-hidden="true" />
                     บันทึก QR ลงเครื่อง
                   </a>
                 </div>
               ) : (
-                <div className="rounded-2xl bg-muted/60 p-4 text-sm space-y-1">
+                <div className="rounded-lg bg-muted/60 p-4 text-sm space-y-1">
                   <p className="text-muted-foreground text-xs">โอนเงินมาที่บัญชี</p>
                   <p className="font-medium text-foreground">{BANK_TRANSFER_INFO.bankName}</p>
                   <p className="font-heading text-lg font-semibold text-foreground tabular-nums">{BANK_TRANSFER_INFO.accountNumber}</p>
@@ -144,7 +144,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
 
               <div className="border-t border-border pt-4">
                 <p className="mb-3 text-sm font-medium text-foreground">แนบหลักฐานการโอน</p>
-                <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-2xl p-6 cursor-pointer hover:border-primary/40 transition-colors text-center">
+                <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-border rounded-lg p-6 cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary hover:border-primary/40 transition-colors text-center">
                   <Upload className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
                   <span className="text-xs text-muted-foreground">
                     {file ? file.name : 'แนบสลิปการโอนเงิน (รูปภาพ)'}
@@ -152,7 +152,8 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
                   <input
                     type="file"
                     accept="image/*"
-                    className="hidden"
+                    className="sr-only"
+                    aria-label="แนบสลิปการโอนเงิน"
                     onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                   />
                 </label>
@@ -161,7 +162,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
               <button
                 onClick={handleSubmitSlip}
                 disabled={bankSubmitting}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed text-sm font-medium"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed text-sm font-medium"
               >
                 {bankSubmitting ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />

@@ -4,11 +4,12 @@ import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import BrandMark from '@/app/components/brand-mark'
+import { DEFAULT_STUDENT_DESTINATION } from '@/lib/navigation'
 import { BRAND_FULL_NAME, BRAND_NAME } from '@/lib/brand'
 
 function LoginCard() {
   const searchParams = useSearchParams()
-  const next = searchParams.get('next') ?? '/dashboard'
+  const next = searchParams.get('next') ?? DEFAULT_STUDENT_DESTINATION
 
   async function handleGoogleLogin() {
     const supabase = createClient()
@@ -21,13 +22,13 @@ function LoginCard() {
   }
 
   return (
-    <div className="rounded-3xl border border-border bg-card/70 backdrop-blur-xl p-8 shadow-sm">
+    <div className="rounded-lg border border-border bg-card/70 p-8 ">
       <p className="text-sm text-muted-foreground text-center mb-6">
         เข้าสู่ระบบเพื่อบันทึกความก้าวหน้า
       </p>
       <button
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 hover:-translate-y-0.5 transition-all cursor-pointer text-sm font-medium text-foreground"
+        className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg border border-border hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer text-sm font-medium text-foreground"
       >
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
           <path
@@ -58,11 +59,11 @@ export default function LoginPage() {
     <main className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="animate-fade-slide-in w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-            <BrandMark className="h-8 w-14" />
+          <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <BrandMark className="size-12" />
           </div>
           <h1 className="text-2xl font-heading font-semibold text-foreground mb-1">{BRAND_NAME}</h1>
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-primary">{BRAND_FULL_NAME}</p>
+          <p className="mb-3 text-xs font-medium  text-primary">{BRAND_FULL_NAME}</p>
           <p className="text-muted-foreground text-sm">
             ระบบฝึกโจทย์คณิตศาสตร์ ONET · A-Level · PAT1
           </p>
