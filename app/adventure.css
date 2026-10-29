@@ -177,33 +177,86 @@
 .hero-region-frame small { margin-top:10px;font-size:11px;color:#F4D68D; }
 .hero-explore-hint { position:absolute;z-index:2;bottom:44px;left:6vw;display:flex;gap:12px;align-items:center;color:#FFEDBB;font-size:12px; }
 .hero-explore-hint span { font-size:28px; }
-.hunter-license { width:100%;position:relative;isolation:isolate;display:block;text-align:left;overflow:hidden;border:3px solid #CFA85E;border-radius:16px;background:#173F30;color:#FFF0C7;box-shadow:0 5px 0 #90703D; }
-.hunter-license > img { object-fit:cover;opacity:.3; }
-.hunter-license::after { content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0B352DEB,#12392B70);z-index:-1; }
-.hunter-license-inner { display:block;position:relative;z-index:1;padding:23px; }
-.hunter-license-top { display:flex;gap:12px;align-items:center;font-family:var(--font-heading);font-size:17px;font-weight:600; }
-.hunter-license-top small { font-size:10px;letter-spacing:.1em;font-weight:400; }
-.hunter-license-top > svg:last-child { margin-left:auto; }
-.hunter-license-name { display:flex;gap:13px;align-items:center;margin-top:24px; }
-.hunter-license-name small { display:block;font-size:11px;color:#E0D8B1;margin-bottom:5px; }
-.hunter-license-name strong { display:block;font-family:var(--font-heading);font-size:23px;line-height:1.4;overflow-wrap:anywhere; }
-.hunter-license-name .license-avatar { width:46px;height:46px;flex-shrink:0;overflow:hidden;background:#F9E4AB;color:#23442D; }
-.hunter-license-stats { display:flex;justify-content:space-between;gap:12px;margin-top:24px;padding-top:16px;border-top:1px solid #D1B67E66; }
-.hunter-license-stats > span { font-size:10px;color:#DDE0BB; }
-.hunter-license-stats b { display:block;font-size:23px;font-family:var(--font-heading);color:#FFE5A0; }
-.hunter-license-details { display:block;margin-top:18px;font-size:11px;color:#FFE5A0; }
-.license-dialog { position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:71;width:min(480px,calc(100% - 32px));max-height:90dvh;overflow-y:auto;border:3px solid #D6AF66;border-radius:20px;background:#FFF6DF; }
-.license-dialog-art { height:200px;position:relative;overflow:hidden; }
-.license-dialog-art img { object-fit:cover; }
-.license-details-list { margin-top:22px; }
-.license-details-list > div { display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid #DECAA3;padding:12px 0;font-size:14px; }
-.license-details-list dd { font-weight:700;color:#1E5038; }
+.hunter-license {
+  container-type: inline-size;
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  border: 1px solid #9A7B3F;
+  border-radius: 14px;
+  background: #123C32;
+  color: #F7F0DA;
+  text-align: left;
+  box-shadow: 0 14px 30px -20px #061E1A;
+  transition: border-color 180ms ease-out, box-shadow 180ms ease-out, transform 180ms ease-out;
+}
+.hunter-license:hover { border-color:#D4B66E;box-shadow:0 18px 36px -20px #061E1A;transform:translateY(-2px); }
+.hunter-license:focus-visible { outline:3px solid #E0BE70;outline-offset:3px; }
+.hunter-license-inner { display:block;padding:22px; }
+.hunter-license-top { display:grid;grid-template-columns:66px minmax(0,1fr) auto;gap:15px;align-items:center; }
+.association-seal { width:66px;height:66px;display:grid;place-items:center;align-content:center;flex-shrink:0;border:1px solid #CFAE67;border-radius:50%;background:#F6E9C5;box-shadow:inset 0 0 0 4px #123C32,inset 0 0 0 5px #CFAE67;color:#173F30; }
+.association-seal-mark { width:39px;height:39px; }
+.association-seal > span { margin-top:-5px;color:#173F30;font-size:8px;font-weight:700;letter-spacing:.04em; }
+.hunter-license-title { min-width:0;font-family:var(--font-heading); }
+.hunter-license-title strong { display:block;color:#FFF8E6;font-size:16px;font-weight:700;line-height:1.25; }
+.hunter-license-title small { display:block;margin-top:3px;color:#D9CBAA;font-size:10px;font-weight:500; }
+.hunter-license-type { padding-left:14px;border-left:1px solid #D2B56A66;text-align:right;font-family:var(--font-heading); }
+.hunter-license-type small { display:block;color:#C9B98F;font-size:8px;letter-spacing:.14em; }
+.hunter-license-type strong { display:block;margin-top:2px;color:#E6C879;font-size:12px;letter-spacing:.08em; }
+.hunter-license-name { display:flex;gap:14px;align-items:center;margin-top:22px;padding:17px 0;border-top:1px solid #D2B56A55;border-bottom:1px solid #D2B56A55; }
+.hunter-license-name .license-avatar { width:58px;height:58px;display:grid;place-items:center;flex-shrink:0;overflow:hidden;border:1px solid #D7BD7B;border-radius:10px;background:#F4E5BC;color:#23442D;font-family:var(--font-heading);font-size:22px;font-weight:700; }
+.hunter-license-name .license-avatar img { width:100%;height:100%;object-fit:cover; }
+.hunter-license-member { min-width:0; }
+.hunter-license-member > small { display:block;color:#CDBF9B;font-size:9px;letter-spacing:.04em; }
+.hunter-license-member > strong { display:block;margin-top:2px;overflow-wrap:anywhere;color:#FFF8E6;font-family:var(--font-heading);font-size:21px;line-height:1.35; }
+.hunter-license-member > span { display:block;margin-top:2px;color:#E4C979;font-size:10px;font-weight:600; }
+.hunter-license-stats { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px; }
+.hunter-license-stats > div { min-width:0;padding:0 12px;border-left:1px solid #D2B56A4D; }
+.hunter-license-stats > div:first-child { padding-left:0;border-left:0; }
+.hunter-license-stats dt { color:#CDBF9B;font-size:9px;line-height:1.35; }
+.hunter-license-stats dd { margin-top:4px;color:#FFF8E6;font-family:var(--font-heading);font-size:21px;font-weight:700;line-height:1.2; }
+.hunter-license-stats dd small { color:#D9CBAA;font-family:var(--font-body);font-size:9px;font-weight:500; }
+.hunter-license-footer { display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:19px;padding-top:13px;border-top:1px solid #D2B56A55;color:#D9CBAA;font-size:9px; }
+.hunter-license-footer > span { display:inline-flex;align-items:center;gap:5px; }
+.hunter-license-footer > span:last-child { color:#F1D58B;font-weight:700; }
+.hunter-license-footer svg { width:13px;height:13px; }
+.license-dialog { position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:71;width:min(480px,calc(100% - 32px));max-height:90dvh;overflow-y:auto;border:1px solid #A58345;border-radius:16px;background:#FFF9E9;box-shadow:0 30px 80px #071F1B66; }
+.license-dialog .briefing-close { border-color:#C8B98E;background:#FFF9E9;color:#173F30; }
+.license-dialog-header { display:flex;gap:18px;align-items:center;padding:28px 66px 24px 28px;border-bottom:1px solid #D9CBA7;background:#123C32;color:#F7F0DA; }
+.license-dialog-header .association-seal { width:72px;height:72px; }
+.license-dialog-header p { color:#E4C979;font-family:var(--font-heading);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase; }
+.license-dialog-header h2 { margin-top:4px;color:#FFF8E6;font-family:var(--font-heading);font-size:24px;font-weight:700; }
+.license-dialog-header [data-radix-dialog-description] { margin-top:4px;color:#D9CBAA;font-size:12px; }
+.license-dialog-body { padding:26px 28px 30px; }
+.license-details-list > div { display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;border-bottom:1px solid #DED2B3;padding:13px 0;font-size:14px; }
+.license-details-list > div:first-child { padding-top:0; }
+.license-details-list dt { color:#647067; }
+.license-details-list dd { max-width:250px;overflow-wrap:anywhere;color:#173F30;font-weight:700;text-align:right; }
+.license-dialog-body .adventure-button { display:flex;margin-top:24px; }
+@container (max-width: 320px) {
+  .hunter-license-inner { padding:18px; }
+  .hunter-license-top { grid-template-columns:52px minmax(0,1fr) auto;gap:10px; }
+  .association-seal { width:52px;height:52px;box-shadow:inset 0 0 0 3px #123C32,inset 0 0 0 4px #CFAE67; }
+  .association-seal-mark { width:31px;height:31px; }
+  .association-seal > span { font-size:7px; }
+  .hunter-license-title strong { font-size:13px; }
+  .hunter-license-title small { font-size:8px; }
+  .hunter-license-type { padding-left:9px; }
+  .hunter-license-type small { font-size:7px; }
+  .hunter-license-type strong { font-size:10px; }
+  .hunter-license-name { margin-top:18px;padding:14px 0; }
+  .hunter-license-name .license-avatar { width:50px;height:50px;font-size:19px; }
+  .hunter-license-member > strong { font-size:18px; }
+  .hunter-license-stats > div { padding-inline:8px; }
+  .hunter-license-stats dd { font-size:18px; }
+  .hunter-license-footer { margin-top:15px; }
+}
 .dashboard-loadout { display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:stretch;margin-bottom:40px; }
 .dashboard-loadout .next-mission { position:relative;overflow:hidden;flex-direction:column;align-items:start;justify-content:center;gap:24px;margin:0;border:2px solid #B8CA8A;background:linear-gradient(120deg,#174B38,#2E6D4C);border-radius:16px;padding:30px;box-shadow:0 5px 0 #B8CA8A; }
 .dashboard-loadout .next-mission::after { content:'✦';position:absolute;right:15px;bottom:-60px;color:#DFCB6E22;font-size:230px;line-height:1;pointer-events:none; }
 .dashboard-loadout .next-mission h2 { color:#FFE8A8;position:relative;z-index:1; }
 .dashboard-loadout .next-mission a { background:#FFD479;border:1px solid #C89949;color:#23432D;position:relative;z-index:1; }
-.dashboard-loadout .hunter-license-wrap, .dashboard-loadout .hunter-license { height:100%; }
+.dashboard-loadout .hunter-license { height:100%; }
 .adventure-route-banner { position:relative;height:160px;overflow:hidden;margin:24px 32px 0;border-radius:18px;border:2px solid #CEAA63;background:#154B3D; }
 .adventure-route-banner img { object-fit:cover;object-position:center 48%; }
 .adventure-route-banner::after { content:'';position:absolute;inset:0;background:linear-gradient(90deg,#093B35E6,transparent 85%); }
@@ -272,7 +325,7 @@
 .dashboard-world-layout .next-mission h2 { font-size:23px; }
 .dashboard-world-layout .hunter-license-inner { padding:20px; }
 .dashboard-world-layout .hunter-license-stats { gap:8px; }
-.dashboard-world-layout .hunter-license-name strong { font-size:21px; }
+.dashboard-world-layout .hunter-license-member > strong { font-size:20px; }
 .dashboard-world-layout .world-map-canvas { width:100%;min-width:820px;height:580px; }
 .dashboard-world-layout .world-landmark { width:155px; }
 .dashboard-world-layout .landmark-name { font-size:11px; }
