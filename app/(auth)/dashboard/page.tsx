@@ -10,7 +10,7 @@ import { isAdminEmail } from '@/lib/payment-config'
 import { analyzeLearningEvidence, type LearningEvidence } from '@/lib/learning-insights'
 import { deduplicateAttempts, formatCompactDuration, formatDuration, getValidTimes, median } from '@/lib/progress-analytics'
 import { getQuestionCatalog, isCorrectQuestionAnswer } from '@/lib/question-catalog'
-import { calculateHunterRating, getMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { calculateHunterRating, getMonthlyRankExamType, isHunterRankingReleased } from '@/lib/hunter-ranking'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { calculateExamPoints } from '@/lib/exam-scoring'
 
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
   const progress = deduplicateAttempts((progressRows ?? []) as ProgressRow[])
   const exams = (examRows ?? []) as ExamRow[]
   let resolvedMonthlyRankExam = monthlyRankExam as ExamRow | null
-  if (resolvedMonthlyRankExam && !resolvedMonthlyRankExam.submitted_at) {
+  if (isHunterRankingReleased() && resolvedMonthlyRankExam && !resolvedMonthlyRankExam.submitted_at) {
     const questions = getMath1MockSet(getMonthlyRankExamType())?.questions ?? []
     const answers = resolvedMonthlyRankExam.answers ?? {}
     const { points, maximumPoints } = calculateExamPoints(questions, answers)

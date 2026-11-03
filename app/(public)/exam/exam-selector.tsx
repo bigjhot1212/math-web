@@ -60,6 +60,7 @@ type Props = {
   monthlyRankLabel: string
   monthlyRankStarted: boolean
   monthlyRankCompleted: boolean
+  monthlyRankReleased: boolean
 }
 
 export default function ExamSelector({
@@ -69,6 +70,7 @@ export default function ExamSelector({
   monthlyRankLabel,
   monthlyRankStarted,
   monthlyRankCompleted,
+  monthlyRankReleased,
 }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
@@ -120,7 +122,7 @@ export default function ExamSelector({
                 <Trophy className="h-6 w-6" aria-hidden="true" />
                 <p className="text-sm font-semibold">ข้อสอบจัดอันดับประจำเดือน · {monthlyRankLabel}</p>
               </div>
-              <h2 className="mt-4 font-heading text-2xl font-semibold text-foreground">วัดระดับเพื่อเปิดแรงค์ฮันเตอร์</h2>
+              <h2 className="mt-4 font-heading text-2xl font-semibold text-foreground">{monthlyRankReleased ? 'วัดระดับเพื่อเปิดแรงค์ฮันเตอร์' : 'ระบบแรงค์เปิด 7 พฤศจิกายน'}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
                 ข้อสอบมาตรฐาน 30 ข้อเป็นคะแนนตั้งต้นของเดือนนี้ มีการหักคะแนนเมื่อตอบผิด หลังจากนั้นการฝึกและผลสอบในเดือนเดียวกันจะช่วยปรับคะแนนได้ไม่เกิน ±5 คะแนน
               </p>
@@ -131,7 +133,15 @@ export default function ExamSelector({
               </div>
             </div>
             <div className="border-t border-border bg-cta/[0.06] p-7 md:border-l md:border-t-0 md:p-9">
-              {monthlyRankCompleted ? (
+              {!monthlyRankReleased ? (
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-cta/35 bg-cta/10 px-5 py-3 text-sm font-semibold text-cta"
+                >
+                  Coming Soon · 7 พฤศจิกายน
+                </button>
+              ) : monthlyRankCompleted ? (
                 <Link href="/leaderboard" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cta px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90">
                   ดูแรงค์ประจำเดือน <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
@@ -146,7 +156,7 @@ export default function ExamSelector({
                   {loading !== monthlyRankExamType && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
                 </button>
               )}
-              <p className="mt-4 text-xs leading-5 text-muted-foreground">เริ่มแล้วต้องทำต่อเนื่อง หากออกจากหน้าสอบ ระบบจะคิดคะแนนจากคำตอบที่ทำไว้ทันที</p>
+              <p className="mt-4 text-xs leading-5 text-muted-foreground">{monthlyRankReleased ? 'เริ่มแล้วต้องทำต่อเนื่อง หากออกจากหน้าสอบ ระบบจะคิดคะแนนจากคำตอบที่ทำไว้ทันที' : 'เปิดให้เริ่มสอบพร้อมกันวันที่ 7 พฤศจิกายน 2569 เวลา 00:00 น.'}</p>
             </div>
           </div>
         </section>

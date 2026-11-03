@@ -15,6 +15,7 @@ import {
   getNextHunterRank,
   getRankProgress,
   HUNTER_RANKS,
+  isHunterRankingReleased,
   type ExamPerformanceRow,
   type PracticePerformanceRow,
 } from '@/lib/hunter-ranking'
@@ -49,7 +50,7 @@ export default async function LeaderboardPage() {
     .order('started_at', { ascending: false })
     .limit(1)
     .maybeSingle()
-  if (unfinishedMonthlyExam) {
+  if (isHunterRankingReleased() && unfinishedMonthlyExam) {
     const questions = getMath1MockSet(monthlyExamType)?.questions ?? []
     const answers = (unfinishedMonthlyExam.answers ?? {}) as Record<string, unknown>
     const { points, maximumPoints } = calculateExamPoints(questions, answers)

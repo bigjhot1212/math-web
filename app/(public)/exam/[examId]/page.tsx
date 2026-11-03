@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic'
 import { ArrowLeft, ArrowRight, LogOut } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import { formatMathForDisplay } from '@/lib/format-math'
-import { isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import Scratchpad from '@/app/components/scratchpad'
 import 'katex/dist/katex.min.css'
 
@@ -71,6 +71,11 @@ export default function ExamRoomPage() {
     if (cached) {
       const data = JSON.parse(cached) as ExamData
       const isMonthly = isMonthlyRankExamType(data.examType ?? '')
+      if (isMonthly && !isHunterRankingReleased()) {
+        sessionStorage.removeItem(`exam_${examId}`)
+        router.replace('/exam')
+        return
+      }
       if (!isMonthly || data.freshAttempt) {
         if (isMonthly) sessionStorage.setItem(`exam_${examId}`, JSON.stringify({ ...data, freshAttempt: false }))
         setExamData(data)
@@ -83,6 +88,10 @@ export default function ExamRoomPage() {
     fetch(`/api/exam/${examId}`)
       .then(r => r.json())
       .then(({ session, questions }) => {
+        if (!session) {
+          router.replace('/exam')
+          return
+        }
         if (session.submitted_at) {
           router.replace(`/exam/${examId}/result`)
           return

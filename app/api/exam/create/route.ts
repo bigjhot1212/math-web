@@ -5,7 +5,7 @@ import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { calculateExamPoints } from '@/lib/exam-scoring'
-import { isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import fs from 'fs'
 import path from 'path'
 
@@ -59,6 +59,10 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อนเริ่มข้อสอบ' }, { status: 401 })
+    }
+
+    if (isMonthlyRankExamType(examType) && !isHunterRankingReleased()) {
+      return NextResponse.json({ error: 'ข้อสอบจัดอันดับจะเปิดวันที่ 7 พฤศจิกายน 2569' }, { status: 403 })
     }
 
     if (isMonthlyRankExamType(examType)) {

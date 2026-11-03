@@ -13,6 +13,8 @@ const practice = (user_id, question_id, is_correct, answered_at = '2026-10-12T03
 assert.equal(monthlyType, 'hunter-rank-2026-10')
 assert.equal(ranking.isMonthlyRankExamType(monthlyType), true)
 assert.equal(ranking.isMonthlyRankExamType('hunter-rank-2026-13'), false)
+assert.equal(ranking.isHunterRankingReleased(new Date('2026-11-06T16:59:59.999Z')), false)
+assert.equal(ranking.isHunterRankingReleased(new Date('2026-11-06T17:00:00.000Z')), true)
 assert.deepEqual(ranking.getMonthDateRange(month), {
   start: '2026-09-30T17:00:00.000Z',
   end: '2026-10-31T17:00:00.000Z',

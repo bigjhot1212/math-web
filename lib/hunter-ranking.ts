@@ -50,6 +50,11 @@ export const HUNTER_RANKS: HunterRank[] = [
 
 const MONTHLY_EXAM_PATTERN = /^hunter-rank-(\d{4})-(0[1-9]|1[0-2])$/
 const MAX_ACTIVITY_ADJUSTMENT = 5
+export const HUNTER_RANKING_RELEASE_AT = '2026-11-06T17:00:00.000Z'
+
+export function isHunterRankingReleased(date = new Date()) {
+  return date.getTime() >= Date.parse(HUNTER_RANKING_RELEASE_AT)
+}
 
 function clamp(value: number, minimum: number, maximum: number) {
   return Math.min(maximum, Math.max(minimum, value))

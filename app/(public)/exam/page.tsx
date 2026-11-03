@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { calculateExamPoints } from '@/lib/exam-scoring'
-import { getBangkokMonthKey, getMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { getBangkokMonthKey, getMonthlyRankExamType, isHunterRankingReleased } from '@/lib/hunter-ranking'
 import ExamSelector from './exam-selector'
 
 export default async function ExamPage() {
@@ -9,6 +9,7 @@ export default async function ExamPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   let isPremium = false
+  const monthlyRankReleased = isHunterRankingReleased()
   const monthlyRankExamType = getMonthlyRankExamType()
   let monthlyRankCompleted = false
   let monthlyRankStarted = false
@@ -27,7 +28,7 @@ export default async function ExamPage() {
     isPremium = subscription?.status === 'active'
     monthlyRankStarted = Boolean(monthlySession)
     monthlyRankCompleted = Boolean(monthlySession?.submitted_at)
-    if (monthlySession && !monthlySession.submitted_at) {
+    if (monthlyRankReleased && monthlySession && !monthlySession.submitted_at) {
       const questions = getMath1MockSet(monthlyRankExamType)?.questions ?? []
       const answers = (monthlySession.answers ?? {}) as Record<string, unknown>
       const { points, maximumPoints } = calculateExamPoints(questions, answers)
@@ -55,5 +56,6 @@ export default async function ExamPage() {
     monthlyRankLabel={monthlyRankLabel}
     monthlyRankStarted={monthlyRankStarted}
     monthlyRankCompleted={monthlyRankCompleted}
+    monthlyRankReleased={monthlyRankReleased}
   />
 }

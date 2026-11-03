@@ -5,7 +5,7 @@ import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/con
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { allMath1MockQuestions, getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { calculateExamPoints } from '@/lib/exam-scoring'
-import { isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import fs from 'fs'
 import path from 'path'
 
@@ -38,6 +38,10 @@ export async function GET(
 
     if (error || !session) {
       return NextResponse.json({ error: 'Exam not found' }, { status: 404 })
+    }
+
+    if (isMonthlyRankExamType(session.exam_type) && !isHunterRankingReleased()) {
+      return NextResponse.json({ error: 'ข้อสอบจัดอันดับจะเปิดวันที่ 7 พฤศจิกายน 2569' }, { status: 403 })
     }
 
     const monthlyQuestions = getMath1MockSet(session.exam_type)?.questions ?? []
