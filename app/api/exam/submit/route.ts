@@ -3,7 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Question } from '@/lib/types/question'
 import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
-import { allMath1MockQuestions } from '@/lib/content/math1-mock-sets'
+import { allMath1MockQuestions, getMath1MockSet } from '@/lib/content/math1-mock-sets'
+import { hasExamAnswer, isCorrectExamAnswer } from '@/lib/exam-scoring'
+import { isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import fs from 'fs'
 import path from 'path'
 
@@ -13,16 +15,6 @@ function loadAllQuestions(): Question[] {
     .filter(f => f.endsWith('.json'))
     .flatMap(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8')) as Question[])
     .concat(originalPracticeQuestions, legacySetPracticeQuestions, setChallengeQuestions, allMath1MockQuestions)
-}
-
-function normalizeAnswer(value: unknown): string {
-  return String(value ?? '').trim().replace(/,/g, '').replace(/\s+/g, '').toLowerCase()
-}
-
-function isCorrectAnswer(question: Question, value: unknown): boolean {
-  const submitted = normalizeAnswer(value)
-  const accepted = [question.answer, ...(question.acceptedAnswers ?? [])].map(normalizeAnswer)
-  return submitted.length > 0 && accepted.includes(submitted)
 }
 
 export async function POST(request: NextRequest) {
@@ -38,6 +30,7 @@ export async function POST(request: NextRequest) {
       .from('exam_sessions')
       .select('*')
       .eq('id', examId)
+      .eq('user_id', user.id)
       .single()
 
     if (fetchError || !session) {
@@ -48,7 +41,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Exam already submitted' }, { status: 400 })
     }
 
-    const allQuestions = loadAllQuestions()
+    const monthlyQuestions = getMath1MockSet(session.exam_type)?.questions ?? []
+    const allQuestions = loadAllQuestions().concat(monthlyQuestions)
     const questionMap = new Map(allQuestions.map(q => [q.id, q]))
     const questions = (session.question_ids as string[])
       .map(id => questionMap.get(id))
@@ -56,36 +50,44 @@ export async function POST(request: NextRequest) {
 
     let score = 0
     let points = 0
+    let penaltyPoints = 0
     let maximumPoints = 0
+    const isMonthlyRankExam = isMonthlyRankExamType(session.exam_type)
     const breakdown: Record<string, { correct: number; total: number }> = {}
     for (const q of questions) {
-      const correct = isCorrectAnswer(q, answers[q.id])
+      const correct = isCorrectExamAnswer(q, answers[q.id])
       const questionPoints = q.type === 'short-answer' ? 5 : 3
       maximumPoints += questionPoints
       if (correct) score++
       if (correct) points += questionPoints
+      else if (isMonthlyRankExam && hasExamAnswer(answers[q.id])) penaltyPoints += questionPoints
       if (!breakdown[q.topicId]) breakdown[q.topicId] = { correct: 0, total: 0 }
       breakdown[q.topicId].total++
       if (correct) breakdown[q.topicId].correct++
     }
 
+    const finalPoints = isMonthlyRankExam ? Math.max(0, points - penaltyPoints) : points
     const { error: updateError } = await supabase
       .from('exam_sessions')
       .update({
         answers,
         submitted_at: new Date().toISOString(),
-        score,
+        score: isMonthlyRankExam ? finalPoints : score,
+        total_questions: isMonthlyRankExam ? maximumPoints : session.total_questions,
       })
       .eq('id', examId)
+      .eq('user_id', user.id)
 
     if (updateError) throw updateError
 
     return NextResponse.json({
       score,
       total: questions.length,
-      points,
+      points: finalPoints,
+      earnedPoints: points,
+      penaltyPoints,
       maximumPoints,
-      percentage: maximumPoints > 0 ? Math.round((points / maximumPoints) * 100) : 0,
+      percentage: maximumPoints > 0 ? Math.round((finalPoints / maximumPoints) * 100) : 0,
       breakdown,
     })
   } catch (err) {

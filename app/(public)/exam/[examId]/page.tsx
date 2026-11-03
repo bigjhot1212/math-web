@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 import { ArrowLeft, ArrowRight, LogOut } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import { formatMathForDisplay } from '@/lib/format-math'
+import { isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import Scratchpad from '@/app/components/scratchpad'
 import 'katex/dist/katex.min.css'
 
@@ -14,6 +15,8 @@ const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), 
 
 type ExamData = {
   examId: string
+  examType: string
+  freshAttempt?: boolean
   questions: Question[]
   durationMinutes: number
   startedAt: string
@@ -54,10 +57,12 @@ export default function ExamRoomPage() {
   const [timeLeft, setTimeLeft] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showExitConfirm, setShowExitConfirm] = useState(false)
 
   const endTimeRef = useRef(0)
   const answersRef = useRef<Record<string, string>>({})
   const submittingRef = useRef(false)
+  const leftExamPageRef = useRef(false)
 
   answersRef.current = answers
 
@@ -65,17 +70,27 @@ export default function ExamRoomPage() {
     const cached = sessionStorage.getItem(`exam_${examId}`)
     if (cached) {
       const data = JSON.parse(cached) as ExamData
-      setExamData(data)
-      endTimeRef.current = new Date(data.startedAt).getTime() + data.durationMinutes * 60 * 1000
-      setTimeLeft(Math.max(0, endTimeRef.current - Date.now()))
-      return
+      const isMonthly = isMonthlyRankExamType(data.examType ?? '')
+      if (!isMonthly || data.freshAttempt) {
+        if (isMonthly) sessionStorage.setItem(`exam_${examId}`, JSON.stringify({ ...data, freshAttempt: false }))
+        setExamData(data)
+        endTimeRef.current = new Date(data.startedAt).getTime() + data.durationMinutes * 60 * 1000
+        setTimeLeft(Math.max(0, endTimeRef.current - Date.now()))
+        return
+      }
+      sessionStorage.removeItem(`exam_${examId}`)
     }
     fetch(`/api/exam/${examId}`)
       .then(r => r.json())
       .then(({ session, questions }) => {
+        if (session.submitted_at) {
+          router.replace(`/exam/${examId}/result`)
+          return
+        }
         const durationMinutes = EXAM_DURATIONS[session.exam_type] ?? 90
         const data: ExamData = {
           examId: session.id,
+          examType: session.exam_type,
           questions,
           durationMinutes,
           startedAt: session.started_at,
@@ -87,7 +102,49 @@ export default function ExamRoomPage() {
           setAnswers(session.answers)
         }
       })
-  }, [examId])
+  }, [examId, router])
+
+  const isMonthlyRankExam = Boolean(examData && isMonthlyRankExamType(examData.examType))
+
+  useEffect(() => {
+    if (!isMonthlyRankExam || Object.keys(answers).length === 0 || submittingRef.current) return
+    const controller = new AbortController()
+    fetch('/api/exam/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ examId, answers }),
+      keepalive: true,
+      signal: controller.signal,
+    }).catch(() => undefined)
+    return () => controller.abort()
+  }, [answers, examId, isMonthlyRankExam])
+
+  useEffect(() => {
+    if (!isMonthlyRankExam) return
+    const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      if (submittingRef.current) return
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    const finalizeOnLeave = () => {
+      if (submittingRef.current) return
+      leftExamPageRef.current = true
+      submittingRef.current = true
+      const payload = JSON.stringify({ examId, answers: answersRef.current })
+      navigator.sendBeacon('/api/exam/submit', new Blob([payload], { type: 'application/json' }))
+    }
+    const handlePageRestore = (event: PageTransitionEvent) => {
+      if (event.persisted && leftExamPageRef.current) router.replace(`/exam/${examId}/result`)
+    }
+    window.addEventListener('beforeunload', warnBeforeLeaving)
+    window.addEventListener('pagehide', finalizeOnLeave)
+    window.addEventListener('pageshow', handlePageRestore)
+    return () => {
+      window.removeEventListener('beforeunload', warnBeforeLeaving)
+      window.removeEventListener('pagehide', finalizeOnLeave)
+      window.removeEventListener('pageshow', handlePageRestore)
+    }
+  }, [examId, isMonthlyRankExam, router])
 
   async function handleSubmit() {
     if (submittingRef.current) return
@@ -158,15 +215,15 @@ export default function ExamRoomPage() {
 
         <div className="col-span-2 flex items-center justify-end gap-2 sm:col-auto">
           <button
-            onClick={() => router.push('/exam')}
+            onClick={() => isMonthlyRankExam ? setShowExitConfirm(true) : router.push('/exam')}
             disabled={submitting}
             className="hidden sm:flex items-center gap-1.5 px-3 py-2 border border-border rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
             <LogOut className="w-4 h-4" aria-hidden="true" />
-            ออกจากข้อสอบ
+            {isMonthlyRankExam ? 'ยุติการสอบ' : 'ออกจากข้อสอบ'}
           </button>
           <button
-            onClick={() => router.push('/exam')}
+            onClick={() => isMonthlyRankExam ? setShowExitConfirm(true) : router.push('/exam')}
             disabled={submitting}
             aria-label="ออกจากข้อสอบ"
             className="sm:hidden p-2 border border-border rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
@@ -361,6 +418,33 @@ export default function ExamRoomPage() {
                 className="flex-1 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all cursor-pointer disabled:cursor-not-allowed"
               >
                 {submitting ? 'กำลังส่ง...' : 'ยืนยัน'}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      <Dialog.Root open={showExitConfirm} onOpenChange={setShowExitConfirm}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-card p-6">
+            <Dialog.Title className="text-lg font-heading font-semibold text-foreground">ยุติข้อสอบและคิดคะแนนตอนนี้?</Dialog.Title>
+            <Dialog.Description className="mt-2 text-sm leading-6 text-muted-foreground">
+              ข้อสอบจัดอันดับทำได้เดือนละครั้ง หากออกตอนนี้ ระบบจะคิดคะแนนจาก {answeredCount} ข้อที่ตอบไว้ ข้อผิดจะถูกหักตามประเภท และข้อที่ยังไม่ตอบได้ 0 คะแนน
+            </Dialog.Description>
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => setShowExitConfirm(false)}
+                className="flex-1 rounded-lg border border-border px-4 py-2 text-sm hover:bg-accent"
+              >
+                ทำต่อ
+              </button>
+              <button
+                onClick={() => { setShowExitConfirm(false); handleSubmit() }}
+                disabled={submitting}
+                className="flex-1 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 disabled:opacity-50"
+              >
+                {submitting ? 'กำลังส่ง...' : 'ส่งคะแนนและออก'}
               </button>
             </div>
           </Dialog.Content>

@@ -1,4 +1,5 @@
 import HunterLicense from '@/app/components/adventure/hunter-license'
+import HunterRankCard from '@/app/components/adventure/hunter-rank-card'
 import WorldExplorer from '@/app/components/adventure/world-explorer'
 import { buildTopicProgress } from '@/lib/adventure-topics'
 import { redirect } from 'next/navigation'
@@ -9,6 +10,9 @@ import { isAdminEmail } from '@/lib/payment-config'
 import { analyzeLearningEvidence, type LearningEvidence } from '@/lib/learning-insights'
 import { deduplicateAttempts, formatCompactDuration, formatDuration, getValidTimes, median } from '@/lib/progress-analytics'
 import { getQuestionCatalog, isCorrectQuestionAnswer } from '@/lib/question-catalog'
+import { calculateHunterRating, getMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
+import { calculateExamPoints } from '@/lib/exam-scoring'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -102,7 +106,7 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: progressRows }, { data: examRows }] = await Promise.all([
+  const [{ data: progressRows }, { data: examRows }, { data: monthlyRankExam }] = await Promise.all([
     supabase
       .from('user_progress')
       .select('id, topic_id, question_id, is_correct, time_spent_seconds, answered_at')
@@ -115,10 +119,32 @@ export default async function DashboardPage() {
       .not('submitted_at', 'is', null)
       .order('submitted_at', { ascending: false })
       .limit(20),
+    supabase
+      .from('exam_sessions')
+      .select('id, exam_type, score, total_questions, submitted_at, question_ids, answers')
+      .eq('user_id', user.id)
+      .eq('exam_type', getMonthlyRankExamType())
+      .order('submitted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ])
 
   const progress = deduplicateAttempts((progressRows ?? []) as ProgressRow[])
   const exams = (examRows ?? []) as ExamRow[]
+  let resolvedMonthlyRankExam = monthlyRankExam as ExamRow | null
+  if (resolvedMonthlyRankExam && !resolvedMonthlyRankExam.submitted_at) {
+    const questions = getMath1MockSet(getMonthlyRankExamType())?.questions ?? []
+    const answers = resolvedMonthlyRankExam.answers ?? {}
+    const { points, maximumPoints } = calculateExamPoints(questions, answers)
+    const submittedAt = new Date().toISOString()
+    const { error } = await supabase
+      .from('exam_sessions')
+      .update({ score: points, total_questions: maximumPoints, submitted_at: submittedAt })
+      .eq('id', resolvedMonthlyRankExam.id)
+      .eq('user_id', user.id)
+      .is('submitted_at', null)
+    if (!error) resolvedMonthlyRankExam = { ...resolvedMonthlyRankExam, score: points, total_questions: maximumPoints, submitted_at: submittedAt }
+  }
   const questionCatalog = getQuestionCatalog()
   const practiceEvidence: LearningEvidence[] = progress.map(row => {
     const question = questionCatalog.get(row.question_id)
@@ -171,6 +197,13 @@ export default async function DashboardPage() {
   const latestExamAccuracy = latestExam?.total_questions > 0
     ? Math.round((latestExam.score / latestExam.total_questions) * 100)
     : null
+  const ratingExams = resolvedMonthlyRankExam?.submitted_at && !exams.some(exam => exam.id === resolvedMonthlyRankExam?.id)
+    ? [resolvedMonthlyRankExam, ...exams]
+    : exams
+  const hunterRating = calculateHunterRating(
+    ratingExams.map(exam => ({ ...exam, user_id: user.id })),
+    progress.map(row => ({ ...row, user_id: user.id })),
+  )
 
   const displayName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'คุณ'
   const focusName = primaryFocus ? TOPIC_NAMES[primaryFocus.topicId] ?? primaryFocus.topicId : null
@@ -226,7 +259,8 @@ export default async function DashboardPage() {
           <Link href={primaryFocus ? `/practice/${primaryFocus.topicId}` : '/practice'}>{focusName ? 'ฝึกบทนี้ต่อ' : 'เลือกภารกิจฝึกโจทย์'}<ArrowRight className="size-4" aria-hidden="true" /></Link>
         </section>
 
-        <HunterLicense name={user.user_metadata?.full_name ?? displayName} avatarUrl={user.user_metadata?.avatar_url} answered={totalAnswered} accuracy={totalAnswered > 0 ? overallAccuracy : null} streak={streak} />
+        <HunterRankCard rating={hunterRating} />
+        <HunterLicense name={user.user_metadata?.full_name ?? displayName} avatarUrl={user.user_metadata?.avatar_url} answered={totalAnswered} accuracy={totalAnswered > 0 ? overallAccuracy : null} streak={streak} rankCode={hunterRating.eligible ? hunterRating.rank.code : undefined} rankName={hunterRating.eligible ? hunterRating.rank.name : undefined} />
         </div>
         </div>
 

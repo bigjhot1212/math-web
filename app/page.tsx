@@ -17,6 +17,7 @@ import { COURSES, ZONE_LABELS } from '@/content/course-videos'
 import styles from './home.module.css'
 import AdventureHero from './components/adventure/adventure-hero'
 import AdventureAtlas from './components/adventure/adventure-atlas'
+import HunterRankShowcase from './components/adventure/hunter-rank-showcase'
 import { AnimatedContent } from './components/adventure/adventure-effects'
 import CourseArtwork from './(public)/pricing/course-artwork'
 
@@ -36,6 +37,7 @@ export default function Home() {
     <main className={`${styles.page} flex-1 overflow-hidden bg-background`}>
       <AdventureHero />
       <AdventureAtlas />
+      <HunterRankShowcase />
 
       <section className="mx-auto max-w-[1280px] px-5 py-20 sm:px-8 lg:px-14 lg:py-28">
         <div className="max-w-3xl">

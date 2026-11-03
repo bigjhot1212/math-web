@@ -1,9 +1,10 @@
 'use client'
 
+import { Dialog } from 'radix-ui'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, BookOpenCheck, Clock3, Gauge, Layers3, Lock } from 'lucide-react'
+import { AlertTriangle, ArrowRight, BookOpenCheck, CalendarClock, Clock3, Gauge, Layers3, Lock, Trophy } from 'lucide-react'
 
 const BASIC_DIAGNOSTIC_TYPE = 'basic-diagnostic-v1'
 
@@ -52,12 +53,27 @@ const EXAMS = [
   },
 ]
 
-type Props = { isPremium: boolean; isLoggedIn: boolean }
+type Props = {
+  isPremium: boolean
+  isLoggedIn: boolean
+  monthlyRankExamType: string
+  monthlyRankLabel: string
+  monthlyRankStarted: boolean
+  monthlyRankCompleted: boolean
+}
 
-export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
+export default function ExamSelector({
+  isPremium,
+  isLoggedIn,
+  monthlyRankExamType,
+  monthlyRankLabel,
+  monthlyRankStarted,
+  monthlyRankCompleted,
+}: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [showMonthlyWarning, setShowMonthlyWarning] = useState(false)
 
   async function startExam(examType: string) {
     if (!isLoggedIn) {
@@ -96,6 +112,44 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
             {error}
           </div>
         )}
+
+        <section className="mb-8 overflow-hidden rounded-xl border border-cta/40 bg-card shadow-sm">
+          <div className="grid md:grid-cols-[1fr_auto] md:items-center">
+            <div className="p-7 md:p-9">
+              <div className="flex items-center gap-3 text-cta">
+                <Trophy className="h-6 w-6" aria-hidden="true" />
+                <p className="text-sm font-semibold">ข้อสอบจัดอันดับประจำเดือน · {monthlyRankLabel}</p>
+              </div>
+              <h2 className="mt-4 font-heading text-2xl font-semibold text-foreground">วัดระดับเพื่อเปิดแรงค์ฮันเตอร์</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+                ข้อสอบมาตรฐาน 30 ข้อเป็นคะแนนตั้งต้นของเดือนนี้ มีการหักคะแนนเมื่อตอบผิด หลังจากนั้นการฝึกและผลสอบในเดือนเดียวกันจะช่วยปรับคะแนนได้ไม่เกิน ±5 คะแนน
+              </p>
+              <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-2"><BookOpenCheck className="h-4 w-4 text-primary" aria-hidden="true" />30 ข้อ</span>
+                <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" aria-hidden="true" />90 นาที</span>
+                <span className="inline-flex items-center gap-2"><CalendarClock className="h-4 w-4 text-primary" aria-hidden="true" />1 ครั้งต่อเดือน</span>
+              </div>
+            </div>
+            <div className="border-t border-border bg-cta/[0.06] p-7 md:border-l md:border-t-0 md:p-9">
+              {monthlyRankCompleted ? (
+                <Link href="/leaderboard" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cta px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90">
+                  ดูแรงค์ประจำเดือน <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowMonthlyWarning(true)}
+                  disabled={loading !== null}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cta px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {loading === monthlyRankExamType ? 'กำลังเตรียมข้อสอบ...' : monthlyRankStarted ? 'ตรวจผลการสอบ' : 'เริ่มวัดระดับเดือนนี้'}
+                  {loading !== monthlyRankExamType && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
+                </button>
+              )}
+              <p className="mt-4 text-xs leading-5 text-muted-foreground">เริ่มแล้วต้องทำต่อเนื่อง หากออกจากหน้าสอบ ระบบจะคิดคะแนนจากคำตอบที่ทำไว้ทันที</p>
+            </div>
+          </div>
+        </section>
 
         <section className="animate-fade-slide-in mb-12 overflow-hidden rounded-lg border border-primary/35 bg-card ">
           <div className="grid lg:grid-cols-[1.35fr_0.65fr]">
@@ -245,6 +299,49 @@ export default function ExamSelector({ isPremium, isLoggedIn }: Props) {
           ข้อสอบจะสุ่มจากคลังโจทย์ · เมื่อเริ่มสอบแล้วควรทำให้เสร็จในครั้งเดียว
         </p>
       </div>
+
+      <Dialog.Root open={showMonthlyWarning} onOpenChange={setShowMonthlyWarning}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/55" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border bg-card p-6 shadow-xl md:p-7">
+            <div className="flex items-start gap-4">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-amber-500/15 text-amber-700">
+                <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <div className="min-w-0">
+                <Dialog.Title className="font-heading text-xl font-semibold text-foreground">พร้อมแล้วค่อยเริ่มสอบ</Dialog.Title>
+                <Dialog.Description className="mt-2 text-sm leading-6 text-muted-foreground">
+                  ข้อสอบจัดอันดับทำได้เดือนละครั้งและต้องทำต่อเนื่อง 90 นาที หากออกจากหน้าสอบ ปิดแท็บ หรือปิดแอป ระบบจะส่งคำตอบและคิดคะแนนเท่าที่ทำทันที
+                </Dialog.Description>
+              </div>
+            </div>
+            <ul className="mt-5 space-y-2 border-y border-border py-4 text-sm leading-6 text-foreground">
+              <li>เตรียมเวลาให้ครบ 90 นาที</li>
+              <li>ตรวจอินเทอร์เน็ตและแบตเตอรี่ให้พร้อม</li>
+              <li>ปรนัย: ตอบถูก +3 · ตอบผิด −3</li>
+              <li>อัตนัย: ตอบถูก +5 · ตอบผิด −5</li>
+              <li>ข้อที่ไม่ตอบได้ 0 คะแนน และคะแนนรวมต่ำสุดคือ 0</li>
+            </ul>
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowMonthlyWarning(false)}
+                className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
+              >
+                ยังไม่พร้อม
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowMonthlyWarning(false); startExam(monthlyRankExamType) }}
+                disabled={loading !== null}
+                className="rounded-lg bg-cta px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading === monthlyRankExamType ? 'กำลังเตรียมข้อสอบ...' : 'พร้อม เริ่มสอบทันที'}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </main>
   )
 }

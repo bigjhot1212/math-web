@@ -194,5 +194,11 @@ for (const set of math1MockSets) {
 }
 
 export function getMath1MockSet(examType: string): Math1MockSet | null {
-  return math1MockSets.find(set => set.type === examType) ?? null
+  const existing = math1MockSets.find(set => set.type === examType)
+  if (existing) return existing
+
+  const monthlyMatch = /^hunter-rank-(\d{4})-(0[1-9]|1[0-2])$/.exec(examType)
+  if (!monthlyMatch) return null
+  const seed = Number(monthlyMatch[1]) * 12 + Number(monthlyMatch[2])
+  return { ...buildSet(seed, 'hard', new Set<string>()), type: examType }
 }

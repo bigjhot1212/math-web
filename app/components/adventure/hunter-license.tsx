@@ -16,12 +16,14 @@ function AssociationSeal() {
   )
 }
 
-export default function HunterLicense({ name, avatarUrl, answered, accuracy, streak }: {
+export default function HunterLicense({ name, avatarUrl, answered, accuracy, streak, rankCode, rankName }: {
   name: string
   avatarUrl?: string | null
   answered: number
   accuracy: number | null
   streak: number
+  rankCode?: string
+  rankName?: string
 }) {
   const [open, setOpen] = useState(false)
   const trigger = useRef<HTMLButtonElement>(null)
@@ -59,7 +61,7 @@ export default function HunterLicense({ name, avatarUrl, answered, accuracy, str
               <span className="hunter-license-member">
                 <small>ชื่อผู้ถือบัตร</small>
                 <strong>{name}</strong>
-                <span>สมาชิกผู้เรียน</span>
+                <span>{rankCode && rankName ? `แรงค์ ${rankCode} · ${rankName}` : 'สมาชิกผู้เรียน'}</span>
               </span>
             </span>
 
@@ -92,7 +94,7 @@ export default function HunterLicense({ name, avatarUrl, answered, accuracy, str
           <div className="license-dialog-body">
             <dl className="license-details-list">
               <div><dt>ชื่อผู้ถือบัตร</dt><dd>{name}</dd></div>
-              <div><dt>สถานะ</dt><dd>สมาชิกผู้เรียน</dd></div>
+              <div><dt>สถานะ</dt><dd>{rankCode && rankName ? `แรงค์ ${rankCode} · ${rankName}` : 'สมาชิกผู้เรียน'}</dd></div>
               <div><dt>ฝึกและสอบแล้ว</dt><dd>{answered} ข้อ</dd></div>
               <div><dt>ความแม่นยำ</dt><dd>{accuracy === null ? 'ยังไม่มีข้อมูล' : `${accuracy}%`}</dd></div>
               <div><dt>ฝึกต่อเนื่อง</dt><dd>{streak} วัน</dd></div>

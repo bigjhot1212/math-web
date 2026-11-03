@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Compass, GraduationCap, LayoutDashboard, Menu, MessageCircle, ShieldCheck } from 'lucide-react'
+import { BookOpen, Compass, GraduationCap, LayoutDashboard, Menu, MessageCircle, ShieldCheck, Trophy } from 'lucide-react'
 import { getNavigationMode, showFloatingSupport } from '@/lib/navigation'
 import { BRAND_FULL_NAME } from '@/lib/brand'
 import BrandMark from './brand-mark'
@@ -20,6 +20,7 @@ const studentLinks = [
   ['/dashboard', 'ศูนย์บัญชาการ', LayoutDashboard],
   ['/practice', 'ภารกิจฝึกโจทย์', Compass],
   ['/exam', 'สนามสอบจำลอง', GraduationCap],
+  ['/leaderboard', 'อันดับฮันเตอร์', Trophy],
   ['/treasure', 'ขุมทรัพย์', BookOpen],
 ] as const
 const moreLinks = [['/courses', 'คอร์สของฉัน'], ['/profile', 'ข้อมูลของฉัน'], ['/pricing', 'เลือกซื้อคอร์ส'], ['/premium', 'แบบฝึกหัด Premium'], ['/cart', 'ตะกร้าคอร์ส']] as const
@@ -35,6 +36,7 @@ export default function AppShell({ children, user, isAdmin }: Props) {
     '/profile': ['/adventure/curves.webp', 'HUNTER PROFILE', 'การเดินทางในแบบของคุณ'],
     '/treasure': ['/adventure/archive.webp', 'THE KNOWLEDGE ARCHIVE', 'ทุกการค้นพบ เริ่มจากความเข้าใจ'],
     '/exam': ['/adventure/celestial.webp', 'THE EXAMINATION GROUNDS', 'พร้อมก้าวเข้าสู่สนามจริง'],
+    '/leaderboard': ['/adventure/celestial.webp', 'HUNTER RANKING', 'พิสูจน์แรงค์จากสนามสอบจริง'],
     '/premium': ['/adventure/clockwork.webp', 'ADVANCED TRAINING', 'อีกขั้นของการฝึกฝน'],
   }
   const artwork = routeArtwork[pathname]
@@ -93,7 +95,7 @@ export default function AppShell({ children, user, isAdmin }: Props) {
         <nav className="student-mobile-nav" aria-label="เมนูนักเรียนบนมือถือ">
           {studentLinks.slice(0, 3).map(([href, label, Icon]) => <Link key={href} href={href} aria-current={active(href) ? 'page' : undefined}><Icon className="size-5" aria-hidden="true" /><span>{href === '/practice' ? 'ฝึกโจทย์' : href === '/exam' ? 'สอบจำลอง' : label}</span></Link>)}
           <details key={pathname}><summary><Menu className="size-5" /><span>เพิ่มเติม</span></summary><div className="mobile-more">
-            {navLink('/treasure', 'ขุมทรัพย์')}{moreLinks.map(([href, label]) => navLink(href, label))}
+            {studentLinks.slice(3).map(([href, label]) => navLink(href, label))}{moreLinks.map(([href, label]) => navLink(href, label))}
             {isAdmin && navLink('/admin/students', 'ดูแลนักเรียน')}
             <a className="shell-link" href="https://ig.me/m/j.3ra_" target="_blank" rel="noopener noreferrer">สอบถามผ่าน Instagram</a>
           </div></details>

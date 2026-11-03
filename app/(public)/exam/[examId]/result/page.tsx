@@ -9,19 +9,10 @@ import dynamic from 'next/dynamic'
 import { ArrowRight, BookOpenCheck, CheckCircle2, Target, XCircle } from 'lucide-react'
 import { Question } from '@/lib/types/question'
 import { formatMathForDisplay } from '@/lib/format-math'
+import { calculateExamPoints, countCorrectExamAnswers, hasExamAnswer, isCorrectExamAnswer } from '@/lib/exam-scoring'
 import 'katex/dist/katex.min.css'
 
 const InlineMath = dynamic(() => import('react-katex').then(m => m.InlineMath), { ssr: false })
-
-function normalizeAnswer(value: unknown): string {
-  return String(value ?? '').trim().replace(/,/g, '').replace(/\s+/g, '').toLowerCase()
-}
-
-function isCorrectAnswer(question: Question, value: unknown): boolean {
-  const submitted = normalizeAnswer(value)
-  const accepted = [question.answer, ...(question.acceptedAnswers ?? [])].map(normalizeAnswer)
-  return submitted.length > 0 && accepted.includes(submitted)
-}
 
 type Session = {
   id: string
@@ -90,12 +81,12 @@ export default function ExamResultPage() {
 
   if (!session) return null
 
-  const correctCount = questions.filter(q => isCorrectAnswer(q, session.answers?.[q.id])).length
-  const earnedPoints = questions.reduce((sum, q) => (
-    sum + (isCorrectAnswer(q, session.answers?.[q.id]) ? (q.type === 'short-answer' ? 5 : 3) : 0)
-  ), 0)
-  const maximumPoints = questions.reduce((sum, q) => sum + (q.type === 'short-answer' ? 5 : 3), 0)
-  const percentage = maximumPoints > 0 ? Math.round((earnedPoints / maximumPoints) * 100) : 0
+  const isMonthlyRankExam = session.exam_type.startsWith('hunter-rank-')
+  const correctCount = countCorrectExamAnswers(questions, session.answers ?? {})
+  const { earnedPoints, penaltyPoints, points: netPoints, maximumPoints } = calculateExamPoints(questions, session.answers ?? {})
+  const displayedPoints = isMonthlyRankExam ? netPoints : earnedPoints
+  const percentage = maximumPoints > 0 ? Math.round((displayedPoints / maximumPoints) * 100) : 0
+  const unansweredCount = questions.filter(question => !hasExamAnswer(session.answers?.[question.id])).length
 
   const scoreColor =
     percentage >= 80 ? 'text-green-700' :
@@ -112,10 +103,13 @@ export default function ExamResultPage() {
   for (const q of questions) {
     if (!breakdown[q.topicId]) breakdown[q.topicId] = { correct: 0, total: 0 }
     breakdown[q.topicId].total++
-    if (isCorrectAnswer(q, session.answers?.[q.id])) breakdown[q.topicId].correct++
+    if (isCorrectExamAnswer(q, session.answers?.[q.id])) breakdown[q.topicId].correct++
   }
 
   const isBasicDiagnostic = session.exam_type === 'basic-diagnostic-v1'
+  const examName = isMonthlyRankExam
+    ? 'ข้อสอบจัดอันดับประจำเดือน'
+    : EXAM_NAMES[session.exam_type] ?? session.exam_type
   const topicResults = Object.entries(breakdown)
     .map(([topicId, stats]) => ({
       topicId,
@@ -138,12 +132,17 @@ export default function ExamResultPage() {
         {/* Score hero */}
         <ResultReveal confirmed={Boolean(session.submitted_at)}><div className="text-center py-10 mb-10 border-b border-border relative">
           <p className="text-xs text-muted-foreground mb-4">
-            {EXAM_NAMES[session.exam_type] ?? session.exam_type} · ผลสอบ
+            {examName} · ผลสอบ
           </p>
           <div className={`font-heading text-8xl font-bold mb-3 tabular-nums ${scoreColor}`}>{percentage}%</div>
           <p className="text-muted-foreground text-lg mb-2">
-            {earnedPoints} / {maximumPoints} คะแนน · ถูก {correctCount}/{questions.length} ข้อ
+            {displayedPoints} / {maximumPoints} คะแนน · ถูก {correctCount}/{questions.length} ข้อ
           </p>
+          {isMonthlyRankExam && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              ได้จากข้อถูก +{earnedPoints} · หักข้อผิด −{penaltyPoints} · เว้นว่าง {unansweredCount} ข้อ
+            </p>
+          )}
           <p className={`font-medium ${scoreColor}`}>{scoreLabel}</p>
           <p className="text-xs text-muted-foreground mt-3">
             ใช้เวลา {durationMin} นาที {durationSec} วินาที
@@ -258,7 +257,7 @@ export default function ExamResultPage() {
           <div className="flex flex-col gap-3">
             {questions.map((q, i) => {
               const userAns = session.answers?.[q.id]
-              const correct = isCorrectAnswer(q, userAns)
+              const correct = isCorrectExamAnswer(q, userAns)
               return (
                 <div
                   key={q.id}
