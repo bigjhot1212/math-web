@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
+import { grantPaidCourses } from '@/lib/stripe-fulfillment'
 import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
@@ -16,6 +17,10 @@ export async function GET(request: NextRequest) {
     const session = await getStripe().checkout.sessions.retrieve(sessionId)
     if (session.metadata?.supabase_user_id !== user.id) {
       return NextResponse.json({ error: 'คุณไม่มีสิทธิ์ดูรายการนี้' }, { status: 403 })
+    }
+
+    if (session.payment_status === 'paid') {
+      await grantPaidCourses(session)
     }
 
     const topicIds = session.metadata?.topic_ids?.split(',').filter(Boolean) ?? []

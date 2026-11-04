@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { COURSES, BUNDLES } from '@/content/course-videos'
-import { getAppUrl } from '@/lib/app-url'
+import { getRequestOrigin } from '@/lib/app-url'
 import { getStripe } from '@/lib/stripe'
 import { createClient } from '@/lib/supabase/server'
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     }
 
     const stripe = getStripe()
-    const origin = getAppUrl()
+    const origin = getRequestOrigin(request)
     const lineItems = type === 'bundle'
       ? [{
           price_data: {
