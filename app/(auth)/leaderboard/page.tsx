@@ -4,9 +4,10 @@ import { ArrowRight, CalendarCheck2, CheckCircle2, LockKeyhole, ShieldCheck, Tro
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
-import { calculateExamPoints } from '@/lib/exam-scoring'
+import { ensureHunterRankSnapshot, finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import {
   buildHunterStandings,
+  buildHunterStandingsFromResults,
   calculateHunterRating,
   getBangkokMonthKey,
   getHunterAlias,
@@ -17,14 +18,10 @@ import {
   HUNTER_RANKS,
   isHunterRankingReleased,
   type ExamPerformanceRow,
-  type PracticePerformanceRow,
+  type HunterRankResultRow,
 } from '@/lib/hunter-ranking'
 
 export const dynamic = 'force-dynamic'
-
-function signed(value: number) {
-  return value > 0 ? `+${value}` : String(value)
-}
 
 export default async function LeaderboardPage() {
   const supabase = await createClient()
@@ -41,32 +38,43 @@ export default async function LeaderboardPage() {
   }).format(new Date(Date.UTC(year, month - 1, 15)))
 
   const monthlyExamType = getMonthlyRankExamType(monthKey)
-  const { data: unfinishedMonthlyExam } = await supabase
+  const { data: monthlyExam } = await supabase
     .from('exam_sessions')
-    .select('id, answers')
+    .select('id, exam_type, score, total_questions, submitted_at, question_ids, answers')
     .eq('user_id', user.id)
     .eq('exam_type', monthlyExamType)
-    .is('submitted_at', null)
     .order('started_at', { ascending: false })
     .limit(1)
     .maybeSingle()
-  if (isHunterRankingReleased() && unfinishedMonthlyExam) {
-    const questions = getMath1MockSet(monthlyExamType)?.questions ?? []
-    const answers = (unfinishedMonthlyExam.answers ?? {}) as Record<string, unknown>
-    const { points, maximumPoints } = calculateExamPoints(questions, answers)
-    await supabase
-      .from('exam_sessions')
-      .update({
-        score: points,
-        total_questions: maximumPoints,
-        submitted_at: new Date().toISOString(),
+  if (isHunterRankingReleased() && monthlyExam) {
+    const monthlySet = getMath1MockSet(monthlyExamType)?.questions ?? []
+    const questions = selectHunterRankQuestions(monthlySet, monthlyExam.question_ids)
+    if (!monthlyExam.submitted_at) {
+      await finalizeMonthlyRankExam({
+        supabase,
+        userId: user.id,
+        sessionId: monthlyExam.id,
+        examType: monthlyExam.exam_type,
+        questions,
+        answers: (monthlyExam.answers ?? {}) as Record<string, string>,
+        finalizationReason: 'recovered',
       })
-      .eq('id', unfinishedMonthlyExam.id)
-      .eq('user_id', user.id)
-      .is('submitted_at', null)
+    } else {
+      await ensureHunterRankSnapshot({
+        userId: user.id,
+        sessionId: monthlyExam.id,
+        examType: monthlyExam.exam_type,
+        questions,
+        answers: (monthlyExam.answers ?? {}) as Record<string, string>,
+        score: monthlyExam.score,
+        maximumPoints: monthlyExam.total_questions,
+        submittedAt: monthlyExam.submitted_at,
+        finalizationReason: 'recovered',
+      })
+    }
   }
 
-  const [{ data: personalExamData }, { data: personalPracticeData }] = await Promise.all([
+  const [{ data: personalExamData }, personalResultQuery] = await Promise.all([
     supabase
       .from('exam_sessions')
       .select('user_id, exam_type, score, total_questions, submitted_at')
@@ -75,40 +83,52 @@ export default async function LeaderboardPage() {
       .gte('submitted_at', start)
       .lt('submitted_at', end),
     supabase
-      .from('user_progress')
-      .select('user_id, question_id, is_correct, answered_at')
+      .from('hunter_rank_results')
+      .select('user_id, month_key, rating, rank_code, submitted_at')
       .eq('user_id', user.id)
-      .gte('answered_at', start)
-      .lt('answered_at', end),
+      .eq('month_key', monthKey)
+      .maybeSingle(),
   ])
 
   const personalExams = (personalExamData ?? []) as ExamPerformanceRow[]
-  const personalPractice = (personalPracticeData ?? []) as PracticePerformanceRow[]
-  let allExams = personalExams
-  let allPractice = personalPractice
+  const personalResult = personalResultQuery.data as HunterRankResultRow | null
+  let resultRows = personalResult ? [personalResult] : []
+  let fallbackExams = personalExams
+  let useSnapshotResults = !personalResultQuery.error
   if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
     const admin = createAdminClient()
-    const [{ data: examData }, { data: practiceData }] = await Promise.all([
-      admin
+    const { data: officialResults, error: officialResultsError } = await admin
+      .from('hunter_rank_results')
+      .select('user_id, month_key, rating, rank_code, submitted_at')
+      .eq('month_key', monthKey)
+      .range(0, 9999)
+    if (!officialResultsError) {
+      resultRows = (officialResults ?? []) as HunterRankResultRow[]
+      useSnapshotResults = true
+    } else {
+      useSnapshotResults = false
+      const { data: examData } = await admin
         .from('exam_sessions')
         .select('user_id, exam_type, score, total_questions, submitted_at')
         .not('submitted_at', 'is', null)
         .gte('submitted_at', start)
         .lt('submitted_at', end)
-        .range(0, 9999),
-      admin
-        .from('user_progress')
-        .select('user_id, question_id, is_correct, answered_at')
-        .gte('answered_at', start)
-        .lt('answered_at', end)
-        .range(0, 9999),
-    ])
-    if (examData) allExams = examData as ExamPerformanceRow[]
-    if (practiceData) allPractice = practiceData as PracticePerformanceRow[]
+        .range(0, 9999)
+      if (examData) fallbackExams = examData as ExamPerformanceRow[]
+    }
   }
 
-  const standings = buildHunterStandings(allExams, allPractice, monthKey)
-  const personalRating = calculateHunterRating(personalExams, personalPractice, monthKey)
+  const standings = useSnapshotResults
+    ? buildHunterStandingsFromResults(resultRows, monthKey)
+    : buildHunterStandings(fallbackExams, monthKey)
+  const personalRating = personalResult
+    ? {
+        rating: personalResult.rating,
+        rank: HUNTER_RANKS.find(rank => rank.code === personalResult.rank_code) ?? HUNTER_RANKS[0],
+        eligible: true,
+        standardSubmittedAt: personalResult.submitted_at,
+      }
+    : calculateHunterRating(personalExams, monthKey)
   const personalStanding = standings.find(item => item.userId === user.id)
   const nextRank = getNextHunterRank(personalRating.rank)
   const topThree = standings.slice(0, 3)
@@ -121,9 +141,9 @@ export default async function LeaderboardPage() {
           <div>
             <p className="leaderboard-month">ฤดูกาล {monthLabel}</p>
             <h1>อันดับฮันเตอร์</h1>
-            <p>เริ่มจากข้อสอบมาตรฐานประจำเดือน แล้วขยับตามการฝึกจริงในเดือนนั้น ชื่อทุกคนถูกปิดบังเพื่อความเป็นส่วนตัว</p>
+            <p>แรงค์มาจากข้อสอบมาตรฐานประจำเดือนเพียงชุดเดียว การฝึกช่วยเตรียมความพร้อมแต่ไม่เปลี่ยนคะแนนแรงค์ และตารางใช้รหัสฮันเตอร์แทนชื่อจริง</p>
           </div>
-          <Link href="/exam">{personalRating.eligible ? 'เข้าสู่สนามสอบ' : 'สอบวัดระดับเดือนนี้'} <ArrowRight aria-hidden="true" /></Link>
+          <Link href={personalRating.eligible ? '/hunter-guide' : '/exam'}>{personalRating.eligible ? 'ดูเส้นทางพัฒนาของฉัน' : 'สอบวัดระดับเดือนนี้'} <ArrowRight aria-hidden="true" /></Link>
         </header>
 
         <section className="personal-rank" aria-labelledby="personal-rank-title">
@@ -137,30 +157,30 @@ export default async function LeaderboardPage() {
           </div>
           <dl>
             <div><dt>อันดับเดือนนี้</dt><dd>{personalStanding ? `#${personalStanding.position}` : '—'}</dd></div>
-            <div><dt>คะแนนตั้งต้น</dt><dd>{personalRating.baseline ?? '—'}</dd></div>
-            <div><dt>ปรับจากกิจกรรม</dt><dd>{personalRating.rating === null ? '—' : signed(personalRating.activityAdjustment)}</dd></div>
+            <div><dt>คะแนนสอบ</dt><dd>{personalRating.rating ?? '—'}</dd></div>
+            <div><dt>สถานะผล</dt><dd>{personalRating.eligible ? 'ยืนยันแล้ว' : 'รอสอบ'}</dd></div>
           </dl>
         </section>
 
         <section className="leaderboard-board" aria-labelledby="leaderboard-title">
-          <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">ตารางอันดับประจำเดือน</h2></div><p>อัปเดตจากการสอบและแบบฝึกหัดใน {monthLabel}</p></header>
+          <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">ตารางอันดับประจำเดือน</h2></div><p>ผลทางการจากข้อสอบมาตรฐาน {monthLabel}</p></header>
           {standings.length === 0 ? (
             <div className="leaderboard-empty"><Trophy aria-hidden="true" /><h3>สนามกำลังรอฮันเตอร์คนแรก</h3><p>อันดับจะปรากฏเมื่อมีผู้ส่งข้อสอบมาตรฐานประจำเดือน</p><Link href="/exam">เริ่มวัดระดับ</Link></div>
           ) : <>
             <div className="leaderboard-podium">
-              {topThree.map(hunter => <article key={hunter.userId} data-position={hunter.position} aria-label={`อันดับ ${hunter.position} ${hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId)}`}>
-                <span>{hunter.position}</span><strong>{hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId)}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนน</p>
+              {topThree.map(hunter => <article key={hunter.userId} data-position={hunter.position} aria-label={`อันดับ ${hunter.position} ${hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId, monthKey)}`}>
+                <span>{hunter.position}</span><strong>{hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId, monthKey)}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนน</p>
               </article>)}
             </div>
-            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนตั้งต้น</th><th>ปรับเดือนนี้</th><th>Rating</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId)}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{hunter.baseline}</td><td>{signed(hunter.activityAdjustment)}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
+            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนสอบมาตรฐาน</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId, monthKey)}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
           </>}
         </section>
 
         <section className="ranking-rules" aria-labelledby="ranking-rules-title">
-          <div><h2 id="ranking-rules-title">ระบบคิดแรงค์อย่างไร</h2><p>คะแนนสะท้อนทั้งมาตรฐานเดียวกันและความสม่ำเสมอ โดยไม่ให้กิจกรรมกลบผลสอบหลัก</p></div>
+          <div><h2 id="ranking-rules-title">ระบบคิดแรงค์อย่างไร</h2><p>ทุกคนใช้ข้อสอบและกติกาเดียวกัน ผลการฝึกไม่มีสิทธิ์เพิ่มหรือลดแรงค์</p></div>
           <ol>
-            <li><CheckCircle2 aria-hidden="true" /><span><strong>ข้อสอบมาตรฐานคือคะแนนตั้งต้น</strong>ปรนัยถูก +3 ผิด −3 · อัตนัยถูก +5 ผิด −5 · เว้นว่าง 0 คะแนน</span></li>
-            <li><Trophy aria-hidden="true" /><span><strong>กิจกรรมปรับได้ไม่เกิน ±5</strong>ดูทั้งความแม่น จำนวนข้อที่ฝึก และผลสอบอื่นในเดือนนั้น</span></li>
+            <li><CheckCircle2 aria-hidden="true" /><span><strong>แรงค์มาจากข้อสอบมาตรฐานเท่านั้น</strong>ปรนัยถูก +3 ผิด −3 · อัตนัยถูก +5 ผิด −5 · เว้นว่าง 0 คะแนน</span></li>
+            <li><Trophy aria-hidden="true" /><span><strong>การฝึกไม่เปลี่ยนแรงค์</strong>แบบฝึกหัดและข้อสอบอื่นใช้วิเคราะห์จุดอ่อนเพื่อเตรียมสอบรอบถัดไป</span></li>
             <li><CalendarCheck2 aria-hidden="true" /><span><strong>วัดระดับใหม่ทุกเดือน</strong>เดือนใหม่ใช้ข้อสอบชุดใหม่ และไม่นำคะแนนกิจกรรมเดือนเก่ามาสะสม</span></li>
             <li><LockKeyhole aria-hidden="true" /><span><strong>ข้อสอบมาตรฐานทำได้เดือนละครั้ง</strong>เมื่อเริ่มแล้วต้องทำต่อเนื่อง หากออกกลางคันจะคิดคะแนนจากคำตอบที่ทำไว้</span></li>
             <li><ShieldCheck aria-hidden="true" /><span><strong>ปิดบังตัวตน</strong>ตารางแสดงรหัสฮันเตอร์แทนชื่อหรืออีเมล</span></li>

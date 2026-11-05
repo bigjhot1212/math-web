@@ -4,8 +4,8 @@ import { Question } from '@/lib/types/question'
 import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
-import { calculateExamPoints } from '@/lib/exam-scoring'
 import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import fs from 'fs'
 import path from 'path'
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     if (isMonthlyRankExamType(examType)) {
       const { data: existingSession } = await supabase
         .from('exam_sessions')
-        .select('id, answers, started_at, submitted_at')
+        .select('id, answers, question_ids, started_at, submitted_at')
         .eq('user_id', user.id)
         .eq('exam_type', examType)
         .order('started_at', { ascending: false })
@@ -79,14 +79,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'คุณทำข้อสอบจัดอันดับเดือนนี้แล้ว ดูผลและอันดับได้ที่หน้าแรงค์ฮันเตอร์' }, { status: 409 })
       }
       if (existingSession && mockSet) {
-        const answers = (existingSession.answers ?? {}) as Record<string, unknown>
-        const { points, maximumPoints } = calculateExamPoints(mockSet.questions, answers)
-        await supabase
-          .from('exam_sessions')
-          .update({ score: points, total_questions: maximumPoints, submitted_at: new Date().toISOString() })
-          .eq('id', existingSession.id)
-          .eq('user_id', user.id)
-          .is('submitted_at', null)
+        const answers = (existingSession.answers ?? {}) as Record<string, string>
+        const questions = selectHunterRankQuestions(mockSet.questions, existingSession.question_ids)
+        await finalizeMonthlyRankExam({
+          supabase,
+          userId: user.id,
+          sessionId: existingSession.id,
+          examType,
+          questions,
+          answers,
+          finalizationReason: 'recovered',
+        })
         return NextResponse.json({ error: 'การสอบครั้งนี้สิ้นสุดแล้ว ระบบคิดคะแนนจากคำตอบที่บันทึกไว้ให้เรียบร้อย' }, { status: 409 })
       }
     }
@@ -135,6 +138,9 @@ export async function POST(request: NextRequest) {
       .select('id')
       .single()
 
+    if (error?.code === '23505' && isMonthlyRankExamType(examType)) {
+      return NextResponse.json({ error: 'คุณมีรอบสอบจัดอันดับของเดือนนี้แล้ว' }, { status: 409 })
+    }
     if (error) throw error
 
     return NextResponse.json({

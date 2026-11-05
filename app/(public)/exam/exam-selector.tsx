@@ -124,7 +124,7 @@ export default function ExamSelector({
               </div>
               <h2 className="mt-4 font-heading text-2xl font-semibold text-foreground">{monthlyRankReleased ? 'วัดระดับเพื่อเปิดแรงค์ฮันเตอร์' : 'ระบบแรงค์เปิด 7 พฤศจิกายน'}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                ข้อสอบมาตรฐาน 30 ข้อเป็นคะแนนตั้งต้นของเดือนนี้ มีการหักคะแนนเมื่อตอบผิด หลังจากนั้นการฝึกและผลสอบในเดือนเดียวกันจะช่วยปรับคะแนนได้ไม่เกิน ±5 คะแนน
+                ข้อสอบมาตรฐาน 30 ข้อเป็นคะแนนแรงค์ทางการของเดือนนี้ มีการหักคะแนนเมื่อตอบผิด และผลการฝึกจะไม่เพิ่มหรือลดแรงค์
               </p>
               <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-2"><BookOpenCheck className="h-4 w-4 text-primary" aria-hidden="true" />30 ข้อ</span>

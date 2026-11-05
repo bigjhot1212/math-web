@@ -1,5 +1,15 @@
 import type { Question } from '@/lib/types/question'
 
+export function sanitizeExamAnswers(value: unknown, maximumEntries = 30): Record<string, string> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const entries = Object.entries(value as Record<string, unknown>)
+  if (
+    entries.length > maximumEntries
+    || entries.some(([key, answer]) => key.length > 120 || String(answer ?? '').length > 100)
+  ) return null
+  return Object.fromEntries(entries.map(([key, answer]) => [key, String(answer ?? '')]))
+}
+
 export function normalizeExamAnswer(value: unknown): string {
   return String(value ?? '').trim().replace(/,/g, '').replace(/\s+/g, '').toLowerCase()
 }

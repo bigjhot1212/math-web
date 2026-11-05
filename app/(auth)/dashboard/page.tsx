@@ -10,9 +10,9 @@ import { isAdminEmail } from '@/lib/payment-config'
 import { analyzeLearningEvidence, type LearningEvidence } from '@/lib/learning-insights'
 import { deduplicateAttempts, formatCompactDuration, formatDuration, getValidTimes, median } from '@/lib/progress-analytics'
 import { getQuestionCatalog, isCorrectQuestionAnswer } from '@/lib/question-catalog'
-import { calculateHunterRating, getMonthlyRankExamType, isHunterRankingReleased } from '@/lib/hunter-ranking'
+import { calculateHunterRating, getHunterRank, getMonthlyRankExamType, isHunterRankingReleased } from '@/lib/hunter-ranking'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
-import { calculateExamPoints } from '@/lib/exam-scoring'
+import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 
 const TOPIC_NAMES: Record<string, string> = {
   'set': 'เซต',
@@ -49,6 +49,12 @@ type ExamRow = {
   submitted_at: string
   question_ids: string[] | null
   answers: Record<string, unknown> | null
+}
+
+type HunterRankResultRow = {
+  rating: number
+  rank_code: 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S'
+  submitted_at: string
 }
 
 const DIFFICULTY_NAMES = {
@@ -106,7 +112,7 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: progressRows }, { data: examRows }, { data: monthlyRankExam }] = await Promise.all([
+  const [{ data: progressRows }, { data: examRows }, { data: monthlyRankExam }, { data: monthlyRankResult }] = await Promise.all([
     supabase
       .from('user_progress')
       .select('id, topic_id, question_id, is_correct, time_spent_seconds, answered_at')
@@ -127,23 +133,43 @@ export default async function DashboardPage() {
       .order('submitted_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
+    supabase
+      .from('hunter_rank_results')
+      .select('rating, rank_code, submitted_at')
+      .eq('user_id', user.id)
+      .eq('exam_type', getMonthlyRankExamType())
+      .maybeSingle(),
   ])
 
   const progress = deduplicateAttempts((progressRows ?? []) as ProgressRow[])
   const exams = (examRows ?? []) as ExamRow[]
   let resolvedMonthlyRankExam = monthlyRankExam as ExamRow | null
+  let officialRankResult = monthlyRankResult as HunterRankResultRow | null
   if (isHunterRankingReleased() && resolvedMonthlyRankExam && !resolvedMonthlyRankExam.submitted_at) {
-    const questions = getMath1MockSet(getMonthlyRankExamType())?.questions ?? []
-    const answers = resolvedMonthlyRankExam.answers ?? {}
-    const { points, maximumPoints } = calculateExamPoints(questions, answers)
-    const submittedAt = new Date().toISOString()
-    const { error } = await supabase
-      .from('exam_sessions')
-      .update({ score: points, total_questions: maximumPoints, submitted_at: submittedAt })
-      .eq('id', resolvedMonthlyRankExam.id)
-      .eq('user_id', user.id)
-      .is('submitted_at', null)
-    if (!error) resolvedMonthlyRankExam = { ...resolvedMonthlyRankExam, score: points, total_questions: maximumPoints, submitted_at: submittedAt }
+    const monthlySet = getMath1MockSet(getMonthlyRankExamType())?.questions ?? []
+    const questions = selectHunterRankQuestions(monthlySet, resolvedMonthlyRankExam.question_ids)
+    const result = await finalizeMonthlyRankExam({
+      supabase,
+      userId: user.id,
+      sessionId: resolvedMonthlyRankExam.id,
+      examType: resolvedMonthlyRankExam.exam_type,
+      questions,
+      answers: (resolvedMonthlyRankExam.answers ?? {}) as Record<string, string>,
+      finalizationReason: 'recovered',
+    })
+    if (result.finalized) {
+      resolvedMonthlyRankExam = {
+        ...resolvedMonthlyRankExam,
+        score: result.scoring.points,
+        total_questions: result.scoring.maximumPoints,
+        submitted_at: result.submittedAt,
+      }
+      officialRankResult = {
+        rating: result.snapshot.rating,
+        rank_code: result.snapshot.rankCode,
+        submitted_at: result.submittedAt,
+      }
+    }
   }
   const questionCatalog = getQuestionCatalog()
   const practiceEvidence: LearningEvidence[] = progress.map(row => {
@@ -200,10 +226,14 @@ export default async function DashboardPage() {
   const ratingExams = resolvedMonthlyRankExam?.submitted_at && !exams.some(exam => exam.id === resolvedMonthlyRankExam?.id)
     ? [resolvedMonthlyRankExam, ...exams]
     : exams
-  const hunterRating = calculateHunterRating(
-    ratingExams.map(exam => ({ ...exam, user_id: user.id })),
-    progress.map(row => ({ ...row, user_id: user.id })),
-  )
+  const hunterRating = officialRankResult
+    ? {
+        rating: officialRankResult.rating,
+        rank: getHunterRank(officialRankResult.rating),
+        eligible: true,
+        standardSubmittedAt: officialRankResult.submitted_at,
+      }
+    : calculateHunterRating(ratingExams.map(exam => ({ ...exam, user_id: user.id })))
 
   const displayName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'คุณ'
   const focusName = primaryFocus ? TOPIC_NAMES[primaryFocus.topicId] ?? primaryFocus.topicId : null

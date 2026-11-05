@@ -4,8 +4,8 @@ import { Question } from '@/lib/types/question'
 import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { allMath1MockQuestions, getMath1MockSet } from '@/lib/content/math1-mock-sets'
-import { calculateExamPoints } from '@/lib/exam-scoring'
 import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { ensureHunterRankSnapshot, finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import fs from 'fs'
 import path from 'path'
 
@@ -47,21 +47,62 @@ export async function GET(
     const monthlyQuestions = getMath1MockSet(session.exam_type)?.questions ?? []
     const allQuestions = loadAllQuestions().concat(monthlyQuestions)
     const questionMap = new Map(allQuestions.map(q => [q.id, q]))
-    const questions = (session.question_ids as string[])
+    const questionIds = Array.isArray(session.question_ids) ? session.question_ids as string[] : []
+    const questions = questionIds
       .map(id => questionMap.get(id))
       .filter((q): q is Question => q !== undefined)
 
+    if (isMonthlyRankExamType(session.exam_type)) {
+      selectHunterRankQuestions(questions, questionIds)
+    }
+
     if (isMonthlyRankExamType(session.exam_type) && !session.submitted_at) {
-      const answers = (session.answers ?? {}) as Record<string, unknown>
-      const submittedAt = new Date().toISOString()
-      const { points, maximumPoints } = calculateExamPoints(questions, answers)
-      await supabase
+      const answers = (session.answers ?? {}) as Record<string, string>
+      const result = await finalizeMonthlyRankExam({
+        supabase,
+        userId: user.id,
+        sessionId: session.id,
+        examType: session.exam_type,
+        questions,
+        answers,
+        finalizationReason: 'left_exam',
+      })
+      if (result.finalized) {
+        return NextResponse.json({
+          session: {
+            ...session,
+            score: result.scoring.points,
+            total_questions: result.scoring.maximumPoints,
+            submitted_at: result.submittedAt,
+          },
+          questions,
+        })
+      }
+      const { data: finalizedSession } = await supabase
         .from('exam_sessions')
-        .update({ score: points, total_questions: maximumPoints, submitted_at: submittedAt })
+        .select('*')
         .eq('id', session.id)
         .eq('user_id', user.id)
-        .is('submitted_at', null)
-      return NextResponse.json({ session: { ...session, score: points, total_questions: maximumPoints, submitted_at: submittedAt }, questions })
+        .single()
+      return NextResponse.json({ session: finalizedSession ?? session, questions })
+    }
+
+    if (isMonthlyRankExamType(session.exam_type) && session.submitted_at) {
+      try {
+        await ensureHunterRankSnapshot({
+          userId: user.id,
+          sessionId: session.id,
+          examType: session.exam_type,
+          questions,
+          answers: (session.answers ?? {}) as Record<string, string>,
+          score: session.score,
+          maximumPoints: session.total_questions,
+          submittedAt: session.submitted_at,
+          finalizationReason: 'recovered',
+        })
+      } catch (snapshotError) {
+        console.error(`Unable to repair Hunter Rank snapshot for ${session.id}:`, snapshotError)
+      }
     }
 
     return NextResponse.json({ session, questions })

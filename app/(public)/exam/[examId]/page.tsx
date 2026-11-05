@@ -1,7 +1,7 @@
 'use client'
 
 import { Dialog } from 'radix-ui'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ArrowLeft, ArrowRight, LogOut } from 'lucide-react'
@@ -64,53 +64,67 @@ export default function ExamRoomPage() {
   const submittingRef = useRef(false)
   const leftExamPageRef = useRef(false)
 
-  answersRef.current = answers
+  useEffect(() => {
+    answersRef.current = answers
+  }, [answers])
 
   useEffect(() => {
-    const cached = sessionStorage.getItem(`exam_${examId}`)
-    if (cached) {
-      const data = JSON.parse(cached) as ExamData
-      const isMonthly = isMonthlyRankExamType(data.examType ?? '')
-      if (isMonthly && !isHunterRankingReleased()) {
-        sessionStorage.removeItem(`exam_${examId}`)
-        router.replace('/exam')
-        return
-      }
-      if (!isMonthly || data.freshAttempt) {
-        if (isMonthly) sessionStorage.setItem(`exam_${examId}`, JSON.stringify({ ...data, freshAttempt: false }))
-        setExamData(data)
-        endTimeRef.current = new Date(data.startedAt).getTime() + data.durationMinutes * 60 * 1000
-        setTimeLeft(Math.max(0, endTimeRef.current - Date.now()))
-        return
-      }
-      sessionStorage.removeItem(`exam_${examId}`)
-    }
-    fetch(`/api/exam/${examId}`)
-      .then(r => r.json())
-      .then(({ session, questions }) => {
-        if (!session) {
+    let cancelled = false
+    const controller = new AbortController()
+    async function loadExam() {
+      await Promise.resolve()
+      const cached = sessionStorage.getItem(`exam_${examId}`)
+      if (cached) {
+        const data = JSON.parse(cached) as ExamData
+        const isMonthly = isMonthlyRankExamType(data.examType ?? '')
+        if (isMonthly && !isHunterRankingReleased()) {
+          sessionStorage.removeItem(`exam_${examId}`)
           router.replace('/exam')
           return
         }
-        if (session.submitted_at) {
-          router.replace(`/exam/${examId}/result`)
+        if (!isMonthly || data.freshAttempt) {
+          if (isMonthly) sessionStorage.setItem(`exam_${examId}`, JSON.stringify({ ...data, freshAttempt: false }))
+          if (!cancelled) {
+            setExamData(data)
+            endTimeRef.current = new Date(data.startedAt).getTime() + data.durationMinutes * 60 * 1000
+            setTimeLeft(Math.max(0, endTimeRef.current - Date.now()))
+          }
           return
         }
-        const durationMinutes = EXAM_DURATIONS[session.exam_type] ?? 90
-        const data: ExamData = {
-          examId: session.id,
-          examType: session.exam_type,
-          questions,
-          durationMinutes,
-          startedAt: session.started_at,
-        }
-        setExamData(data)
-        endTimeRef.current = new Date(data.startedAt).getTime() + durationMinutes * 60 * 1000
-        setTimeLeft(Math.max(0, endTimeRef.current - Date.now()))
-        if (session.answers && Object.keys(session.answers).length > 0) {
-          setAnswers(session.answers)
-        }
-      })
+        sessionStorage.removeItem(`exam_${examId}`)
+      }
+      const response = await fetch(`/api/exam/${examId}`, { signal: controller.signal })
+      const { session, questions } = await response.json()
+      if (cancelled) return
+      if (!session) {
+        router.replace('/exam')
+        return
+      }
+      if (session.submitted_at) {
+        router.replace(`/exam/${examId}/result`)
+        return
+      }
+      const durationMinutes = EXAM_DURATIONS[session.exam_type] ?? 90
+      const data: ExamData = {
+        examId: session.id,
+        examType: session.exam_type,
+        questions,
+        durationMinutes,
+        startedAt: session.started_at,
+      }
+      setExamData(data)
+      endTimeRef.current = new Date(data.startedAt).getTime() + durationMinutes * 60 * 1000
+      setTimeLeft(Math.max(0, endTimeRef.current - Date.now()))
+      if (session.answers && Object.keys(session.answers).length > 0) setAnswers(session.answers)
+    }
+    loadExam().catch(error => {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      router.replace('/exam')
+    })
+    return () => {
+      cancelled = true
+      controller.abort()
+    }
   }, [examId, router])
 
   const isMonthlyRankExam = Boolean(examData && isMonthlyRankExamType(examData.examType))
@@ -139,7 +153,7 @@ export default function ExamRoomPage() {
       if (submittingRef.current) return
       leftExamPageRef.current = true
       submittingRef.current = true
-      const payload = JSON.stringify({ examId, answers: answersRef.current })
+      const payload = JSON.stringify({ examId, answers: answersRef.current, finalizationReason: 'left_exam' })
       navigator.sendBeacon('/api/exam/submit', new Blob([payload], { type: 'application/json' }))
     }
     const handlePageRestore = (event: PageTransitionEvent) => {
@@ -155,7 +169,7 @@ export default function ExamRoomPage() {
     }
   }, [examId, isMonthlyRankExam, router])
 
-  async function handleSubmit() {
+  const handleSubmit = useCallback(async (finalizationReason: 'submitted' | 'left_exam' | 'time_expired' = 'submitted') => {
     if (submittingRef.current) return
     submittingRef.current = true
     setSubmitting(true)
@@ -163,7 +177,7 @@ export default function ExamRoomPage() {
       const res = await fetch('/api/exam/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ examId, answers: answersRef.current }),
+        body: JSON.stringify({ examId, answers: answersRef.current, finalizationReason }),
       })
       if (res.ok) {
         sessionStorage.removeItem(`exam_${examId}`)
@@ -176,10 +190,12 @@ export default function ExamRoomPage() {
       submittingRef.current = false
       setSubmitting(false)
     }
-  }
+  }, [examId, router])
 
   const handleSubmitRef = useRef(handleSubmit)
-  handleSubmitRef.current = handleSubmit
+  useEffect(() => {
+    handleSubmitRef.current = handleSubmit
+  }, [handleSubmit])
 
   useEffect(() => {
     if (!examData) return
@@ -188,7 +204,7 @@ export default function ExamRoomPage() {
       setTimeLeft(remaining)
       if (remaining === 0) {
         clearInterval(interval)
-        handleSubmitRef.current()
+        handleSubmitRef.current('time_expired')
       }
     }, 1000)
     return () => clearInterval(interval)
@@ -449,7 +465,7 @@ export default function ExamRoomPage() {
                 ทำต่อ
               </button>
               <button
-                onClick={() => { setShowExitConfirm(false); handleSubmit() }}
+                onClick={() => { setShowExitConfirm(false); handleSubmit('left_exam') }}
                 disabled={submitting}
                 className="flex-1 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 disabled:opacity-50"
               >

@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Compass, GraduationCap, LayoutDashboard, Menu, MessageCircle, ShieldCheck, Trophy } from 'lucide-react'
+import { BookOpen, Compass, GraduationCap, LayoutDashboard, Map, Menu, MessageCircle, ShieldCheck, Trophy } from 'lucide-react'
 import { getNavigationMode, showFloatingSupport } from '@/lib/navigation'
 import { BRAND_FULL_NAME } from '@/lib/brand'
 import BrandMark from './brand-mark'
@@ -21,6 +21,7 @@ const studentLinks = [
   ['/practice', 'ภารกิจฝึกโจทย์', Compass],
   ['/exam', 'สนามสอบจำลอง', GraduationCap],
   ['/leaderboard', 'อันดับฮันเตอร์', Trophy],
+  ['/hunter-guide', 'เส้นทางฮันเตอร์', Map],
   ['/treasure', 'ขุมทรัพย์', BookOpen],
 ] as const
 const moreLinks = [['/courses', 'คอร์สของฉัน'], ['/profile', 'ข้อมูลของฉัน'], ['/pricing', 'เลือกซื้อคอร์ส'], ['/premium', 'แบบฝึกหัด Premium'], ['/cart', 'ตะกร้าคอร์ส']] as const
@@ -37,6 +38,7 @@ export default function AppShell({ children, user, isAdmin }: Props) {
     '/treasure': ['/adventure/archive.webp', 'THE KNOWLEDGE ARCHIVE', 'ทุกการค้นพบ เริ่มจากความเข้าใจ'],
     '/exam': ['/adventure/celestial.webp', 'THE EXAMINATION GROUNDS', 'พร้อมก้าวเข้าสู่สนามจริง'],
     '/leaderboard': ['/adventure/celestial.webp', 'HUNTER RANKING', 'พิสูจน์แรงค์จากสนามสอบจริง'],
+    '/hunter-guide': ['/adventure/curves.webp', 'HUNTER DEVELOPMENT PATH', 'ฝึกอย่างมีทิศทาง เติบโตด้วยผลจริง'],
     '/premium': ['/adventure/clockwork.webp', 'ADVANCED TRAINING', 'อีกขั้นของการฝึกฝน'],
   }
   const artwork = routeArtwork[pathname]

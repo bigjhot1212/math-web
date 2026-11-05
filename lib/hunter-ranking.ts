@@ -6,13 +6,6 @@ export type ExamPerformanceRow = {
   submitted_at: string | null
 }
 
-export type PracticePerformanceRow = {
-  user_id: string
-  question_id: string
-  is_correct: boolean
-  answered_at: string
-}
-
 export type HunterRankCode = 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S'
 
 export type HunterRank = {
@@ -23,19 +16,29 @@ export type HunterRank = {
 
 export type HunterRating = {
   rating: number | null
-  baseline: number | null
-  activityAdjustment: number
   rank: HunterRank
   eligible: boolean
-  practiceCount: number
-  practiceAccuracy: number | null
-  supportingExamCount: number
   standardSubmittedAt: string | null
 }
 
 export type HunterStanding = HunterRating & {
   userId: string
   position: number
+}
+
+export type HunterRankResultRow = {
+  user_id: string
+  month_key: string
+  rating: number
+  rank_code: HunterRankCode
+  submitted_at: string
+}
+
+export type HunterJourneyStep = {
+  rank: HunterRankCode | 'UNRANKED'
+  title: string
+  focus: string
+  actions: readonly string[]
 }
 
 export const HUNTER_RANKS: HunterRank[] = [
@@ -48,8 +51,58 @@ export const HUNTER_RANKS: HunterRank[] = [
   { code: 'S', name: 'ฮันเตอร์ระดับสูงสุด', minimumRating: 90 },
 ]
 
+export const HUNTER_JOURNEY: readonly HunterJourneyStep[] = [
+  {
+    rank: 'UNRANKED',
+    title: 'ฮันเตอร์ฝึกหัด',
+    focus: 'เตรียมตัวให้พร้อมก่อนเข้าสอบวัดระดับครั้งแรก',
+    actions: ['เช็กพื้นฐานรายบท', 'ฝึกอ่านโจทย์และจับคำสำคัญ', 'เลือกเวลาว่าง 90 นาทีเพื่อสอบให้จบในครั้งเดียว'],
+  },
+  {
+    rank: 'F',
+    title: 'ตั้งฐานใหม่ให้แน่น',
+    focus: 'กลับไปเก็บนิยาม สูตรพื้นฐาน และวิธีคิดที่ยังสับสน',
+    actions: ['เริ่มจากบทที่คะแนนอ่อนที่สุด', 'ทำโจทย์พื้นฐานช้า ๆ พร้อมจดเหตุผล', 'ทบทวนข้อผิดก่อนทำชุดใหม่'],
+  },
+  {
+    rank: 'E',
+    title: 'เชื่อมพื้นฐานกับโจทย์จริง',
+    focus: 'ฝึกเลือกวิธีทำให้ตรงกับสิ่งที่โจทย์ถาม',
+    actions: ['สลับโจทย์พื้นฐานกับระดับกลาง', 'สรุปคำใบ้ที่บอกว่าต้องใช้สูตรใด', 'กลับมาทำข้อที่ผิดซ้ำโดยไม่ดูเฉลย'],
+  },
+  {
+    rank: 'D',
+    title: 'ลดจุดพลาดที่เกิดซ้ำ',
+    focus: 'แยกให้ออกว่าพลาดจากเนื้อหา การคำนวณ หรือการอ่านโจทย์',
+    actions: ['ทำบันทึกข้อผิดพลาดแยกประเภท', 'ฝึกโจทย์ผสมหลายบท', 'เริ่มจับเวลาเป็นช่วงสั้น ๆ'],
+  },
+  {
+    rank: 'C',
+    title: 'สร้างความแม่นภายใต้เวลา',
+    focus: 'รักษาวิธีคิดที่ถูกต้องพร้อมเพิ่มความเร็วอย่างเป็นระบบ',
+    actions: ['ทำชุดผสมแบบจับเวลา', 'ข้ามข้อที่ติดแล้วกลับมาทีหลัง', 'ตรวจวิธีลัดว่าปลอดภัยทุกกรณี'],
+  },
+  {
+    rank: 'B',
+    title: 'รับมือโจทย์พลิกแพลง',
+    focus: 'ฝึกมองโครงสร้างและเชื่อมหลายแนวคิดในข้อเดียว',
+    actions: ['เพิ่มสัดส่วนโจทย์ระดับยาก', 'อธิบายวิธีทำด้วยคำของตัวเอง', 'จำลองสอบเต็มชุดและวิเคราะห์เวลาที่ใช้'],
+  },
+  {
+    rank: 'A',
+    title: 'เก็บรายละเอียดระดับสนามจริง',
+    focus: 'ลดความผิดพลาดเล็ก ๆ และตัดสินใจให้คมขึ้น',
+    actions: ['จำลองสอบในเงื่อนไขจริง', 'ทบทวนเฉพาะช่องโหว่ที่ยังเหลือ', 'ฝึกตรวจคำตอบอย่างมีลำดับ'],
+  },
+  {
+    rank: 'S',
+    title: 'รักษามาตรฐานสูงสุด',
+    focus: 'คงความแม่นและพร้อมรับข้อสอบรูปแบบใหม่',
+    actions: ['ทำข้อท้าทายเพื่อรักษาความยืดหยุ่น', 'ทบทวนข้อผิดแม้มีเพียงเล็กน้อย', 'วัดระดับใหม่ทุกเดือนโดยไม่ประมาท'],
+  },
+]
+
 const MONTHLY_EXAM_PATTERN = /^hunter-rank-(\d{4})-(0[1-9]|1[0-2])$/
-const MAX_ACTIVITY_ADJUSTMENT = 5
 export const HUNTER_RANKING_RELEASE_AT = '2026-11-06T17:00:00.000Z'
 
 export function isHunterRankingReleased(date = new Date()) {
@@ -60,8 +113,8 @@ function clamp(value: number, minimum: number, maximum: number) {
   return Math.min(maximum, Math.max(minimum, value))
 }
 
-function scorePercentage(row: ExamPerformanceRow) {
-  return row.total_questions > 0 ? Math.round((row.score / row.total_questions) * 100) : 0
+export function scorePercentage(score: number, maximumPoints: number) {
+  return maximumPoints > 0 ? clamp(Math.round((score / maximumPoints) * 100), 0, 100) : 0
 }
 
 export function getBangkokMonthKey(date = new Date()): string {
@@ -90,8 +143,13 @@ export function getMonthlyRankExamType(monthKey = getBangkokMonthKey()) {
   return `hunter-rank-${monthKey}`
 }
 
+export function getHunterRankMonthKey(examType: string) {
+  const match = MONTHLY_EXAM_PATTERN.exec(examType)
+  return match ? `${match[1]}-${match[2]}` : null
+}
+
 export function isMonthlyRankExamType(examType: string) {
-  return MONTHLY_EXAM_PATTERN.test(examType)
+  return getHunterRankMonthKey(examType) !== null
 }
 
 export function getHunterRank(rating: number | null): HunterRank {
@@ -115,19 +173,8 @@ function withinMonth(value: string | null, range: { start: string; end: string }
   return Boolean(value && value >= range.start && value < range.end)
 }
 
-function selectLatestPractice(rows: PracticePerformanceRow[], range: { start: string; end: string }) {
-  const latest = new Map<string, PracticePerformanceRow>()
-  for (const row of rows) {
-    if (!withinMonth(row.answered_at, range)) continue
-    const current = latest.get(row.question_id)
-    if (!current || row.answered_at > current.answered_at) latest.set(row.question_id, row)
-  }
-  return [...latest.values()]
-}
-
 export function calculateHunterRating(
   exams: ExamPerformanceRow[],
-  practice: PracticePerformanceRow[] = [],
   monthKey = getBangkokMonthKey(),
 ): HunterRating {
   const monthlyType = getMonthlyRankExamType(monthKey)
@@ -139,93 +186,79 @@ export function calculateHunterRating(
   if (!standardExam) {
     return {
       rating: null,
-      baseline: null,
-      activityAdjustment: 0,
       rank: getHunterRank(null),
       eligible: false,
-      practiceCount: 0,
-      practiceAccuracy: null,
-      supportingExamCount: 0,
       standardSubmittedAt: null,
     }
   }
 
-  const baseline = scorePercentage(standardExam)
-  const monthlyPractice = selectLatestPractice(practice, range)
-  const practiceCount = monthlyPractice.length
-  const practiceAccuracy = practiceCount > 0
-    ? Math.round((monthlyPractice.filter(row => row.is_correct).length / practiceCount) * 100)
-    : null
-  let adjustment = 0
-
-  if (practiceCount >= 20 && practiceAccuracy !== null) {
-    if (practiceAccuracy >= 85) adjustment += 2
-    else if (practiceAccuracy >= 70) adjustment += 1
-    else if (practiceAccuracy < 50) adjustment -= 2
-    else if (practiceAccuracy < 60) adjustment -= 1
-
-    if (practiceAccuracy >= 60) {
-      if (practiceCount >= 80) adjustment += 2
-      else if (practiceCount >= 30) adjustment += 1
-    }
-  }
-
-  const supportingExams = exams
-    .filter(row => row.exam_type !== monthlyType)
-    .filter(row => !row.exam_type.startsWith('basic-diagnostic'))
-    .filter(row => withinMonth(row.submitted_at, range))
-    .sort((a, b) => (b.submitted_at ?? '').localeCompare(a.submitted_at ?? ''))
-    .slice(0, 3)
-  if (supportingExams.length > 0) {
-    const totalCorrect = supportingExams.reduce((sum, row) => sum + row.score, 0)
-    const totalQuestions = supportingExams.reduce((sum, row) => sum + row.total_questions, 0)
-    const supportingAccuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0
-    if (supportingAccuracy >= baseline + 5) adjustment += 1
-    else if (supportingAccuracy <= baseline - 10) adjustment -= 1
-  }
-
-  const activityAdjustment = clamp(adjustment, -MAX_ACTIVITY_ADJUSTMENT, MAX_ACTIVITY_ADJUSTMENT)
-  const rating = clamp(baseline + activityAdjustment, 0, 100)
+  const rating = scorePercentage(standardExam.score, standardExam.total_questions)
   return {
     rating,
-    baseline,
-    activityAdjustment,
     rank: getHunterRank(rating),
     eligible: true,
-    practiceCount,
-    practiceAccuracy,
-    supportingExamCount: supportingExams.length,
     standardSubmittedAt: standardExam.submitted_at,
   }
 }
 
 export function buildHunterStandings(
   exams: ExamPerformanceRow[],
-  practice: PracticePerformanceRow[] = [],
   monthKey = getBangkokMonthKey(),
 ): HunterStanding[] {
   const userIds = new Set(exams.map(row => row.user_id))
   const standings = [...userIds].flatMap(userId => {
     const rating = calculateHunterRating(
       exams.filter(row => row.user_id === userId),
-      practice.filter(row => row.user_id === userId),
       monthKey,
     )
     return rating.eligible && rating.rating !== null ? [{ userId, ...rating }] : []
   })
   standings.sort((a, b) =>
     (b.rating ?? 0) - (a.rating ?? 0)
-    || (b.baseline ?? 0) - (a.baseline ?? 0)
-    || b.practiceCount - a.practiceCount
-    || (b.standardSubmittedAt ?? '').localeCompare(a.standardSubmittedAt ?? '')
     || a.userId.localeCompare(b.userId)
   )
-  return standings.map((standing, index) => ({ ...standing, position: index + 1 }))
+
+  let previousRating: number | null = null
+  let sharedPosition = 0
+  return standings.map((standing, index) => {
+    if (standing.rating !== previousRating) sharedPosition = index + 1
+    previousRating = standing.rating
+    return { ...standing, position: sharedPosition }
+  })
 }
 
-export function getHunterAlias(userId: string) {
+export function buildHunterStandingsFromResults(
+  results: HunterRankResultRow[],
+  monthKey = getBangkokMonthKey(),
+): HunterStanding[] {
+  const standings = results
+    .filter(result => result.month_key === monthKey)
+    .map(result => ({
+      userId: result.user_id,
+      rating: clamp(Math.round(result.rating), 0, 100),
+      rank: getHunterRank(result.rating),
+      eligible: true,
+      standardSubmittedAt: result.submitted_at,
+    }))
+    .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0) || a.userId.localeCompare(b.userId))
+
+  let previousRating: number | null = null
+  let sharedPosition = 0
+  return standings.map((standing, index) => {
+    if (standing.rating !== previousRating) sharedPosition = index + 1
+    previousRating = standing.rating
+    return { ...standing, position: sharedPosition }
+  })
+}
+
+export function getHunterJourneyStep(rating: HunterRating) {
+  const code = rating.eligible ? rating.rank.code : 'UNRANKED'
+  return HUNTER_JOURNEY.find(step => step.rank === code) ?? HUNTER_JOURNEY[0]
+}
+
+export function getHunterAlias(userId: string, monthKey = getBangkokMonthKey()) {
   let hash = 2166136261
-  for (const character of userId) {
+  for (const character of `${monthKey}:${userId}`) {
     hash ^= character.charCodeAt(0)
     hash = Math.imul(hash, 16777619)
   }
