@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Question } from '@/lib/types/question'
 import { originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
-import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
-import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { getServerExamSet } from '@/lib/hunter-exam-set-server'
+import { getMonthlyRankExamType, isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
-import { isAdminEmail } from '@/lib/payment-config'
+import { canAccessHunterRank } from '@/lib/hunter-rank-access'
 import fs from 'fs'
 import path from 'path'
 
@@ -40,7 +41,7 @@ function loadAllQuestions(): Question[] {
 export async function POST(request: NextRequest) {
   try {
     const { examType } = await request.json()
-    const mockSet = getMath1MockSet(examType)
+    const mockSet = typeof examType === 'string' ? await getServerExamSet(examType) : null
     const isBasicDiagnostic = examType === BASIC_DIAGNOSTIC_TYPE
     const parsed = mockSet || isBasicDiagnostic ? null : parseExamType(examType)
     if (!mockSet && !parsed && !isBasicDiagnostic) {
@@ -62,8 +63,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อนเริ่มข้อสอบ' }, { status: 401 })
     }
 
-    if (isMonthlyRankExamType(examType) && !isAdminEmail(user.email)) {
+    if (isMonthlyRankExamType(examType) && !canAccessHunterRank(user.email)) {
       return NextResponse.json({ error: 'ข้อสอบจัดอันดับยังไม่เปิดให้ใช้งาน' }, { status: 403 })
+    }
+
+    if (isMonthlyRankExamType(examType) && examType !== getMonthlyRankExamType()) {
+      return NextResponse.json({ error: 'เริ่มได้เฉพาะข้อสอบวัดระดับของเดือนปัจจุบัน' }, { status: 403 })
     }
 
     if (isMonthlyRankExamType(examType) && !isHunterRankingReleased()) {
@@ -130,7 +135,8 @@ export async function POST(request: NextRequest) {
         .slice(0, Math.min(questionCount, pool.length || allQuestions.length))
 
     const startedAt = new Date().toISOString()
-    const { data, error } = await supabase
+    const writeClient = isMonthlyRankExamType(examType) ? createAdminClient() : supabase
+    const { data, error } = await writeClient
       .from('exam_sessions')
       .insert({
         user_id: user.id,
@@ -152,7 +158,9 @@ export async function POST(request: NextRequest) {
       examId: data.id,
       examType,
       freshAttempt: true,
-      questions: selected.map(question => ({ id: question.id, topicId: question.topicId, subtopic: question.subtopic, level: question.level, difficulty: question.difficulty, type: question.type, content: question.content, tags: question.tags, source: question.source })),
+      // Some authoring tags contain worked answers. Never include metadata in
+      // an active Hunter Rank attempt, even if it is hidden by the UI.
+      questions: selected.map(question => ({ id: question.id, topicId: question.topicId, subtopic: question.subtopic, level: question.level, difficulty: question.difficulty, type: question.type, content: question.content, ...(isMonthlyRankExamType(examType) ? {} : { tags: question.tags, source: question.source }) })),
       durationMinutes,
       startedAt,
     })

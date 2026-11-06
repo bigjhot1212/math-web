@@ -1,16 +1,19 @@
 import { createClient } from '@/lib/supabase/server'
-import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
+import { getServerExamSet } from '@/lib/hunter-exam-set-server'
 import { getBangkokMonthKey, getMonthlyRankExamType, isHunterRankingReleased } from '@/lib/hunter-ranking'
 import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import ExamSelector from './exam-selector'
+import { canAccessHunterRank } from '@/lib/hunter-rank-access'
 
 export default async function ExamPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   let isPremium = false
-  const monthlyRankReleased = isHunterRankingReleased()
   const monthlyRankExamType = getMonthlyRankExamType()
+  // Keep the public entry closed while the feature is in admin-only review.
+  const monthlyRankReleased = isHunterRankingReleased() && canAccessHunterRank(user?.email)
+    && Boolean(await getServerExamSet(monthlyRankExamType))
   let monthlyRankCompleted = false
   let monthlyRankStarted = false
   if (user) {
@@ -29,7 +32,7 @@ export default async function ExamPage() {
     monthlyRankStarted = Boolean(monthlySession)
     monthlyRankCompleted = Boolean(monthlySession?.submitted_at)
     if (monthlyRankReleased && monthlySession && !monthlySession.submitted_at) {
-      const monthlySet = getMath1MockSet(monthlyRankExamType)?.questions ?? []
+      const monthlySet = (await getServerExamSet(monthlyRankExamType))?.questions ?? []
       const questions = selectHunterRankQuestions(monthlySet, monthlySession.question_ids)
       await finalizeMonthlyRankExam({
         supabase,

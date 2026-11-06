@@ -4,6 +4,8 @@ import { calculateExamPoints, sanitizeExamAnswers } from '../lib/exam-scoring.ts
 import {
   buildHunterStandings,
   buildHunterStandingsFromResults,
+  buildHunterImprovementStandings,
+  getPreviousMonthKey,
   calculateHunterRating,
   getHunterAlias,
   getHunterRank,
@@ -98,6 +100,16 @@ test('monthly aliases are stable inside a month and rotate next month', () => {
   const first = getHunterAlias('user-a', '2026-11')
   assert.equal(first, getHunterAlias('user-a', '2026-11'))
   assert.notEqual(first, getHunterAlias('user-a', '2026-12'))
+})
+
+test('improvement compares consecutive monthly exam scores, including a year boundary', () => {
+  assert.equal(getPreviousMonthKey('2027-01'), '2026-12')
+  const rows: HunterRankResultRow[] = [
+    { user_id: 'a', month_key: '2026-12', rating: 50, rank_code: 'D', submitted_at: '2026-12-04T00:00:00Z' },
+    { user_id: 'a', month_key: '2027-01', rating: 70, rank_code: 'B', submitted_at: '2027-01-04T00:00:00Z' },
+    { user_id: 'b', month_key: '2027-01', rating: 90, rank_code: 'S', submitted_at: '2027-01-04T00:00:00Z' },
+  ]
+  assert.deepEqual(buildHunterImprovementStandings(rows, '2027-01').map(row => [row.userId, row.improvement, row.position]), [['a', 20, 1]])
 })
 
 test('monthly exam type parsing and percentages reject invalid spillover', () => {

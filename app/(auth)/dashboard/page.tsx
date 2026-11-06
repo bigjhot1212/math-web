@@ -11,7 +11,7 @@ import { analyzeLearningEvidence, type LearningEvidence } from '@/lib/learning-i
 import { deduplicateAttempts, formatCompactDuration, formatDuration, getValidTimes, median } from '@/lib/progress-analytics'
 import { getQuestionCatalog, isCorrectQuestionAnswer } from '@/lib/question-catalog'
 import { calculateHunterRating, getHunterRank, getMonthlyRankExamType, isHunterRankingReleased } from '@/lib/hunter-ranking'
-import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
+import { getServerExamSet } from '@/lib/hunter-exam-set-server'
 import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 
 const TOPIC_NAMES: Record<string, string> = {
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
   let resolvedMonthlyRankExam = monthlyRankExam as ExamRow | null
   let officialRankResult = monthlyRankResult as HunterRankResultRow | null
   if (isHunterRankingReleased() && resolvedMonthlyRankExam && !resolvedMonthlyRankExam.submitted_at) {
-    const monthlySet = getMath1MockSet(getMonthlyRankExamType())?.questions ?? []
+    const monthlySet = (await getServerExamSet(getMonthlyRankExamType()))?.questions ?? []
     const questions = selectHunterRankQuestions(monthlySet, resolvedMonthlyRankExam.question_ids)
     const result = await finalizeMonthlyRankExam({
       supabase,

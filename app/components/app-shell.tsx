@@ -26,7 +26,7 @@ const studentLinks = [
 ] as const
 const moreLinks = [['/courses', 'คอร์สของฉัน'], ['/profile', 'ข้อมูลของฉัน'], ['/pricing', 'เลือกซื้อคอร์ส'], ['/premium', 'แบบฝึกหัด Premium'], ['/cart', 'ตะกร้าคอร์ส']] as const
 const publicLinks = [['/practice', 'ภารกิจฝึกโจทย์'], ['/exam', 'สนามสอบจำลอง'], ['/treasure', 'ขุมทรัพย์'], ['/pricing', 'คอร์ส']] as const
-const adminLinks = [['/admin/students', 'นักเรียน'], ['/admin/bank-transfers', 'ตรวจสลิปการโอน'], ['/admin/premium', 'จัดการ Premium'], ['/admin/hunter-exam', 'ตรวจข้อสอบฮันเตอร์']] as const
+const adminLinks = [['/admin/students', 'นักเรียน'], ['/admin/bank-transfers', 'ตรวจสลิปการโอน'], ['/admin/premium', 'จัดการ Premium'], ['/admin/hunter-exam', 'ตรวจข้อสอบฮันเตอร์'], ['/admin/hunter-analytics', 'วิเคราะห์ข้อสอบฮันเตอร์']] as const
 
 export default function AppShell({ children, user, isAdmin }: Props) {
   const pathname = usePathname()

@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import type { Question } from '@/lib/types/question'
 import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/content/original-practice'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
-import { allMath1MockQuestions, getMath1MockSet } from '@/lib/content/math1-mock-sets'
+import { allMath1MockQuestions } from '@/lib/content/math1-mock-sets'
+import { getServerExamSet } from '@/lib/hunter-exam-set-server'
 import {
   calculateExamPoints,
   countCorrectExamAnswers,
@@ -13,7 +14,7 @@ import {
 import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import type { HunterRankFinalizationReason } from '@/lib/hunter-rank-persistence'
-import { isAdminEmail } from '@/lib/payment-config'
+import { canAccessHunterRank } from '@/lib/hunter-rank-access'
 import fs from 'fs'
 import path from 'path'
 
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
     if (fetchError || !session) {
       return NextResponse.json({ error: 'ไม่พบรอบสอบนี้' }, { status: 404 })
     }
-    if (isMonthlyRankExamType(session.exam_type) && !isAdminEmail(user.email)) {
+    if (isMonthlyRankExamType(session.exam_type) && !canAccessHunterRank(user.email)) {
       return NextResponse.json({ error: 'ข้อสอบจัดอันดับยังไม่เปิดให้ใช้งาน' }, { status: 403 })
     }
     if (isMonthlyRankExamType(session.exam_type) && !isHunterRankingReleased()) {
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'ข้อสอบนี้ถูกส่งไปแล้ว' }, { status: 409 })
     }
 
-    const monthlyQuestions = getMath1MockSet(session.exam_type)?.questions ?? []
+    const monthlyQuestions = (await getServerExamSet(session.exam_type))?.questions ?? []
     const allQuestions = loadAllQuestions().concat(monthlyQuestions)
     const questionIds = Array.isArray(session.question_ids) ? session.question_ids as string[] : []
     if (questionIds.length === 0) {

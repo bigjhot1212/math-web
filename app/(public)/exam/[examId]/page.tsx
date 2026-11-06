@@ -73,6 +73,9 @@ export default function ExamRoomPage() {
     const controller = new AbortController()
     async function loadExam() {
       await Promise.resolve()
+      // React may cancel and immediately replay this effect in development.
+      // A cancelled run must not consume the one-time fresh-attempt marker.
+      if (cancelled) return
       const cached = sessionStorage.getItem(`exam_${examId}`)
       if (cached) {
         const data = JSON.parse(cached) as ExamData

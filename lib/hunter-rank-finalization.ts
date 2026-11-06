@@ -3,6 +3,7 @@ import 'server-only'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Question } from '@/lib/types/question'
 import { calculateExamPoints } from '@/lib/exam-scoring'
+import { createAdminClient } from '@/lib/supabase/admin'
 import {
   persistHunterRankSnapshot,
   type HunterRankFinalizationReason,
@@ -39,7 +40,7 @@ export function selectHunterRankQuestions(questionBank: Question[], questionIds:
 export async function finalizeMonthlyRankExam(input: FinalizeMonthlyRankExamInput) {
   const submittedAt = input.submittedAt ?? new Date().toISOString()
   const scoring = calculateExamPoints(input.questions, input.answers)
-  const { data: updatedSession, error: updateError } = await input.supabase
+  const { data: updatedSession, error: updateError } = await createAdminClient()
     .from('exam_sessions')
     .update({
       answers: input.answers,

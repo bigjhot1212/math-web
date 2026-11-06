@@ -106,6 +106,11 @@ const MONTHLY_EXAM_PATTERN = /^hunter-rank-(\d{4})-(0[1-9]|1[0-2])$/
 export const HUNTER_RANKING_RELEASE_AT = '2026-11-06T17:00:00.000Z'
 
 export function isHunterRankingReleased(date = new Date()) {
+  // A local-only test mode lets us exercise the complete November flow before
+  // launch. It cannot activate against the production database or in a build.
+  if (process.env.NODE_ENV === 'development'
+    && process.env.NEXT_PUBLIC_HUNTER_TEST_MODE === 'true'
+    && process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://rxtqeqyxdjogwfwbngbt.supabase.co') return true
   return date.getTime() >= Date.parse(HUNTER_RANKING_RELEASE_AT)
 }
 
@@ -248,6 +253,31 @@ export function buildHunterStandingsFromResults(
     if (standing.rating !== previousRating) sharedPosition = index + 1
     previousRating = standing.rating
     return { ...standing, position: sharedPosition }
+  })
+}
+
+export function getPreviousMonthKey(monthKey: string) {
+  const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(monthKey)
+  if (!match) throw new Error('Invalid month key')
+  const previous = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 2, 1))
+  return `${previous.getUTCFullYear()}-${String(previous.getUTCMonth() + 1).padStart(2, '0')}`
+}
+
+export function buildHunterImprovementStandings(results: HunterRankResultRow[], monthKey: string) {
+  const previousMonth = getPreviousMonthKey(monthKey)
+  const previous = new Map(results.filter(row => row.month_key === previousMonth).map(row => [row.user_id, row]))
+  const rows = results.filter(row => row.month_key === monthKey && previous.has(row.user_id)).map(row => ({
+    userId: row.user_id,
+    current: row.rating,
+    previous: previous.get(row.user_id)!.rating,
+    improvement: row.rating - previous.get(row.user_id)!.rating,
+  })).sort((a, b) => b.improvement - a.improvement || a.userId.localeCompare(b.userId))
+  let last: number | null = null
+  let position = 0
+  return rows.map((row, index) => {
+    if (row.improvement !== last) position = index + 1
+    last = row.improvement
+    return { ...row, position }
   })
 }
 

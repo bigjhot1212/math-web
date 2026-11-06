@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { sanitizeExamAnswers } from '@/lib/exam-scoring'
 
 export async function POST(request: NextRequest) {
@@ -17,7 +19,11 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อน' }, { status: 401 })
 
-    const { data: updatedSession, error } = await supabase
+    const { data: session, error: readError } = await supabase.from('exam_sessions')
+      .select('exam_type').eq('id', body.examId).eq('user_id', user.id).maybeSingle()
+    if (readError || !session) return NextResponse.json({ error: 'ไม่พบรอบสอบนี้' }, { status: 404 })
+    const writeClient = isMonthlyRankExamType(session.exam_type) ? createAdminClient() : supabase
+    const { data: updatedSession, error } = await writeClient
       .from('exam_sessions')
       .update({ answers })
       .eq('id', body.examId)

@@ -34,6 +34,10 @@ create unique index if not exists exam_sessions_one_hunter_rank_attempt_idx
   where exam_type ~ '^hunter-rank-[0-9]{4}-(0[1-9]|1[0-2])$';
 
 alter table public.hunter_rank_results enable row level security;
+-- Supabase projects can disable automatic table exposure. RLS still limits
+-- authenticated users to their own rows; only the service role writes results.
+grant select on public.hunter_rank_results to authenticated;
+grant all on public.hunter_rank_results to service_role;
 
 drop policy if exists "Students can read own Hunter Rank result" on public.hunter_rank_results;
 create policy "Students can read own Hunter Rank result"
@@ -55,6 +59,8 @@ create table if not exists public.hunter_rank_audit_log (
 );
 
 alter table public.hunter_rank_audit_log enable row level security;
+grant all on public.hunter_rank_audit_log to service_role;
+grant usage, select on sequence public.hunter_rank_audit_log_id_seq to service_role;
 
 create or replace function public.audit_hunter_rank_result()
 returns trigger
