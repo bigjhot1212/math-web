@@ -6,6 +6,7 @@ import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
+import { isAdminEmail } from '@/lib/payment-config'
 import fs from 'fs'
 import path from 'path'
 
@@ -59,6 +60,10 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'กรุณาเข้าสู่ระบบก่อนเริ่มข้อสอบ' }, { status: 401 })
+    }
+
+    if (isMonthlyRankExamType(examType) && !isAdminEmail(user.email)) {
+      return NextResponse.json({ error: 'ข้อสอบจัดอันดับยังไม่เปิดให้ใช้งาน' }, { status: 403 })
     }
 
     if (isMonthlyRankExamType(examType) && !isHunterRankingReleased()) {
@@ -147,7 +152,7 @@ export async function POST(request: NextRequest) {
       examId: data.id,
       examType,
       freshAttempt: true,
-      questions: selected,
+      questions: selected.map(question => ({ id: question.id, topicId: question.topicId, subtopic: question.subtopic, level: question.level, difficulty: question.difficulty, type: question.type, content: question.content, tags: question.tags, source: question.source })),
       durationMinutes,
       startedAt,
     })

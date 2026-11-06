@@ -6,6 +6,7 @@ import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { allMath1MockQuestions, getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { ensureHunterRankSnapshot, finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
+import { isAdminEmail } from '@/lib/payment-config'
 import fs from 'fs'
 import path from 'path'
 
@@ -38,6 +39,10 @@ export async function GET(
 
     if (error || !session) {
       return NextResponse.json({ error: 'Exam not found' }, { status: 404 })
+    }
+
+    if (isMonthlyRankExamType(session.exam_type) && !isAdminEmail(user.email)) {
+      return NextResponse.json({ error: 'ข้อสอบจัดอันดับยังไม่เปิดให้ใช้งาน' }, { status: 403 })
     }
 
     if (isMonthlyRankExamType(session.exam_type) && !isHunterRankingReleased()) {

@@ -1,4 +1,5 @@
 import type { Question } from '@/lib/types/question'
+import hunterSet01 from '@/content/hunter-rank/set-01.json'
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { logicChallengeQuestions } from '@/lib/content/logic-challenge'
 import { realNumbersChallengeQuestions } from '@/lib/content/real-numbers-challenge'
@@ -199,6 +200,14 @@ export function getMath1MockSet(examType: string): Math1MockSet | null {
 
   const monthlyMatch = /^hunter-rank-(\d{4})-(0[1-9]|1[0-2])$/.exec(examType)
   if (!monthlyMatch) return null
-  const seed = Number(monthlyMatch[1]) * 12 + Number(monthlyMatch[2])
-  return { ...buildSet(seed, 'hard', new Set<string>()), type: examType }
+  if (examType !== 'hunter-rank-2026-11') return null
+  return {
+    type: examType,
+    number: 1,
+    difficulty: 'hard',
+    questions: (hunterSet01 as Question[]).map((question, index) => ({
+      ...question,
+      content: index === 20 ? { ...question.content, image: '/hunter-rank/set-01-q21.svg' } : question.content,
+    })),
+  }
 }

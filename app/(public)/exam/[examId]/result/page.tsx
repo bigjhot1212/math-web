@@ -87,6 +87,7 @@ export default function ExamResultPage() {
   const displayedPoints = isMonthlyRankExam ? netPoints : earnedPoints
   const percentage = maximumPoints > 0 ? Math.round((displayedPoints / maximumPoints) * 100) : 0
   const unansweredCount = questions.filter(question => !hasExamAnswer(session.answers?.[question.id])).length
+  const incorrectCount = questions.length - correctCount - unansweredCount
 
   const scoreColor =
     percentage >= 80 ? 'text-green-700' :
@@ -138,6 +139,7 @@ export default function ExamResultPage() {
           <p className="text-muted-foreground text-lg mb-2">
             {displayedPoints} / {maximumPoints} คะแนน · ถูก {correctCount}/{questions.length} ข้อ
           </p>
+          <p className="text-sm text-muted-foreground">ถูก {correctCount} ข้อ · ผิด {incorrectCount} ข้อ · ไม่ได้ตอบ {unansweredCount} ข้อ</p>
           {isMonthlyRankExam && (
             <p className="mt-2 text-sm text-muted-foreground">
               ได้จากข้อถูก +{earnedPoints} · หักข้อผิด −{penaltyPoints} · เว้นว่าง {unansweredCount} ข้อ
@@ -254,13 +256,21 @@ export default function ExamResultPage() {
           <h2 className="text-sm font-semibold text-foreground mb-5 ">
             รายละเอียดแต่ละข้อ
           </h2>
+          <nav aria-label="ไปยังเฉลยรายข้อ" className="mb-5 flex flex-wrap gap-2">
+            {questions.map((question, index) => {
+              const answer = session.answers?.[question.id]
+              const status = !hasExamAnswer(answer) ? 'ไม่ได้ตอบ' : isCorrectExamAnswer(question, answer) ? 'ถูก' : 'ผิด'
+              return <a key={question.id} href={`#question-${index + 1}`} onClick={() => { const detail = document.getElementById(`question-${index + 1}`); if (detail instanceof HTMLDetailsElement) detail.open = true }} aria-label={`ข้อ ${index + 1} ${status}`} className="rounded border border-border bg-background px-3 py-2 text-sm">{index + 1} · {status}</a>
+            })}
+          </nav>
           <div className="flex flex-col gap-3">
             {questions.map((q, i) => {
               const userAns = session.answers?.[q.id]
               const correct = isCorrectExamAnswer(q, userAns)
               return (
-                <div
+                <details
                   key={q.id}
+                  id={`question-${i + 1}`}
                   style={{ animationDelay: `${Math.min(i * 25, 300)}ms` }}
                   className={`animate-fade-slide-in p-4 rounded-lg border ${
                     correct
@@ -268,32 +278,39 @@ export default function ExamResultPage() {
                       : 'border-red-200 bg-red-50'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                  <summary className="flex cursor-pointer items-start justify-between gap-2 mb-1.5">
                     <span className="text-xs text-muted-foreground">ข้อ {i + 1}</span>
                     <span className={`flex items-center gap-1 text-xs font-semibold ${correct ? 'text-green-700' : 'text-red-700'}`}>
                       {correct ? (
                         <><CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> ถูก</>
+                      ) : !hasExamAnswer(userAns) ? (
+                        <>ไม่ได้ตอบ</>
                       ) : (
                         <><XCircle className="w-3.5 h-3.5" aria-hidden="true" /> ผิด</>
                       )}
                     </span>
-                  </div>
-                  <p className="text-sm text-foreground line-clamp-2">
+                  </summary>
+                  <p className="text-sm text-foreground whitespace-pre-wrap mt-3">
                     {renderText(q.content.text)}
                   </p>
-                  {!correct && (
-                    <div className="flex gap-5 mt-2 text-xs text-muted-foreground">
+                  {q.content.image && <img src={q.content.image} alt={`ภาพประกอบข้อ ${i + 1}`} className="mt-4 max-h-80 max-w-full" />}
+                    <div className="flex flex-wrap gap-5 mt-3 text-sm text-muted-foreground">
                       <span>
                         คำตอบของคุณ:{' '}
-                        <strong className="text-red-700">{userAns ?? 'ไม่ได้ตอบ'}</strong>
+                        <strong>{userAns || 'ไม่ได้ตอบ'}</strong>
                       </span>
                       <span>
                         เฉลย:{' '}
                         <strong className="text-green-700">{q.answer}</strong>
                       </span>
                     </div>
-                  )}
-                </div>
+                  {q.content.choices && <ol className="mt-3 space-y-1 text-sm">{Object.entries(q.content.choices).map(([key, value]) => <li key={key}>{key.toUpperCase()}. {renderText(value)}</li>)}</ol>}
+                  <div className="mt-4 rounded-lg bg-background p-4 text-sm text-foreground">
+                    <h3 className="font-semibold">วิธีทำทีละขั้น</h3>
+                    <ol className="mt-3 space-y-2">{q.solution.steps.map((step, index) => <li key={index} className="whitespace-pre-wrap">{index + 1}. {renderText(step)}</li>)}</ol>
+                    {q.solution.keyFormula && <p className="mt-3">สูตรที่ใช้: {renderText(q.solution.keyFormula)}</p>}
+                  </div>
+                </details>
               )
             })}
           </div>

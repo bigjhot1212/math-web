@@ -13,6 +13,7 @@ import {
 import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import type { HunterRankFinalizationReason } from '@/lib/hunter-rank-persistence'
+import { isAdminEmail } from '@/lib/payment-config'
 import fs from 'fs'
 import path from 'path'
 
@@ -63,6 +64,9 @@ export async function POST(request: NextRequest) {
 
     if (fetchError || !session) {
       return NextResponse.json({ error: 'ไม่พบรอบสอบนี้' }, { status: 404 })
+    }
+    if (isMonthlyRankExamType(session.exam_type) && !isAdminEmail(user.email)) {
+      return NextResponse.json({ error: 'ข้อสอบจัดอันดับยังไม่เปิดให้ใช้งาน' }, { status: 403 })
     }
     if (isMonthlyRankExamType(session.exam_type) && !isHunterRankingReleased()) {
       return NextResponse.json({ error: 'ข้อสอบจัดอันดับจะเปิดวันที่ 7 พฤศจิกายน 2569' }, { status: 403 })
