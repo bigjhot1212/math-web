@@ -18,6 +18,7 @@ import styles from './home.module.css'
 import AdventureHero from './components/adventure/adventure-hero'
 import AdventureAtlas from './components/adventure/adventure-atlas'
 import HunterRankShowcase from './components/adventure/hunter-rank-showcase'
+import RankOpeningBanner from './components/adventure/rank-opening-banner'
 import { AnimatedContent } from './components/adventure/adventure-effects'
 import CourseArtwork from './(public)/pricing/course-artwork'
 
@@ -35,6 +36,7 @@ const practiceTopics = [
 export default function Home() {
   return (
     <main className={`${styles.page} flex-1 overflow-hidden bg-background`}>
+      <RankOpeningBanner />
       <AdventureHero />
       <AdventureAtlas />
       <HunterRankShowcase />
