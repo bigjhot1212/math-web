@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import HunterShareCard from '@/app/components/adventure/hunter-share-card'
+import HunterNameForm from '@/app/components/adventure/hunter-name-form'
+import { hunterDisplayNameAt, type HunterDisplayNameRow } from '@/lib/hunter-display-name'
 import { ArrowRight, CalendarCheck2, CheckCircle2, LockKeyhole, ShieldCheck, Trophy } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -148,6 +150,16 @@ export default async function LeaderboardPage() {
   const improvements = buildHunterImprovementStandings([...resultRows, ...historyRows], monthKey)
   const previousStandings = buildHunterStandingsFromResults(historyRows, getPreviousMonthKey(monthKey))
   const previousChampions = previousStandings.filter(item => item.position === 1)
+  let displayNames: HunterDisplayNameRow[] = []
+  let namesAvailable = false
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const { data, error } = await createAdminClient().from('hunter_display_names')
+      .select('user_id, month_key, display_name').lte('month_key', monthKey)
+      .order('month_key', { ascending: false }).range(0, 9999)
+    if (!error) { displayNames = (data ?? []) as HunterDisplayNameRow[]; namesAvailable = true }
+  }
+  const displayName = (userId: string, month = monthKey) => hunterDisplayNameAt(displayNames, userId, month) ?? getHunterAlias(userId, month)
+  const changedThisMonth = displayNames.some(row => row.user_id === user.id && row.month_key === monthKey)
 
   return (
     <main className="leaderboard-page min-h-screen">
@@ -156,11 +168,12 @@ export default async function LeaderboardPage() {
           <div>
             <p className="leaderboard-month">ฤดูกาล {monthLabel}</p>
             <h1>อันดับฮันเตอร์</h1>
-            <p>แรงค์มาจากข้อสอบมาตรฐานประจำเดือนเพียงชุดเดียว การฝึกช่วยเตรียมความพร้อมแต่ไม่เปลี่ยนคะแนนแรงค์ และตารางใช้รหัสฮันเตอร์แทนชื่อจริง</p>
+            <p>แรงค์มาจากข้อสอบมาตรฐานประจำเดือนเพียงชุดเดียว การฝึกช่วยเตรียมความพร้อมแต่ไม่เปลี่ยนคะแนนแรงค์ ตารางแสดงชื่อฮันเตอร์ที่ตั้งเองหรือรหัสที่ระบบสร้างให้</p>
           </div>
           <Link href={personalRating.eligible ? '/hunter-guide' : '/exam'}>{personalRating.eligible ? 'ดูเส้นทางพัฒนาของฉัน' : 'สอบวัดระดับเดือนนี้'} <ArrowRight aria-hidden="true" /></Link>
         </header>
 
+        {namesAvailable && <HunterNameForm name={displayName(user.id)} changedThisMonth={changedThisMonth} />}
         <section className="personal-rank" aria-labelledby="personal-rank-title">
           <div className="personal-rank-mark" data-rank={personalRating.rank.code}>{personalRating.rank.code}</div>
           <div className="personal-rank-copy">
@@ -177,7 +190,7 @@ export default async function LeaderboardPage() {
           </dl>
         </section>
 
-        {personalRating.eligible && personalRating.rating !== null && <HunterShareCard alias={getHunterAlias(user.id, monthKey)} rank={personalRating.rank.code} rankName={personalRating.rank.name} rating={personalRating.rating} month={monthLabel} />}
+        {personalRating.eligible && personalRating.rating !== null && <HunterShareCard alias={displayName(user.id)} rank={personalRating.rank.code} rankName={personalRating.rank.name} rating={personalRating.rating} month={monthLabel} />}
 
         <section className="leaderboard-board" aria-labelledby="leaderboard-title">
           <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">ตารางอันดับประจำเดือน</h2></div><p>ผลทางการจากข้อสอบมาตรฐาน {monthLabel}</p></header>
@@ -185,23 +198,23 @@ export default async function LeaderboardPage() {
             <div className="leaderboard-empty"><Trophy aria-hidden="true" /><h3>สนามกำลังรอฮันเตอร์คนแรก</h3><p>อันดับจะปรากฏเมื่อมีผู้ส่งข้อสอบมาตรฐานประจำเดือน</p><Link href="/exam">เริ่มวัดระดับ</Link></div>
           ) : <>
             <div className="leaderboard-podium">
-              {topThree.map(hunter => <article key={hunter.userId} data-position={hunter.position} aria-label={`อันดับ ${hunter.position} ${hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId, monthKey)}`}>
-                <span>{hunter.position}</span><strong>{hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId, monthKey)}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนน</p>
+              {topThree.map(hunter => <article key={hunter.userId} data-position={hunter.position} aria-label={`อันดับ ${hunter.position} ${displayName(hunter.userId)}`}>
+                <span>{hunter.position}</span><strong>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนน</p>
               </article>)}
             </div>
-            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนสอบมาตรฐาน</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{hunter.userId === user.id ? 'คุณ' : getHunterAlias(hunter.userId, monthKey)}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
+            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนสอบมาตรฐาน</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
           </>}
         </section>
 
         <section className="leaderboard-board" aria-labelledby="improvement-title">
           <header><div><Trophy aria-hidden="true" /><h2 id="improvement-title">อันดับพัฒนาการ</h2></div><p>เปรียบเทียบคะแนนสอบกับเดือนก่อน · ไม่กระทบแรงก์</p></header>
           {historyUnavailable ? <div className="leaderboard-empty"><h3>ยังโหลดข้อมูลเดือนก่อนไม่ได้</h3><p>กรุณาลองใหม่อีกครั้ง</p></div> : improvements.length === 0 ? <div className="leaderboard-empty"><h3>เริ่มเก็บเส้นทางของคุณ</h3><p>เมื่อมีผลสอบทั้งเดือนนี้และเดือนก่อน จึงเปรียบเทียบพัฒนาการได้</p></div> :
-            <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>เดือนก่อน</th><th>เดือนนี้</th><th>เปลี่ยนแปลง</th></tr></thead><tbody>{improvements.slice(0, 50).map(item => <tr key={item.userId} data-current={item.userId === user.id || undefined}><td>#{item.position}</td><td>{item.userId === user.id ? 'คุณ' : getHunterAlias(item.userId, monthKey)}</td><td>{item.previous}</td><td>{item.current}</td><td>{item.improvement > 0 ? '+' : ''}{item.improvement}</td></tr>)}</tbody></table></div>}
+            <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>เดือนก่อน</th><th>เดือนนี้</th><th>เปลี่ยนแปลง</th></tr></thead><tbody>{improvements.slice(0, 50).map(item => <tr key={item.userId} data-current={item.userId === user.id || undefined}><td>#{item.position}</td><td>{displayName(item.userId)}{item.userId === user.id ? ' (คุณ)' : ''}</td><td>{item.previous}</td><td>{item.current}</td><td>{item.improvement > 0 ? '+' : ''}{item.improvement}</td></tr>)}</tbody></table></div>}
         </section>
 
         <section className="leaderboard-board" aria-labelledby="hall-of-fame-title">
           <header><div><Trophy aria-hidden="true" /><h2 id="hall-of-fame-title">หอเกียรติยศ</h2></div><p>อันดับหนึ่งของฤดูกาลก่อน · คะแนนเท่ากันได้รับเกียรติร่วมกัน</p></header>
-          {historyUnavailable ? <div className="leaderboard-empty"><h3>ยังโหลดข้อมูลฤดูกาลก่อนไม่ได้</h3><p>กรุณาลองใหม่อีกครั้ง</p></div> : previousChampions.length === 0 ? <div className="leaderboard-empty"><h3>ยังไม่มีผลสอบฤดูกาลก่อน</h3><p>หอเกียรติยศจะแสดงผลเมื่อมีการสอบและยืนยันผลอย่างเป็นทางการ</p></div> : <div className="leaderboard-podium">{previousChampions.map(item => <article key={item.userId} data-position="1"><span>1</span><strong>{item.userId === user.id ? 'คุณ' : getHunterAlias(item.userId, getPreviousMonthKey(monthKey))}</strong><div data-rank={item.rank.code}>{item.rank.code}</div><p>{item.rating} คะแนน · {getPreviousMonthKey(monthKey)}</p></article>)}</div>}
+          {historyUnavailable ? <div className="leaderboard-empty"><h3>ยังโหลดข้อมูลฤดูกาลก่อนไม่ได้</h3><p>กรุณาลองใหม่อีกครั้ง</p></div> : previousChampions.length === 0 ? <div className="leaderboard-empty"><h3>ยังไม่มีผลสอบฤดูกาลก่อน</h3><p>หอเกียรติยศจะแสดงผลเมื่อมีการสอบและยืนยันผลอย่างเป็นทางการ</p></div> : <div className="leaderboard-podium">{previousChampions.map(item => <article key={item.userId} data-position="1"><span>1</span><strong>{displayName(item.userId, getPreviousMonthKey(monthKey))}{item.userId === user.id ? ' (คุณ)' : ''}</strong><div data-rank={item.rank.code}>{item.rank.code}</div><p>{item.rating} คะแนน · {getPreviousMonthKey(monthKey)}</p></article>)}</div>}
         </section>
 
         <section className="ranking-rules" aria-labelledby="ranking-rules-title">
@@ -211,7 +224,7 @@ export default async function LeaderboardPage() {
             <li><Trophy aria-hidden="true" /><span><strong>การฝึกไม่เปลี่ยนแรงค์</strong>แบบฝึกหัดและข้อสอบอื่นใช้วิเคราะห์จุดอ่อนเพื่อเตรียมสอบรอบถัดไป</span></li>
             <li><CalendarCheck2 aria-hidden="true" /><span><strong>วัดระดับใหม่ทุกเดือน</strong>เดือนใหม่ใช้ข้อสอบชุดใหม่ และไม่นำคะแนนกิจกรรมเดือนเก่ามาสะสม</span></li>
             <li><LockKeyhole aria-hidden="true" /><span><strong>ข้อสอบมาตรฐานทำได้เดือนละครั้ง</strong>เมื่อเริ่มแล้วต้องทำต่อเนื่อง หากออกกลางคันจะคิดคะแนนจากคำตอบที่ทำไว้</span></li>
-            <li><ShieldCheck aria-hidden="true" /><span><strong>ปิดบังตัวตน</strong>ตารางแสดงรหัสฮันเตอร์แทนชื่อหรืออีเมล</span></li>
+            <li><ShieldCheck aria-hidden="true" /><span><strong>เลือกชื่อที่ไม่เปิดเผยตัวตน</strong>ตารางแสดงชื่อฮันเตอร์ที่ตั้งเอง หรือรหัสที่ระบบสร้างให้หากยังไม่ได้ตั้ง</span></li>
           </ol>
         </section>
 

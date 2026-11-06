@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ArrowRight, CalendarCheck2, CheckCircle2, Compass, ShieldCheck, Sparkles, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { hunterDisplayNameAt, type HunterDisplayNameRow } from '@/lib/hunter-display-name'
 import {
   calculateHunterRating,
   getBangkokMonthKey,
@@ -29,6 +30,10 @@ export default async function HunterGuidePage() {
   if (!user) redirect('/login?next=%2Fhunter-guide')
 
   const monthKey = getBangkokMonthKey()
+  const { data: nameRows } = await supabase.from('hunter_display_names')
+    .select('user_id, month_key, display_name').eq('user_id', user.id).lte('month_key', monthKey)
+    .order('month_key', { ascending: false }).limit(1)
+  const hunterName = hunterDisplayNameAt((nameRows ?? []) as HunterDisplayNameRow[], user.id, monthKey) ?? getHunterAlias(user.id, monthKey)
   const [{ data: officialResult }, { data: examRows }] = await Promise.all([
     supabase
       .from('hunter_rank_results')
@@ -92,7 +97,7 @@ export default async function HunterGuidePage() {
           <aside aria-label="ข้อมูลประจำฤดูกาล">
             <div><CalendarCheck2 aria-hidden="true" /><span>ฤดูกาล<strong>{monthLabel}</strong></span></div>
             <div><Trophy aria-hidden="true" /><span>Hunter Rating<strong>{rating.rating ?? 'ยังไม่มีผล'}</strong></span></div>
-            <div><ShieldCheck aria-hidden="true" /><span>รหัสบนตาราง<strong>{getHunterAlias(user.id, monthKey)}</strong></span></div>
+            <div><ShieldCheck aria-hidden="true" /><span>ชื่อบนตาราง<strong>{hunterName}</strong></span></div>
             <p>รหัสจะเปลี่ยนทุกเดือนและไม่เปิดเผยชื่อหรืออีเมลของคุณ</p>
           </aside>
         </section>
