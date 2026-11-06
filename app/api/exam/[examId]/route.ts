@@ -5,7 +5,7 @@ import { legacySetPracticeQuestions, originalPracticeQuestions } from '@/lib/con
 import { setChallengeQuestions } from '@/lib/content/set-challenge'
 import { allMath1MockQuestions } from '@/lib/content/math1-mock-sets'
 import { getServerExamSet } from '@/lib/hunter-exam-set-server'
-import { isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
+import { getHunterRank, isHunterRankingReleased, isMonthlyRankExamType } from '@/lib/hunter-ranking'
 import { ensureHunterRankSnapshot, finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
 import { canAccessHunterRank } from '@/lib/hunter-rank-access'
 import fs from 'fs'
@@ -82,6 +82,7 @@ export async function GET(
             submitted_at: result.submittedAt,
           },
           questions,
+          hunterRank: { rank_code: result.snapshot.rankCode, rating: result.snapshot.rating },
         })
       }
       const { data: finalizedSession } = await supabase
@@ -111,7 +112,16 @@ export async function GET(
       }
     }
 
-    return NextResponse.json({ session, questions })
+    let hunterRank = null
+    if (isMonthlyRankExamType(session.exam_type) && session.submitted_at) {
+      const { data: rankResult } = await supabase.from('hunter_rank_results')
+        .select('rank_code, rating')
+        .eq('user_id', user.id)
+        .eq('exam_session_id', session.id)
+        .maybeSingle()
+      hunterRank = rankResult ? { ...rankResult, rank_code: getHunterRank(rankResult.rating).code } : null
+    }
+    return NextResponse.json({ session, questions, hunterRank })
   } catch (err) {
     console.error(err)
     return NextResponse.json({ error: 'Failed to fetch exam' }, { status: 500 })

@@ -62,7 +62,7 @@ export async function persistHunterRankSnapshot(input: HunterRankSnapshotInput) 
     maximum_points: snapshot.maximumPoints,
     rating: snapshot.rating,
     rank_code: snapshot.rankCode,
-    scoring_version: 'hunter-rank-v1',
+    scoring_version: 'hunter-rank-v2',
     finalization_reason: snapshot.finalizationReason,
     submitted_at: snapshot.submittedAt,
   })

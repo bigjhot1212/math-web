@@ -13,6 +13,7 @@ import {
   calculateHunterRating,
   getBangkokMonthKey,
   getHunterAlias,
+  getHunterRank,
   getMonthDateRange,
   getMonthlyRankExamType,
   getNextHunterRank,
@@ -135,7 +136,7 @@ export default async function LeaderboardPage() {
   const personalRating = personalResult
     ? {
         rating: personalResult.rating,
-        rank: HUNTER_RANKS.find(rank => rank.code === personalResult.rank_code) ?? HUNTER_RANKS[0],
+        rank: getHunterRank(personalResult.rating),
         eligible: true,
         standardSubmittedAt: personalResult.submitted_at,
       }
@@ -214,7 +215,7 @@ export default async function LeaderboardPage() {
           </ol>
         </section>
 
-        <section className="rank-legend" aria-labelledby="rank-legend-title"><h2 id="rank-legend-title">เส้นทางแรงค์ F–S</h2><div>{HUNTER_RANKS.map(rank => <article key={rank.code} data-rank={rank.code}><strong>{rank.code}</strong><span>{rank.name}</span><small>{rank.code === 'F' ? '0–39' : rank.code === 'S' ? '90–100' : `${rank.minimumRating}–${(getNextHunterRank(rank)?.minimumRating ?? 101) - 1}`}</small></article>)}</div></section>
+        <section className="rank-legend" aria-labelledby="rank-legend-title"><h2 id="rank-legend-title">เส้นทางแรงค์ F–S</h2><div>{HUNTER_RANKS.map(rank => <article key={rank.code} data-rank={rank.code}><strong>{rank.code}</strong><span>{rank.name}</span><small>{`${rank.minimumRating}–${(getNextHunterRank(rank)?.minimumRating ?? 101) - 1}`}</small></article>)}</div></section>
       </div>
     </main>
   )

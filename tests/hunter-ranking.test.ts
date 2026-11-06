@@ -47,13 +47,15 @@ function question(id: string, type: Question['type'], answer: string): Question 
 
 test('rank thresholds cover F through S exactly', () => {
   assert.equal(getHunterRank(0).code, 'F')
-  assert.equal(getHunterRank(39).code, 'F')
-  assert.equal(getHunterRank(40).code, 'E')
-  assert.equal(getHunterRank(50).code, 'D')
-  assert.equal(getHunterRank(60).code, 'C')
-  assert.equal(getHunterRank(70).code, 'B')
-  assert.equal(getHunterRank(80).code, 'A')
-  assert.equal(getHunterRank(90).code, 'S')
+  assert.equal(getHunterRank(29).code, 'F')
+  assert.equal(getHunterRank(30).code, 'E')
+  assert.equal(getHunterRank(39).code, 'E')
+  assert.equal(getHunterRank(40).code, 'D')
+  assert.equal(getHunterRank(50).code, 'C')
+  assert.equal(getHunterRank(60).code, 'B')
+  assert.equal(getHunterRank(70).code, 'A')
+  assert.equal(getHunterRank(79).code, 'A')
+  assert.equal(getHunterRank(80).code, 'S')
   assert.equal(getHunterRank(100).code, 'S')
 })
 
@@ -64,7 +66,7 @@ test('rating comes only from the current monthly standard exam', () => {
     exam({ score: 64 }),
   ], monthKey)
   assert.equal(rating.rating, 64)
-  assert.equal(rating.rank.code, 'C')
+  assert.equal(rating.rank.code, 'B')
   assert.equal(rating.eligible, true)
 })
 
@@ -94,6 +96,14 @@ test('official snapshot standings preserve shared positions', () => {
     { user_id: 'three', month_key: monthKey, rating: 89, rank_code: 'A', submitted_at: '2026-11-07T03:00:00.000Z' },
   ]
   assert.deepEqual(buildHunterStandingsFromResults(rows, monthKey).map(item => item.position), [1, 1, 3])
+})
+
+test('existing saved results use the current rank thresholds without changing their score', () => {
+  const oldResult: HunterRankResultRow = { user_id: 'one', month_key: monthKey, rating: 70, rank_code: 'B', submitted_at: '2026-11-07T01:00:00.000Z' }
+  const [standing] = buildHunterStandingsFromResults([oldResult], monthKey)
+  assert.equal(standing.rating, 70)
+  assert.equal(standing.rank.code, 'A')
+  assert.equal(oldResult.rank_code, 'B')
 })
 
 test('monthly aliases are stable inside a month and rotate next month', () => {

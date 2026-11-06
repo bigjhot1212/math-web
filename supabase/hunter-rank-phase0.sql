@@ -167,12 +167,12 @@ select
   maximum_points,
   rating,
   case
-    when rating >= 90 then 'S'
-    when rating >= 80 then 'A'
-    when rating >= 70 then 'B'
-    when rating >= 60 then 'C'
-    when rating >= 50 then 'D'
-    when rating >= 40 then 'E'
+    when rating >= 80 then 'S'
+    when rating >= 70 then 'A'
+    when rating >= 60 then 'B'
+    when rating >= 50 then 'C'
+    when rating >= 40 then 'D'
+    when rating >= 30 then 'E'
     else 'F'
   end,
   'hunter-rank-legacy-v1',

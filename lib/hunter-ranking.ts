@@ -41,14 +41,16 @@ export type HunterJourneyStep = {
   actions: readonly string[]
 }
 
+// Rank policy v2 applies to existing ratings too. Original immutable result rows
+// retain their recorded rank and scoring_version as an audit of the first award.
 export const HUNTER_RANKS: HunterRank[] = [
   { code: 'F', name: 'ผู้เริ่มต้น', minimumRating: 0 },
-  { code: 'E', name: 'นักสำรวจ', minimumRating: 40 },
-  { code: 'D', name: 'นักฝึกหัด', minimumRating: 50 },
-  { code: 'C', name: 'นักแกะรอย', minimumRating: 60 },
-  { code: 'B', name: 'ฮันเตอร์ชำนาญ', minimumRating: 70 },
-  { code: 'A', name: 'ฮันเตอร์ชั้นสูง', minimumRating: 80 },
-  { code: 'S', name: 'ฮันเตอร์ระดับสูงสุด', minimumRating: 90 },
+  { code: 'E', name: 'นักสำรวจ', minimumRating: 30 },
+  { code: 'D', name: 'นักฝึกหัด', minimumRating: 40 },
+  { code: 'C', name: 'นักแกะรอย', minimumRating: 50 },
+  { code: 'B', name: 'ฮันเตอร์ชำนาญ', minimumRating: 60 },
+  { code: 'A', name: 'ฮันเตอร์ชั้นสูง', minimumRating: 70 },
+  { code: 'S', name: 'ฮันเตอร์ระดับสูงสุด', minimumRating: 80 },
 ]
 
 export const HUNTER_JOURNEY: readonly HunterJourneyStep[] = [

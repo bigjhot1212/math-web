@@ -59,6 +59,7 @@ export default function ExamResultPage() {
   const { examId } = useParams<{ examId: string }>()
   const [session, setSession] = useState<Session | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
+  const [hunterRank, setHunterRank] = useState<{ rank_code: string; rating: number } | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export default function ExamResultPage() {
       .then(data => {
         setSession(data.session)
         setQuestions(data.questions)
+        setHunterRank(data.hunterRank ?? null)
         setLoading(false)
       })
   }, [examId])
@@ -141,9 +143,17 @@ export default function ExamResultPage() {
           </p>
           <p className="text-sm text-muted-foreground">ถูก {correctCount} ข้อ · ผิด {incorrectCount} ข้อ · ไม่ได้ตอบ {unansweredCount} ข้อ</p>
           {isMonthlyRankExam && (
-            <p className="mt-2 text-sm text-muted-foreground">
+            <div className="mt-4 space-y-2">
+              {hunterRank ? (
+                <p className="font-heading text-2xl font-semibold text-primary">แรงค์ประจำเดือน: {hunterRank.rank_code} <span className="text-base font-normal text-muted-foreground">· {hunterRank.rating} คะแนนแรงค์</span></p>
+              ) : (
+                <p className="text-sm text-muted-foreground">กำลังตรวจสอบผลแรงค์ กรุณาดูสถานะที่หน้าอันดับฮันเตอร์</p>
+              )}
+              <Link href="/leaderboard" className="inline-flex items-center gap-2 font-semibold text-primary underline underline-offset-4">ดูอันดับฮันเตอร์ <ArrowRight className="size-4" aria-hidden="true" /></Link>
+            <p className="text-sm text-muted-foreground">
               ได้จากข้อถูก +{earnedPoints} · หักข้อผิด −{penaltyPoints} · เว้นว่าง {unansweredCount} ข้อ
             </p>
+            </div>
           )}
           <p className={`font-medium ${scoreColor}`}>{scoreLabel}</p>
           <p className="text-xs text-muted-foreground mt-3">
