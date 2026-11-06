@@ -16,6 +16,7 @@ export default async function ExamPage() {
     && Boolean(await getServerExamSet(monthlyRankExamType))
   let monthlyRankCompleted = false
   let monthlyRankStarted = false
+  let monthlyRankRecoveryError = false
   if (user) {
     const [{ data: subscription }, { data: monthlySession }] = await Promise.all([
       supabase.from('subscriptions').select('status').eq('user_id', user.id).single(),
@@ -33,8 +34,15 @@ export default async function ExamPage() {
     monthlyRankCompleted = Boolean(monthlySession?.submitted_at)
     if (monthlyRankReleased && monthlySession && !monthlySession.submitted_at) {
       const monthlySet = (await getServerExamSet(monthlyRankExamType))?.questions ?? []
-      const questions = selectHunterRankQuestions(monthlySet, monthlySession.question_ids)
-      await finalizeMonthlyRankExam({
+      let questions
+      try {
+        questions = selectHunterRankQuestions(monthlySet, monthlySession.question_ids)
+      } catch (error) {
+        console.error('Hunter Rank recovery could not match the recorded questions', error)
+        monthlyRankRecoveryError = true
+      }
+      if (questions) {
+        await finalizeMonthlyRankExam({
         supabase,
         userId: user.id,
         sessionId: monthlySession.id,
@@ -42,8 +50,9 @@ export default async function ExamPage() {
         questions,
         answers: (monthlySession.answers ?? {}) as Record<string, string>,
         finalizationReason: 'recovered',
-      })
-      monthlyRankCompleted = true
+        })
+        monthlyRankCompleted = true
+      }
     }
   }
 
@@ -62,5 +71,6 @@ export default async function ExamPage() {
     monthlyRankStarted={monthlyRankStarted}
     monthlyRankCompleted={monthlyRankCompleted}
     monthlyRankReleased={monthlyRankReleased}
+    monthlyRankRecoveryError={monthlyRankRecoveryError}
   />
 }

@@ -106,6 +106,7 @@ type Props = {
   monthlyRankStarted: boolean
   monthlyRankCompleted: boolean
   monthlyRankReleased: boolean
+  monthlyRankRecoveryError: boolean
 }
 
 export default function ExamSelector({
@@ -116,6 +117,7 @@ export default function ExamSelector({
   monthlyRankStarted,
   monthlyRankCompleted,
   monthlyRankReleased,
+  monthlyRankRecoveryError,
 }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
@@ -187,6 +189,10 @@ export default function ExamSelector({
                 >
                   Coming Soon · 7 พฤศจิกายน
                 </button>
+              ) : monthlyRankRecoveryError ? (
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-6 text-foreground" role="alert">
+                  ระบบกำลังตรวจสอบข้อมูลการสอบครั้งก่อน กรุณาติดต่อผู้ดูแลเพื่อช่วยตรวจสอบ
+                </div>
               ) : monthlyRankCompleted ? (
                 <Link href="/leaderboard" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cta px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90">
                   ดูแรงค์ประจำเดือน <ArrowRight className="h-4 w-4" aria-hidden="true" />
