@@ -6,7 +6,9 @@ import { claimCourseInvites } from '@/lib/course-invites'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? DEFAULT_STUDENT_DESTINATION
+  const next = searchParams.get('next') ?? (new URL(origin).hostname === 'math-web-git-codex-hunter-phase-0-2-jaycosey-s-projects.vercel.app'
+    ? '/admin/hunter-exam'
+    : DEFAULT_STUDENT_DESTINATION)
 
   if (code) {
     const supabase = await createClient()

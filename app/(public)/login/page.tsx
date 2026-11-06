@@ -16,7 +16,9 @@ function LoginCard() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+        redirectTo: window.location.hostname === 'math-web-git-codex-hunter-phase-0-2-jaycosey-s-projects.vercel.app'
+          ? `${window.location.origin}/auth/callback`
+          : `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     })
   }
