@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/payment-config'
 import { getMath1MockSet } from '@/lib/content/math1-mock-sets'
 import { formatMathForDisplay } from '@/lib/format-math'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,6 +25,7 @@ export default async function AdminHunterExamPage() {
   return <main className="mx-auto max-w-4xl px-5 py-10">
     <h1 className="text-2xl font-bold">ตรวจข้อสอบวัดระดับชุดแรก</h1>
     <p className="mt-2 text-sm text-muted-foreground">หน้านี้เฉพาะแอดมิน · แสดงโจทย์พร้อมเฉลยเพื่อทบทวนก่อนเปิดสอบ</p>
+    <Link href="/admin/hunter-exam/student-view" className="mt-5 inline-flex rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground">ทดลองมุมมองนักเรียน</Link>
     <div className="mt-8 space-y-5">{exam.questions.map((question, index) => <details key={question.id} className="rounded-xl border border-border bg-card p-5">
       <summary className="cursor-pointer font-semibold">ข้อ {index + 1} · {question.type === 'short-answer' ? 'เติมคำตอบ' : 'ปรนัย'}</summary>
       <p className="mt-4 whitespace-pre-wrap leading-8">{mathText(question.content.text)}</p>
