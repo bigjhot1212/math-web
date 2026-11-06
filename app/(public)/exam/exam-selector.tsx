@@ -1,12 +1,57 @@
 'use client'
 
 import { Dialog } from 'radix-ui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { AlertTriangle, ArrowRight, BookOpenCheck, CalendarClock, Clock3, Gauge, Layers3, Lock, Trophy } from 'lucide-react'
+import { HUNTER_RANKING_RELEASE_AT } from '@/lib/hunter-ranking'
 
 const BASIC_DIAGNOSTIC_TYPE = 'basic-diagnostic-v1'
+
+function RankCountdown() {
+  const router = useRouter()
+  const [remaining, setRemaining] = useState<number | null>(null)
+
+  useEffect(() => {
+    let refreshed = false
+    const tick = () => {
+      const seconds = Math.max(0, Math.ceil((Date.parse(HUNTER_RANKING_RELEASE_AT) - Date.now()) / 1000))
+      setRemaining(seconds)
+      if (seconds === 0 && !refreshed) {
+        refreshed = true
+        router.refresh()
+      }
+    }
+    tick()
+    const timer = window.setInterval(tick, 1000)
+    return () => window.clearInterval(timer)
+  }, [router])
+
+  if (remaining === null) return null
+  if (remaining === 0) return <p className="mb-3 text-sm text-muted-foreground">กำลังตรวจสอบสถานะการเปิดสอบ...</p>
+
+  const units = [
+    { label: 'วัน', value: Math.floor(remaining / 86400) },
+    { label: 'ชั่วโมง', value: Math.floor((remaining % 86400) / 3600) },
+    { label: 'นาที', value: Math.floor((remaining % 3600) / 60) },
+    { label: 'วินาที', value: remaining % 60 },
+  ]
+
+  return (
+    <div className="mb-4" aria-label="เวลาที่เหลือก่อนเปิดสอบวัดแรงค์">
+      <p className="mb-2 text-xs font-semibold text-muted-foreground">นับถอยหลังสู่การเปิดสอบ</p>
+      <div className="grid grid-cols-4 gap-2">
+        {units.map(({ label, value }) => (
+          <div key={label} className="rounded-lg border border-cta/20 bg-background/70 px-2 py-2 text-center">
+            <span className="block text-xl font-bold tabular-nums text-cta">{String(value).padStart(2, '0')}</span>
+            <span className="text-xs text-muted-foreground">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const EXAMS = [
   {
@@ -133,6 +178,7 @@ export default function ExamSelector({
               </div>
             </div>
             <div className="border-t border-border bg-cta/[0.06] p-7 md:border-l md:border-t-0 md:p-9">
+              {!monthlyRankReleased && <RankCountdown />}
               {!monthlyRankReleased ? (
                 <button
                   type="button"
