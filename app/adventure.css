@@ -389,6 +389,9 @@
 .leaderboard-board > header svg { width:20px;height:20px;color:#9B6C12; }
 .leaderboard-board > header h2 { color:#173F33;font-family:var(--font-heading);font-size:21px;font-weight:700; }
 .leaderboard-board > header p { color:#748078;font-size:11px; }
+.leaderboard-admin-hint { padding:12px 28px;color:#174B38;background:#F0F6EB;font-size:13px; }
+.leaderboard-admin-student { color:inherit;text-decoration:underline;text-underline-offset:4px; }
+.leaderboard-admin-student:focus-visible { outline:2px solid currentColor;outline-offset:3px; }
 .leaderboard-podium { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#E1E6DC; }
 .leaderboard-podium article { position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:118px;padding:24px;background:#FFFDF8; }
 .leaderboard-podium article > span { display:grid;width:38px;height:38px;place-items:center;border-radius:10px;background:#183F34;color:#FFF1C5;font-family:var(--font-heading);font-size:18px;font-weight:700; }
@@ -397,6 +400,17 @@
 .leaderboard-podium article > p { grid-column:2/-1;color:#6C796F;font-size:11px;font-variant-numeric:tabular-nums; }
 .leaderboard-podium article[data-position='1'] { background:#FFF8E4; }
 .leaderboard-podium article[data-position='1'] > span { background:#A8781A; }
+.leaderboard-monthly-podium { gap:12px;padding:18px;background:#F5F7F1; }
+.leaderboard-monthly-podium article { grid-template-columns:48px minmax(0,1fr) auto;gap:10px 14px;min-height:160px;padding:22px;border:1px solid #D3DCCF;border-radius:12px;background:#FFFDF8; }
+.leaderboard-monthly-podium article > span { width:48px;height:48px;gap:2px;align-content:center;background:#E8EDE6;color:#174B38;font-size:16px;line-height:1; }
+.leaderboard-monthly-podium article > span svg { width:17px;height:17px; }
+.leaderboard-monthly-podium article > strong { overflow:visible;color:#173F33;font-size:16px;white-space:normal;overflow-wrap:anywhere; }
+.leaderboard-monthly-podium article > p { color:#536259;font-size:12px; }
+.leaderboard-monthly-podium article > p b { color:#173F33;font-size:20px;line-height:1; }
+.leaderboard-monthly-podium article[data-position='1'] { border-color:#A8781A;background:#173F33; }
+.leaderboard-monthly-podium article[data-position='1'] > span { background:#A8781A;color:#FFFDF8; }
+.leaderboard-monthly-podium article[data-position='1'] > strong,.leaderboard-monthly-podium article[data-position='1'] > p b { color:#FFFDF8; }
+.leaderboard-monthly-podium article[data-position='1'] > p { color:#E8EDE6; }
 .leaderboard-table-wrap { overflow-x:auto;border-top:1px solid #E1E6DC; }
 .leaderboard-table-scroll { max-height:470px;overflow:auto; }
 .leaderboard-table-scroll thead th { position:sticky;top:0;z-index:1; }
@@ -488,6 +502,7 @@
   .personal-rank dl { grid-column:1/-1;border-top:1px solid #FFFFFF26;border-left:0; }
   .leaderboard-podium article { grid-template-columns:36px minmax(0,1fr); }
   .leaderboard-podium article > div { grid-row:1/3;grid-column:3; }
+  .leaderboard-monthly-podium article { grid-template-columns:48px minmax(0,1fr) auto; }
   .ranking-rules { grid-template-columns:1fr;gap:24px; }
   .rank-legend > div { grid-template-columns:repeat(4,minmax(0,1fr)); }
   .hunter-cycle { grid-template-columns:1fr;gap:24px; }
