@@ -155,9 +155,8 @@ export default async function LeaderboardPage() {
   const earnedByUser = new Map((resultRows as LeaderboardResult[]).filter(row => row.scoring_version !== 'hunter-rank-legacy-v1' && Number.isFinite(row.earned_points) && row.maximum_points > 0).map(row => [row.user_id, row]))
   const personalEarned = calculatedPersonalEarned ?? (personalResult && personalResult.scoring_version !== 'hunter-rank-legacy-v1' ? { points: personalResult.earned_points, maximum: personalResult.maximum_points } : null)
   const nextRank = getNextHunterRank(personalRating.rank)
-  const visibleStandings = standings.slice(0, 10)
-  const topThree = visibleStandings.slice(0, 3)
-  const tableRows = visibleStandings.slice(3)
+  const topThree = standings.slice(0, 3)
+  const tableRows = standings.slice(3)
   const improvements = buildHunterImprovementStandings([...resultRows, ...historyRows], monthKey)
   const previousStandings = buildHunterStandingsFromResults(historyRows, getPreviousMonthKey(monthKey))
   const previousChampions = previousStandings.filter(item => item.position === 1)
@@ -205,7 +204,7 @@ export default async function LeaderboardPage() {
         {personalRating.eligible && personalRating.rating !== null && <HunterShareCard alias={displayName(user.id)} rank={personalRating.rank.code} rankName={personalRating.rank.name} rating={personalRating.rating} month={monthLabel} />}
 
         <section className="leaderboard-board" aria-labelledby="leaderboard-title">
-          <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">10 อันดับแรกประจำเดือน</h2></div><p>ผลทางการจากข้อสอบมาตรฐาน {monthLabel}</p></header>
+          <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">ตารางอันดับประจำเดือน</h2></div><p>ผลทางการจากข้อสอบมาตรฐาน {monthLabel}</p></header>
           {standings.length === 0 ? (
             <div className="leaderboard-empty"><Trophy aria-hidden="true" /><h3>สนามกำลังรอฮันเตอร์คนแรก</h3><p>อันดับจะปรากฏเมื่อมีผู้ส่งข้อสอบมาตรฐานประจำเดือน</p><Link href="/exam">เริ่มวัดระดับ</Link></div>
           ) : <>
@@ -214,8 +213,8 @@ export default async function LeaderboardPage() {
                 <span>{hunter.position}</span><strong>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนนสุทธิ</p>{earnedByUser.has(hunter.userId) && <p>ก่อนหัก {earnedByUser.get(hunter.userId)!.earned_points}/{earnedByUser.get(hunter.userId)!.maximum_points}</p>}
               </article>)}
             </div>
-            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนก่อนหัก</th><th>คะแนนสุทธิ</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{earnedByUser.has(hunter.userId) ? `${earnedByUser.get(hunter.userId)!.earned_points}/${earnedByUser.get(hunter.userId)!.maximum_points}` : '—'}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
-            {standings.length > 10 && <p className="px-6 pb-5 pt-3 text-sm text-muted-foreground">แสดง 10 คนแรก · คะแนนเท่ากันได้อันดับร่วม จึงอาจมีผู้ได้อันดับเดียวกันบางคนไม่แสดงในตาราง ดูอันดับของคุณได้ในการ์ดด้านบน</p>}
+            {tableRows.length > 0 && <div className="leaderboard-table-wrap leaderboard-table-scroll" tabIndex={0} role="region" aria-label="ตารางอันดับ เลื่อนเพื่อดูอันดับเพิ่มเติม"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนก่อนหัก</th><th>คะแนนสุทธิ</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{earnedByUser.has(hunter.userId) ? `${earnedByUser.get(hunter.userId)!.earned_points}/${earnedByUser.get(hunter.userId)!.maximum_points}` : '—'}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
+            {standings.length > 10 && <p className="px-6 pb-5 pt-3 text-sm text-muted-foreground">เลื่อนตารางลงเพื่อดูอันดับเพิ่มเติม · คะแนนเท่ากันได้อันดับร่วม</p>}
           </>}
         </section>
 

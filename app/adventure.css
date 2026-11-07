@@ -398,6 +398,9 @@
 .leaderboard-podium article[data-position='1'] { background:#FFF8E4; }
 .leaderboard-podium article[data-position='1'] > span { background:#A8781A; }
 .leaderboard-table-wrap { overflow-x:auto;border-top:1px solid #E1E6DC; }
+.leaderboard-table-scroll { max-height:470px;overflow:auto; }
+.leaderboard-table-scroll thead th { position:sticky;top:0;z-index:1; }
+.leaderboard-table-scroll:focus-visible { outline:3px solid #A8781A;outline-offset:-3px; }
 .leaderboard-table-wrap table { width:100%;border-collapse:collapse;font-size:13px; }
 .leaderboard-table-wrap th { padding:12px 22px;background:#F5F7F1;color:#718077;font-size:10px;font-weight:600;text-align:left; }
 .leaderboard-table-wrap td { padding:15px 22px;border-top:1px solid #EDF0EA;color:#3C4C43;font-variant-numeric:tabular-nums; }
