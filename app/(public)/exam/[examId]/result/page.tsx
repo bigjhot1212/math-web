@@ -151,7 +151,7 @@ export default function ExamResultPage() {
               )}
               <Link href="/leaderboard" className="inline-flex items-center gap-2 font-semibold text-primary underline underline-offset-4">ดูอันดับฮันเตอร์ <ArrowRight className="size-4" aria-hidden="true" /></Link>
             <p className="text-sm text-muted-foreground">
-              ได้จากข้อถูก +{earnedPoints} · หักข้อผิด −{penaltyPoints} · เว้นว่าง {unansweredCount} ข้อ
+              คะแนนก่อนหักจากข้อถูก {earnedPoints}/{maximumPoints} · หักข้อผิด −{penaltyPoints} · คะแนนสุทธิที่ใช้จัดแรงค์ {netPoints}/{maximumPoints} · เว้นว่าง {unansweredCount} ข้อ
             </p>
             </div>
           )}

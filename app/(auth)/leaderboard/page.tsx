@@ -8,6 +8,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { getServerExamSet } from '@/lib/hunter-exam-set-server'
 import { ensureHunterRankSnapshot, finalizeMonthlyRankExam, selectHunterRankQuestions } from '@/lib/hunter-rank-finalization'
+import { calculateExamPoints } from '@/lib/exam-scoring'
 import {
   buildHunterStandings,
   buildHunterStandingsFromResults,
@@ -28,6 +29,8 @@ import {
 } from '@/lib/hunter-ranking'
 
 export const dynamic = 'force-dynamic'
+
+type LeaderboardResult = HunterRankResultRow & { earned_points: number; maximum_points: number; scoring_version: string }
 
 export default async function LeaderboardPage() {
   const supabase = await createClient()
@@ -52,9 +55,14 @@ export default async function LeaderboardPage() {
     .order('started_at', { ascending: false })
     .limit(1)
     .maybeSingle()
+  let calculatedPersonalEarned: { points: number; maximum: number } | null = null
   if (isHunterRankingReleased() && monthlyExam) {
     const monthlySet = (await getServerExamSet(monthlyExamType))?.questions ?? []
     const questions = selectHunterRankQuestions(monthlySet, monthlyExam.question_ids)
+    if (monthlyExam.submitted_at) {
+      const scoring = calculateExamPoints(questions, (monthlyExam.answers ?? {}) as Record<string, string>)
+      calculatedPersonalEarned = { points: scoring.earnedPoints, maximum: scoring.maximumPoints }
+    }
     if (!monthlyExam.submitted_at) {
       await finalizeMonthlyRankExam({
         supabase,
@@ -90,14 +98,14 @@ export default async function LeaderboardPage() {
       .lt('submitted_at', end),
     supabase
       .from('hunter_rank_results')
-      .select('user_id, month_key, rating, rank_code, submitted_at')
+      .select('user_id, month_key, rating, rank_code, submitted_at, earned_points, maximum_points, scoring_version')
       .eq('user_id', user.id)
       .eq('month_key', monthKey)
       .maybeSingle(),
   ])
 
   const personalExams = (personalExamData ?? []) as ExamPerformanceRow[]
-  const personalResult = personalResultQuery.data as HunterRankResultRow | null
+  const personalResult = personalResultQuery.data as LeaderboardResult | null
   let resultRows = personalResult ? [personalResult] : []
   let historyRows: HunterRankResultRow[] = []
   let historyUnavailable = !process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -107,11 +115,11 @@ export default async function LeaderboardPage() {
     const admin = createAdminClient()
     const { data: officialResults, error: officialResultsError } = await admin
       .from('hunter_rank_results')
-      .select('user_id, month_key, rating, rank_code, submitted_at')
+      .select('user_id, month_key, rating, rank_code, submitted_at, earned_points, maximum_points, scoring_version')
       .eq('month_key', monthKey)
       .range(0, 9999)
     if (!officialResultsError) {
-      resultRows = (officialResults ?? []) as HunterRankResultRow[]
+      resultRows = (officialResults ?? []) as LeaderboardResult[]
       useSnapshotResults = true
       const { data: previousResults, error: previousError } = await admin.from('hunter_rank_results')
         .select('user_id, month_key, rating, rank_code, submitted_at')
@@ -144,9 +152,12 @@ export default async function LeaderboardPage() {
       }
     : calculateHunterRating(personalExams, monthKey)
   const personalStanding = standings.find(item => item.userId === user.id)
+  const earnedByUser = new Map((resultRows as LeaderboardResult[]).filter(row => row.scoring_version !== 'hunter-rank-legacy-v1' && Number.isFinite(row.earned_points) && row.maximum_points > 0).map(row => [row.user_id, row]))
+  const personalEarned = calculatedPersonalEarned ?? (personalResult && personalResult.scoring_version !== 'hunter-rank-legacy-v1' ? { points: personalResult.earned_points, maximum: personalResult.maximum_points } : null)
   const nextRank = getNextHunterRank(personalRating.rank)
-  const topThree = standings.slice(0, 3)
-  const tableRows = standings.slice(3, 50)
+  const visibleStandings = standings.slice(0, 10)
+  const topThree = visibleStandings.slice(0, 3)
+  const tableRows = visibleStandings.slice(3)
   const improvements = buildHunterImprovementStandings([...resultRows, ...historyRows], monthKey)
   const previousStandings = buildHunterStandingsFromResults(historyRows, getPreviousMonthKey(monthKey))
   const previousChampions = previousStandings.filter(item => item.position === 1)
@@ -185,31 +196,33 @@ export default async function LeaderboardPage() {
           </div>
           <dl>
             <div><dt>อันดับเดือนนี้</dt><dd>{personalStanding ? `#${personalStanding.position}` : '—'}</dd></div>
-            <div><dt>คะแนนสอบ</dt><dd>{personalRating.rating ?? '—'}</dd></div>
+            <div><dt>คะแนนสุทธิที่ใช้จัดแรงค์</dt><dd>{personalRating.rating ?? '—'}</dd></div>
             <div><dt>สถานะผล</dt><dd>{personalRating.eligible ? 'ยืนยันแล้ว' : 'รอสอบ'}</dd></div>
           </dl>
         </section>
+        {personalRating.eligible && <p className="mt-3 px-1 text-sm leading-6 text-muted-foreground">คะแนนจากข้อถูกก่อนหัก: <strong className="text-foreground">{personalEarned ? `${personalEarned.points}/${personalEarned.maximum}` : 'กำลังตรวจสอบ'}</strong> · คะแนนสุทธิหลังหักข้อผิดใช้จัดแรงค์และอันดับ</p>}
 
         {personalRating.eligible && personalRating.rating !== null && <HunterShareCard alias={displayName(user.id)} rank={personalRating.rank.code} rankName={personalRating.rank.name} rating={personalRating.rating} month={monthLabel} />}
 
         <section className="leaderboard-board" aria-labelledby="leaderboard-title">
-          <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">ตารางอันดับประจำเดือน</h2></div><p>ผลทางการจากข้อสอบมาตรฐาน {monthLabel}</p></header>
+          <header><div><Trophy aria-hidden="true" /><h2 id="leaderboard-title">10 อันดับแรกประจำเดือน</h2></div><p>ผลทางการจากข้อสอบมาตรฐาน {monthLabel}</p></header>
           {standings.length === 0 ? (
             <div className="leaderboard-empty"><Trophy aria-hidden="true" /><h3>สนามกำลังรอฮันเตอร์คนแรก</h3><p>อันดับจะปรากฏเมื่อมีผู้ส่งข้อสอบมาตรฐานประจำเดือน</p><Link href="/exam">เริ่มวัดระดับ</Link></div>
           ) : <>
             <div className="leaderboard-podium">
               {topThree.map(hunter => <article key={hunter.userId} data-position={hunter.position} aria-label={`อันดับ ${hunter.position} ${displayName(hunter.userId)}`}>
-                <span>{hunter.position}</span><strong>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนน</p>
+                <span>{hunter.position}</span><strong>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</strong><div data-rank={hunter.rank.code}>{hunter.rank.code}</div><p>{hunter.rating} คะแนนสุทธิ</p>{earnedByUser.has(hunter.userId) && <p>ก่อนหัก {earnedByUser.get(hunter.userId)!.earned_points}/{earnedByUser.get(hunter.userId)!.maximum_points}</p>}
               </article>)}
             </div>
-            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนสอบมาตรฐาน</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
+            {tableRows.length > 0 && <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>แรงค์</th><th>คะแนนก่อนหัก</th><th>คะแนนสุทธิ</th></tr></thead><tbody>{tableRows.map(hunter => <tr key={hunter.userId} data-current={hunter.userId === user.id || undefined}><td>#{hunter.position}</td><td>{displayName(hunter.userId)}{hunter.userId === user.id ? ' (คุณ)' : ''}</td><td><span className="leaderboard-rank-code" data-rank={hunter.rank.code}>{hunter.rank.code}</span>{hunter.rank.name}</td><td>{earnedByUser.has(hunter.userId) ? `${earnedByUser.get(hunter.userId)!.earned_points}/${earnedByUser.get(hunter.userId)!.maximum_points}` : '—'}</td><td>{hunter.rating}</td></tr>)}</tbody></table></div>}
+            {standings.length > 10 && <p className="px-6 pb-5 pt-3 text-sm text-muted-foreground">แสดง 10 คนแรก · คะแนนเท่ากันได้อันดับร่วม จึงอาจมีผู้ได้อันดับเดียวกันบางคนไม่แสดงในตาราง ดูอันดับของคุณได้ในการ์ดด้านบน</p>}
           </>}
         </section>
 
         <section className="leaderboard-board" aria-labelledby="improvement-title">
-          <header><div><Trophy aria-hidden="true" /><h2 id="improvement-title">อันดับพัฒนาการ</h2></div><p>เปรียบเทียบคะแนนสอบกับเดือนก่อน · ไม่กระทบแรงก์</p></header>
+          <header><div><Trophy aria-hidden="true" /><h2 id="improvement-title">10 อันดับพัฒนาการ</h2></div><p>เปรียบเทียบคะแนนสอบกับเดือนก่อน · ไม่กระทบแรงก์</p></header>
           {historyUnavailable ? <div className="leaderboard-empty"><h3>ยังโหลดข้อมูลเดือนก่อนไม่ได้</h3><p>กรุณาลองใหม่อีกครั้ง</p></div> : improvements.length === 0 ? <div className="leaderboard-empty"><h3>เริ่มเก็บเส้นทางของคุณ</h3><p>เมื่อมีผลสอบทั้งเดือนนี้และเดือนก่อน จึงเปรียบเทียบพัฒนาการได้</p></div> :
-            <div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>เดือนก่อน</th><th>เดือนนี้</th><th>เปลี่ยนแปลง</th></tr></thead><tbody>{improvements.slice(0, 50).map(item => <tr key={item.userId} data-current={item.userId === user.id || undefined}><td>#{item.position}</td><td>{displayName(item.userId)}{item.userId === user.id ? ' (คุณ)' : ''}</td><td>{item.previous}</td><td>{item.current}</td><td>{item.improvement > 0 ? '+' : ''}{item.improvement}</td></tr>)}</tbody></table></div>}
+            <><div className="leaderboard-table-wrap"><table><thead><tr><th>อันดับ</th><th>ฮันเตอร์</th><th>เดือนก่อน</th><th>เดือนนี้</th><th>เปลี่ยนแปลง</th></tr></thead><tbody>{improvements.slice(0, 10).map(item => <tr key={item.userId} data-current={item.userId === user.id || undefined}><td>#{item.position}</td><td>{displayName(item.userId)}{item.userId === user.id ? ' (คุณ)' : ''}</td><td>{item.previous}</td><td>{item.current}</td><td>{item.improvement > 0 ? '+' : ''}{item.improvement}</td></tr>)}</tbody></table></div>{improvements.length > 10 && <p className="px-6 pb-5 pt-3 text-sm text-muted-foreground">แสดง 10 คนแรก · ผู้มีพัฒนาการเท่ากันได้อันดับร่วม จึงอาจมีผู้ได้อันดับเดียวกันบางคนไม่แสดงในตาราง</p>}</>}
         </section>
 
         <section className="leaderboard-board" aria-labelledby="hall-of-fame-title">
