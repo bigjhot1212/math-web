@@ -29,7 +29,7 @@ export default function CalculusCoreGuide() {
       </p>
 
       <div className={styles.coreRoute} aria-label="ลำดับการเรียนแคลคูลัส">
-        <span>ลิมิต</span><MoveRight aria-hidden="true" /><span>ความต่อเนื่อง</span><MoveRight aria-hidden="true" /><span>อนุพันธ์</span><MoveRight aria-hidden="true" /><span>การประยุกต์</span>
+        <span>ลิมิต</span><MoveRight aria-hidden="true" /><span>ความต่อเนื่อง</span><MoveRight aria-hidden="true" /><span>อนุพันธ์</span><MoveRight aria-hidden="true" /><span>อินทิกรัล</span>
       </div>
 
       <div className={styles.coreUnit}>
@@ -37,6 +37,15 @@ export default function CalculusCoreGuide() {
           <div><span>ลิมิต</span><h3>เริ่มจากแทนค่า แล้วอ่านผลให้ถูก</h3></div>
           <p>โจทย์ลิมิตส่วนใหญ่เริ่มได้ด้วยการแทน <em>x = a</em> แต่ผลที่ได้เป็นเพียงตัวบอกว่าเราควรทำอะไรต่อ</p>
         </div>
+
+        <article className={styles.coreExample}>
+          <div><h4>ลิมิตถามอะไร? ดูค่ารอบจุดก่อน</h4><p>ให้ f(x) = (x² − 4)/(x − 2) เราอยากรู้ว่าเมื่อ x เข้าใกล้ 2 ค่า f(x) กำลังเข้าใกล้เท่าไร</p></div>
+          <div className={styles.ruleTable}>
+            <div><strong>เข้าจากซ้าย</strong><MathExpression value="x = 1.9 → f(x) = 3.9; x = 1.99 → f(x) = 3.99" /></div>
+            <div><strong>เข้าจากขวา</strong><MathExpression value="x = 2.1 → f(x) = 4.1; x = 2.01 → f(x) = 4.01" /></div>
+          </div>
+          <p className={styles.coreConclusion}><Check aria-hidden="true" /><span>ทั้งสองข้างเข้าใกล้ 4 จึงได้ลิมิต 4 แม้ f(2) จะหาไม่ได้เพราะตัวส่วนเป็นศูนย์ ตัวเลขในตารางช่วยให้เห็นแนวโน้ม ส่วนวิธีพิสูจน์ด้วยการแยกตัวประกอบอยู่ด้านล่าง</span></p>
+        </article>
 
         <div className={styles.limitDecision}>
           <div className={styles.decisionStart}>
@@ -56,12 +65,24 @@ export default function CalculusCoreGuide() {
           <div>
             <h4>แยกตัวประกอบ</h4>
             <p>ใช้เมื่อเศษหรือส่วนเป็นพหุนาม แล้วตัดตัวประกอบร่วมได้ในบริเวณใกล้จุดที่หา แม้ฟังก์ชันเดิมจะนิยามไม่ได้ตรงจุดนั้น</p>
-            <MathExpression value="u^2 − a^2 = (u − a)(u + a); u^3 − a^3 = (u − a)(u^2 + ua + a^2); u^3 + a^3 = (u + a)(u^2 − ua + a^2)" />
+            <p><strong>ให้ “หน้า” และ “หลัง” แทนพจน์สองก้อน</strong> เช่น x² − 4 = x² − 2² มีหน้าเป็น x และหลังเป็น 2</p>
+            <div className={styles.factorMnemonic}>
+              <p>หน้า² − หลัง² = (หน้า − หลัง)(หน้า + หลัง)</p>
+              <p>หน้า³ − หลัง³ = (หน้า − หลัง)(หน้า² + หน้าหลัง + หลัง²)</p>
+              <p>หน้า³ + หลัง³ = (หน้า + หลัง)(หน้า² − หน้าหลัง + หลัง²)</p>
+            </div>
+            <p><strong>ช่วยจำสูตรกำลังสาม:</strong> วงเล็บแรกใช้เครื่องหมายเดิม ส่วนพจน์ตรงกลางของวงเล็บหลังใช้เครื่องหมายตรงข้าม</p>
+            <MathExpression value="x^2 − 4 = (x − 2)(x + 2)" />
           </div>
           <div>
             <h4>คูณด้วยสังยุค</h4>
             <p>ใช้กับนิพจน์ที่มีราก เพื่อสร้างผลต่างกำลังสองและกำจัดรูปกำกวม 0 / 0</p>
-            <MathExpression value="(√u − √v)(√u + √v) = u − v" />
+            <p>สังยุคคือ <strong>หน้าเหมือนเดิม หลังเหมือนเดิม แต่เปลี่ยนเครื่องหมายตรงกลาง</strong></p>
+            <div className={styles.factorMnemonic}>
+              <p>(หน้า − หลัง)(หน้า + หลัง) = หน้า² − หลัง²</p>
+            </div>
+            <p>เช่น √x − 2 มีหน้าเป็น √x และหลังเป็น 2 สังยุคจึงเป็น √x + 2</p>
+            <MathExpression value="(√x − 2)(√x + 2) = x − 4" />
           </div>
         </div>
 
@@ -75,7 +96,7 @@ export default function CalculusCoreGuide() {
           <Example
             title="ตัวอย่าง: คูณด้วยสังยุค"
             prompt="จงหาลิมิตเมื่อ x เข้าใกล้ 4"
-            steps={['lim_{x→4} (√x − 2)/(x − 4)', 'lim_{x→4} 1/(√x + 2)', '= 1/4']}
+            steps={['lim_{x→4} (√x − 2)/(x − 4)', 'lim_{x→4} [(√x − 2)(√x + 2)]/[(x − 4)(√x + 2)]', 'lim_{x→4} (x − 4)/[(x − 4)(√x + 2)]', 'lim_{x→4} 1/(√x + 2) = 1/4']}
             conclusion="คูณทั้งเศษและส่วนด้วย √x + 2 แล้วใช้ (√x − 2)(√x + 2) = x − 4"
           />
         </div>
@@ -112,6 +133,7 @@ export default function CalculusCoreGuide() {
 
         <div className={styles.derivativeMeaning}>
           <MathExpression value="f′(a) = lim_{h→0} [f(a + h) − f(a)]/h" />
+          <p>เริ่มจากจุด (a, f(a)) แล้วขยับไปอีก h หน่วยในแนวนอน ผลต่าง [f(a+h) − f(a)]/h คือความชันเฉลี่ยระหว่างสองจุด เมื่อ h เข้าใกล้ 0 ความชันเฉลี่ยจึงเข้าใกล้ความชันของเส้นสัมผัส ณ จุดเดิม ถ้าลิมิตนี้มีอยู่</p>
           <div>
             <p><strong>f′(a) &gt; 0</strong><span>กราฟมีความชันบวก ณ จุดนั้น</span></p>
             <p><strong>f′(a) = 0</strong><span>เส้นสัมผัสแนวนอน แต่ยังสรุปไม่ได้ว่าเป็นจุดสูงสุดหรือต่ำสุด</span></p>
@@ -129,6 +151,12 @@ export default function CalculusCoreGuide() {
         </div>
 
         <div className={styles.coreExamples}>
+          <Example
+            title="ตัวอย่าง: ความชันมาจากลิมิตอย่างไร"
+            prompt="ให้ f(x) = x² หาความชันที่ x = 2 จากนิยาม"
+            steps={["f′(2) = lim_{h→0} [(2+h)^2 − 2^2]/h", "= lim_{h→0} (4+4h+h^2−4)/h", "= lim_{h→0} (4+h) = 4"]}
+            conclusion="ย่อ h ได้เมื่อ h ≠ 0 แล้วจึงให้ h เข้าใกล้ 0 เส้นสัมผัสที่จุด (2, 4) จึงมีความชัน 4"
+          />
           <Example
             title="ตัวอย่าง: กฎลูกโซ่"
             prompt="หาอนุพันธ์ของ y = (3x² + 1)⁴"
@@ -160,6 +188,17 @@ export default function CalculusCoreGuide() {
         </div>
 
         <p className={styles.coreWarning}><AlertTriangle aria-hidden="true" /><span><strong>อย่าสรุปจาก f′(c) = 0 เพียงอย่างเดียว</strong> จุดดังกล่าวเป็นเพียงจุดที่ต้องตรวจต่อ อาจไม่ใช่ทั้งจุดสูงสุดและจุดต่ำสุดก็ได้</span></p>
+      </div>
+
+      <div className={styles.coreUnit}>
+        <div className={styles.coreUnitHeading}>
+          <div><span>อินทิกรัล</span><h3>จากการเปลี่ยนแปลงกลับไปสู่การสะสม</h3></div>
+          <p>ถ้าอนุพันธ์ช่วยบอกว่าฟังก์ชันเปลี่ยนเร็วแค่ไหน อินทิกรัลช่วยหาปฏิยานุพันธ์และคำนวณผลรวมของสิ่งที่สะสมในช่วงหนึ่ง</p>
+        </div>
+        <div className={styles.coreExamples}>
+          <Example title="ย้อนกลับจากอนุพันธ์" prompt="หา ∫ 2x dx" steps={['d(x^2)/dx = 2x', '∫ 2x dx = x^2 + C']} conclusion="ต้องมี + C เพราะ x² + 1 และ x² − 5 ต่างก็มีอนุพันธ์เป็น 2x เหมือนกัน" />
+          <Example title="หาพื้นที่เหนือแกน x" prompt="หาพื้นที่ใต้กราฟ y = 2x จาก x = 0 ถึง x = 2" steps={['∫_0^2 2x dx = [x^2]_0^2', '= 2^2 − 0^2 = 4']} conclusion="ช่วงนี้กราฟอยู่เหนือแกน x พื้นที่จึงเท่ากับ 4 ตารางหน่วย หากกราฟอยู่ใต้แกน ต้องระวังว่าอินทิกรัลมีเครื่องหมาย แต่พื้นที่ไม่ติดลบ" />
+        </div>
       </div>
     </section>
   )

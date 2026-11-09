@@ -58,6 +58,8 @@
 .techniqueRows > div { min-width: 0; }
 .techniqueRows h4, .coreExample h4, .sidedLimits h4, .lineEquations h4, .applicationFlow h4 { font-size: 17px; font-weight: 600; }
 .techniqueRows p, .coreExample > div > p, .lineEquations p { margin-top: 7px; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
+.techniqueRows .factorMnemonic { margin-top: 14px; border-radius: 8px; background: var(--accent); padding: 12px 18px; }
+.techniqueRows .factorMnemonic p { color: var(--primary); font-size: 15px; font-weight: 600; line-height: 1.8; overflow-wrap: anywhere; }
 .techniqueRows .mathExpression, .coreExampleMath, .derivativeMeaning > .mathExpression, .ruleTable .mathExpression, .lineEquations .mathExpression { margin-top: 14px; overflow-x: auto; border-radius: 8px; background: var(--accent); padding: 16px 18px; color: var(--primary); font-family: var(--font-math), var(--font-body), sans-serif; font-size: 1rem; line-height: 1.75; scrollbar-width: thin; }
 .coreExamples { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 34px; background: var(--border); }
 .coreExample { min-width: 0; background: var(--background); padding: 26px 28px; }
