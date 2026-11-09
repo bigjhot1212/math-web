@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Pencil, UserRound } from 'lucide-react'
 
-export default function HunterNameForm({ name, changedThisMonth }: { name: string; changedThisMonth: boolean }) {
+export default function HunterNameForm({ name, changedThisMonth, nameFiltered = false }: { name: string; changedThisMonth: boolean; nameFiltered?: boolean }) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(name)
@@ -34,6 +34,7 @@ export default function HunterNameForm({ name, changedThisMonth }: { name: strin
           <h2 id="hunter-name-title" className="font-heading text-lg font-bold sm:text-xl">ชื่อที่แสดงบน Leaderboard</h2>
           <p className="mt-1 break-words text-base font-semibold">{name}</p>
           <p className="mt-1 text-sm leading-6 text-[#395d4e]">ผู้อื่นจะเห็นชื่อนี้ · เปลี่ยนได้เดือนละครั้ง</p>
+          {nameFiltered && <p className="mt-2 text-sm leading-6 text-[#a52525]">ชื่อเดิมไม่ผ่านกติกา จึงแสดงชื่ออัตโนมัติแทน กรุณาตั้งชื่อสุภาพใหม่ได้ทันที</p>}
         </div>
       </div>
       {!changedThisMonth && !editing && <button type="button" onClick={() => setEditing(true)} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#143f34] px-5 py-3 text-sm font-semibold text-white hover:bg-[#205b49] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#143f34]"><Pencil className="size-4" aria-hidden="true" />เปลี่ยนชื่อบน Leaderboard</button>}
@@ -43,7 +44,7 @@ export default function HunterNameForm({ name, changedThisMonth }: { name: strin
         <label className="min-w-48 flex-1 text-sm font-semibold">ชื่อฮันเตอร์ <input className="mt-1 block w-full rounded-lg border border-[#799284] bg-white px-3 py-2 text-[#143f34]" value={value} onChange={event => setValue(event.target.value)} maxLength={48} required /></label>
         <button disabled={saving} className="min-h-11 rounded-lg bg-[#143f34] px-5 py-2 font-semibold text-white disabled:opacity-50">{saving ? 'กำลังบันทึก...' : 'บันทึกชื่อ'}</button>
         <button type="button" onClick={() => setEditing(false)} className="min-h-11 rounded-lg border border-[#799284] px-4 py-2">ยกเลิก</button>
-        <p className="basis-full text-sm leading-6 text-[#395d4e]">ใช้ 3–24 ตัวอักษร เลือกชื่อเล่นที่ไม่เปิดเผยข้อมูลส่วนตัว เมื่อบันทึกแล้วเปลี่ยนได้อีกครั้งเดือนหน้า</p>
+        <p className="basis-full text-sm leading-6 text-[#395d4e]">ใช้ 3–24 ตัวอักษร ไม่ใช้คำหยาบ คำเหยียด หรือข้อความคุกคาม และไม่เปิดเผยข้อมูลส่วนตัว เมื่อบันทึกแล้วเปลี่ยนได้อีกครั้งเดือนหน้า</p>
         {error && <p role="alert" className="basis-full text-sm text-[#a52525]">{error}</p>}
       </form>}
   </section>

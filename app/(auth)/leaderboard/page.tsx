@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import HunterShareCard from '@/app/components/adventure/hunter-share-card'
 import HunterNameForm from '@/app/components/adventure/hunter-name-form'
-import { hunterDisplayNameAt, type HunterDisplayNameRow } from '@/lib/hunter-display-name'
+import { hunterDisplayNameAt, isHunterNameAllowed, type HunterDisplayNameRow } from '@/lib/hunter-display-name'
 import { ArrowRight, CalendarCheck2, CheckCircle2, LockKeyhole, Medal, ShieldCheck, Trophy } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -175,7 +175,9 @@ export default async function LeaderboardPage() {
     const label = `${displayName(userId, month)}${userId === user.id ? ' (คุณ)' : ''}`
     return canInspectStudents ? <Link className="leaderboard-admin-student" href={`/admin/students/${encodeURIComponent(userId)}`} aria-label={`ดูข้อมูลนักเรียน ${label}`}>{label}</Link> : label
   }
-  const changedThisMonth = displayNames.some(row => row.user_id === user.id && row.month_key === monthKey)
+  const changedThisMonth = displayNames.some(row => row.user_id === user.id && row.month_key === monthKey && isHunterNameAllowed(row.display_name))
+  const latestName = displayNames.find(row => row.user_id === user.id && row.month_key <= monthKey)
+  const nameFiltered = Boolean(latestName && !isHunterNameAllowed(latestName.display_name))
 
   return (
     <main className="leaderboard-page min-h-screen">
@@ -189,7 +191,7 @@ export default async function LeaderboardPage() {
           <Link href={personalRating.eligible ? '/hunter-guide' : '/exam'}>{personalRating.eligible ? 'ดูเส้นทางพัฒนาของฉัน' : 'สอบวัดระดับเดือนนี้'} <ArrowRight aria-hidden="true" /></Link>
         </header>
 
-        {namesAvailable && <HunterNameForm name={displayName(user.id)} changedThisMonth={changedThisMonth} />}
+        {namesAvailable && <HunterNameForm name={displayName(user.id)} changedThisMonth={changedThisMonth} nameFiltered={nameFiltered} />}
         <section className="personal-rank" aria-labelledby="personal-rank-title">
           <div className="personal-rank-mark" data-rank={personalRating.rank.code}>{personalRating.rank.code}</div>
           <div className="personal-rank-copy">
