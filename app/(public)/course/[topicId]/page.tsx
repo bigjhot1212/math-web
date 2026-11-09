@@ -2,13 +2,15 @@ import { notFound, redirect } from 'next/navigation'
 import { ArrowLeft, Clapperboard, ExternalLink, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { COURSES } from '@/content/course-videos'
-import { getClassroomUrl } from '@/lib/classroom-links'
+import { getClassroomJoinCode, getClassroomUrl } from '@/lib/classroom-links'
+import { isAdminEmail } from '@/lib/payment-config'
 
 export default async function CoursePage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
   const course = COURSES[topicId]
   if (!course || course.status === 'coming_soon') notFound()
   const classroomUrl = getClassroomUrl(topicId, course.classroomId)
+  const classroomCode = getClassroomJoinCode(topicId)
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -19,7 +21,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
     supabase.from('topic_purchases').select('id').eq('user_id', user.id).eq('topic_id', topicId).single(),
   ])
 
-  if (sub?.status !== 'active' && !purchase) redirect('/pricing')
+  if (!isAdminEmail(user.email) && sub?.status !== 'active' && !purchase) redirect('/pricing')
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-10">
@@ -56,7 +58,7 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
               <Clapperboard className="w-7 h-7" aria-hidden="true" />
             </span>
             <p className="text-sm font-medium">วิดีโอกำลังจะมาเร็วๆ นี้</p>
-            <p className="text-xs">เนื้อหาอยู่ใน Google Classroom ของคุณแล้ว</p>
+            <p className="text-xs">เนื้อหาเรียนอยู่ใน Google Classroom</p>
           </div>
         )}
 
@@ -75,6 +77,15 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
               เปิด Classroom
               <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
             </a>
+          </div>
+        )}
+
+        {classroomCode && (
+          <div className="mt-4 rounded-lg border border-border bg-card p-5 text-sm leading-6">
+            <h2 className="font-heading font-semibold text-foreground">เข้าห้องครั้งแรกด้วยรหัสชั้นเรียน</h2>
+            <p className="mt-2 text-muted-foreground">หากกดลิงก์แล้วไม่พบชั้นเรียน ให้เปิด Google Classroom เข้าสู่ระบบด้วยบัญชี Google ที่ต้องการใช้เรียน กดเครื่องหมาย + → เข้าร่วมชั้นเรียน แล้วกรอกรหัสนี้</p>
+            <p className="mt-3 font-semibold text-foreground">รหัสชั้นเรียน: <span className="select-all font-mono tracking-wide">{classroomCode}</span></p>
+            <p className="mt-2 text-muted-foreground">หากยังเข้าไม่ได้ กรุณาติดต่อผู้สอนพร้อมอีเมล Google ที่ใช้เรียน</p>
           </div>
         )}
 

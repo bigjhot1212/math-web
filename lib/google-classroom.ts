@@ -1,5 +1,7 @@
 import { google } from 'googleapis'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { classroomApiCourseId } from '@/lib/classroom-course-id'
 
 function getOAuthClient() {
   return new google.auth.OAuth2(
@@ -19,7 +21,7 @@ export function getAuthUrl() {
 }
 
 async function getAccessToken(): Promise<string> {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data } = await supabase
     .from('google_tokens')
     .select('refresh_token')
@@ -47,6 +49,6 @@ export async function inviteStudentToClassroom(courseId: string, studentEmail: s
 
   const classroom = google.classroom({ version: 'v1', auth: oauth2 })
   await classroom.invitations.create({
-    requestBody: { courseId, userId: studentEmail, role: 'STUDENT' },
+    requestBody: { courseId: classroomApiCourseId(courseId), userId: studentEmail, role: 'STUDENT' },
   })
 }

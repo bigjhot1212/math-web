@@ -5,6 +5,7 @@ import { ArrowRight, BookOpen, Clock3, ExternalLink, PlayCircle, Sparkles } from
 import { claimCourseInvites } from '@/lib/course-invites'
 import { getClassroomUrl } from '@/lib/classroom-links'
 import { createClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/payment-config'
 import { BUNDLES, COURSES } from '@/content/course-videos'
 
 type PurchaseRow = {
@@ -52,7 +53,7 @@ export default async function CoursesPage() {
 
   const purchases = (purchaseRows ?? []) as PurchaseRow[]
   const purchasedById = new Map(purchases.map((purchase) => [purchase.topic_id, purchase]))
-  const ownedIds = subscription?.status === 'active'
+  const ownedIds = isAdminEmail(user.email) || subscription?.status === 'active'
     ? Object.keys(COURSES).filter((id) => COURSES[id].status === 'available')
     : purchases.map((purchase) => purchase.topic_id)
   const ownedCourses = ownedIds
