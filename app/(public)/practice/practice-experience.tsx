@@ -80,11 +80,6 @@ export default function PracticeExperience({ isLoggedIn, progress, lastTopicId, 
         </header>
 
 
-        <Link href="/practice/formula-game" className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-card p-5 hover:border-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-          <span><strong className="block font-heading text-lg text-primary">เกมเลือกสูตร · แคลคูลัส</strong><span className="mt-1 block text-sm text-muted-foreground">ฝึกอ่านโจทย์และเลือกวิธีคิด แยก 3 ระดับ · ชุดฝึก 24 ข้อ</span></span>
-          <span className="font-semibold text-primary">เริ่มเล่น →</span>
-        </Link>
-
         <WorldExplorer progress={progress} signedIn={isLoggedIn} recommendedTopicId={lastTopicId ?? undefined} />
 
         <section className={`grid gap-5 ${continueTopic ? 'lg:grid-cols-[1fr_1.15fr]' : 'grid-cols-1'}`} aria-label="เริ่มฝึกอย่างรวดเร็ว">
