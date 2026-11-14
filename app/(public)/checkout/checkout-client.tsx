@@ -105,6 +105,7 @@ export default function CheckoutClient({ type, id, name, price, email }: Props) 
         <p className="mt-2 text-base leading-7 text-muted-foreground">
           ชำระผ่าน Stripe เพื่อเปิดคอร์สอัตโนมัติ หรือโอนธนาคารและแนบสลิปให้ทีมงานตรวจ
         </p>
+        <p className="mt-3 text-sm leading-6 text-foreground">สิทธิ์ที่เปิดตั้งแต่ 15 พ.ย. 2569 เวลาไทย เรียนบนเว็บได้ 1 ปีนับจากเปิดสิทธิ์ ส่วนสิทธิ์ที่เปิดก่อนหน้านั้นยังไม่มีกำหนดหมดอายุ</p>
 
         <section aria-label="สรุปคำสั่งซื้อ" className="my-7 rounded-2xl bg-card p-5 shadow-[0_12px_32px_-24px_rgba(15,23,42,0.5)] sm:p-6">
           <dl className="space-y-3">

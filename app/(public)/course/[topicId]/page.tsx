@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { COURSES } from '@/content/course-videos'
 import { getClassroomJoinCode, getClassroomUrl } from '@/lib/classroom-links'
 import { isAdminEmail } from '@/lib/payment-config'
+import { purchaseEntitlement } from '@/lib/course-expiry'
 
 export default async function CoursePage({ params }: { params: Promise<{ topicId: string }> }) {
   const { topicId } = await params
@@ -18,10 +19,10 @@ export default async function CoursePage({ params }: { params: Promise<{ topicId
 
   const [{ data: sub }, { data: purchase }] = await Promise.all([
     supabase.from('subscriptions').select('status').eq('user_id', user.id).single(),
-    supabase.from('topic_purchases').select('id').eq('user_id', user.id).eq('topic_id', topicId).single(),
+    supabase.from('topic_purchases').select('id, purchased_at, payment_method').eq('user_id', user.id).eq('topic_id', topicId).maybeSingle(),
   ])
 
-  if (!isAdminEmail(user.email) && sub?.status !== 'active' && !purchase) redirect('/pricing')
+  if (!isAdminEmail(user.email) && sub?.status !== 'active' && (!purchase || !purchaseEntitlement(purchase).active)) redirect('/courses')
 
   return (
     <main className="min-h-screen bg-background p-6 md:p-10">

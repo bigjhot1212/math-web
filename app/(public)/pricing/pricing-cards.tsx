@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PlayCircle, Loader2, Lock, CheckCircle2, Sparkles, ChevronDown, BookOpen, ShoppingCart, Check, MessageCircle } from 'lucide-react'
 import { COURSES, ZONE_LABELS, BUNDLES, type CourseZone } from '@/content/course-videos'
+import { COURSE_OVERVIEWS } from '@/content/course-overviews'
 import { getCart, addToCart, removeFromCart, onCartChange } from '@/lib/cart'
 import CourseArtwork from './course-artwork'
 
@@ -28,19 +29,21 @@ const ALL_COURSES = [
 
 const ZONE_ORDER: CourseZone[] = ['special', 'm6', 'm5', 'm4']
 
-type Props = { isLoggedIn: boolean; purchasedTopicIds: string[] }
+type Props = { isLoggedIn: boolean; purchasedTopicIds: string[]; expiredTopicIds: string[] }
 
 type CourseCardProps = {
   id: string
   index: number
   owned: boolean
+  expired: boolean
   loading: boolean
   disabled: boolean
   onBuy: (id: string) => void
 }
 
-function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardProps) {
+function CourseCard({ id, index, owned, expired, loading, disabled, onBuy }: CourseCardProps) {
   const course = COURSES[id]
+  const overview = COURSE_OVERVIEWS[id]
   const available = course.status === 'available'
   const isSpecial = course.zone === 'special'
   const [showCurriculum, setShowCurriculum] = useState(false)
@@ -67,7 +70,7 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
       <div className={`relative overflow-hidden bg-accent ${isSpecial ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
         <CourseArtwork courseId={id} courseName={course.name} featured={isSpecial} />
 
-        {owned && (
+        {owned && !expired && (
           <span className="absolute top-3 left-3 flex items-center gap-1 text-xs font-semibold  px-2 py-1 rounded-full border border-white/10 bg-card text-primary">
             <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
             เป็นเจ้าของแล้ว
@@ -94,18 +97,28 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
         <h3 className={`${isSpecial ? 'text-lg' : 'text-sm'} font-heading font-semibold text-foreground mb-1 ${isSpecial ? '' : ''}`}>{course.name}</h3>
         <p className={`text-xs text-muted-foreground mb-3 ${isSpecial ? 'line-clamp-3' : 'line-clamp-2'}`}>{course.nameEn} · {course.desc}</p>
 
-        {course.curriculum && course.curriculum.length > 0 && (
+        {(overview || (course.curriculum && course.curriculum.length > 0)) && (
           <div className="mb-3">
             <button
               onClick={() => setShowCurriculum((v) => !v)}
-              className="flex items-center gap-1.5 text-xs text-primary hover:underline cursor-pointer"
+              aria-expanded={showCurriculum}
+              aria-controls={`course-details-${id}`}
+              className="flex min-h-11 items-center gap-1.5 text-sm font-semibold text-primary hover:underline cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
-              {showCurriculum ? 'ซ่อนเนื้อหา' : `ดูเนื้อหาในคอร์ส (${totalLessons} บท)`}
+              {showCurriculum ? 'ซ่อนรายละเอียดคอร์ส' : 'คอร์สนี้เรียนอะไร เหมาะกับใคร'}
               <ChevronDown className={`w-3 h-3 transition-transform ${showCurriculum ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
             {showCurriculum && (
-              <div className="mt-2 p-3 rounded-lg bg-accent/40 max-h-48 overflow-y-auto">
+              <div id={`course-details-${id}`} className="mt-2 rounded-lg bg-accent/40 p-4 text-sm leading-6">
+                {overview && <dl className="space-y-4">
+                  <div><dt className="font-semibold text-primary">เรียนแล้วได้อะไร</dt><dd className="mt-1 text-foreground">{overview.outcome}</dd></div>
+                  <div><dt className="font-semibold text-primary">สอนอย่างไร</dt><dd className="mt-1 text-foreground">{overview.teaching}</dd></div>
+                  <div><dt className="font-semibold text-primary">เหมาะกับใคร</dt><dd className="mt-1 text-foreground">{overview.suitable}</dd></div>
+                </dl>}
+                {course.curriculum && course.curriculum.length > 0 && <details className="mt-4 border-t border-border pt-3">
+                <summary className="cursor-pointer font-semibold text-primary">ดูหัวข้อที่เรียน ({totalLessons} หัวข้อ)</summary>
+                <div className="mt-3 max-h-64 overflow-y-auto">
                 {course.curriculum.map((section, sIdx) => (
                   <div key={sIdx} className={sIdx > 0 ? 'mt-2' : ''}>
                     {section.title && (
@@ -121,6 +134,7 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
                     </ol>
                   </div>
                 ))}
+                </div></details>}
               </div>
             )}
           </div>
@@ -129,6 +143,8 @@ function CourseCard({ id, index, owned, loading, disabled, onBuy }: CourseCardPr
         <div className="border-t border-border pt-3">
           {!available ? (
             <p className="text-sm font-semibold text-muted-foreground">Coming Soon</p>
+          ) : expired ? (
+            <a href="https://ig.me/m/j.3ra_" target="_blank" rel="noopener noreferrer" className="block py-2 text-sm font-semibold text-primary underline underline-offset-4">สิทธิ์หมดอายุ · ติดต่อผู้สอน</a>
           ) : owned ? (
             <a
               href={`/course/${id}`}
@@ -211,7 +227,7 @@ function BundleBanner({ bundleId, isLoggedIn, loading, disabled, onBuy }: Bundle
   )
 }
 
-export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
+export default function PricingCards({ isLoggedIn, purchasedTopicIds, expiredTopicIds }: Props) {
   const router = useRouter()
   const [topicLoading, setTopicLoading] = useState<string | null>(null)
   const [bundleLoading, setBundleLoading] = useState<string | null>(null)
@@ -250,6 +266,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Math Hunters courses</p>
               <h1 className="mt-2 text-3xl sm:text-4xl font-heading font-bold text-foreground">เลือกคอร์สที่อยากเริ่ม</h1>
               <p className="mt-2 text-muted-foreground">เลือกเรียนเป็นบท หรือค่อย ๆ เก็บครบตามระดับชั้น</p>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">สิทธิ์ที่เปิดตั้งแต่ 15 พ.ย. 2569 เวลาไทย เรียนบนเว็บได้ 1 ปีนับจากเปิดสิทธิ์ · สิทธิ์ที่เปิดก่อนวันดังกล่าวยังไม่มีกำหนดหมดอายุ</p>
             </div>
 
             <div className="inline-block self-start px-5 py-4 rounded-lg border border-border/70 bg-card/70 text-left transition-all duration-300 ">
@@ -330,6 +347,7 @@ export default function PricingCards({ isLoggedIn, purchasedTopicIds }: Props) {
                     id={id}
                     index={i}
                     owned={purchasedTopicIds.includes(id)}
+                    expired={expiredTopicIds.includes(id)}
                     loading={topicLoading === id}
                     disabled={topicLoading !== null}
                     onBuy={handleBuyTopic}

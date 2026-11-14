@@ -6,11 +6,13 @@ import { claimCourseInvites } from '@/lib/course-invites'
 import { getClassroomUrl } from '@/lib/classroom-links'
 import { createClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/payment-config'
+import { purchaseEntitlement } from '@/lib/course-expiry'
 import { BUNDLES, COURSES } from '@/content/course-videos'
 
 type PurchaseRow = {
   topic_id: string
   payment_method: string | null
+  purchased_at: string
 }
 
 type PendingTransferRow = {
@@ -36,7 +38,7 @@ export default async function CoursesPage() {
   const [{ data: purchaseRows }, { data: subscription }, { data: pendingRows }] = await Promise.all([
     supabase
       .from('topic_purchases')
-      .select('topic_id, payment_method')
+      .select('topic_id, payment_method, purchased_at')
       .eq('user_id', user.id),
     supabase
       .from('subscriptions')
@@ -53,9 +55,11 @@ export default async function CoursesPage() {
 
   const purchases = (purchaseRows ?? []) as PurchaseRow[]
   const purchasedById = new Map(purchases.map((purchase) => [purchase.topic_id, purchase]))
+  const unrestricted = isAdminEmail(user.email) || subscription?.status === 'active'
+  const expiredCourses = unrestricted ? [] : purchases.filter(purchase => !purchaseEntitlement(purchase).active && COURSES[purchase.topic_id]?.status === 'available')
   const ownedIds = isAdminEmail(user.email) || subscription?.status === 'active'
     ? Object.keys(COURSES).filter((id) => COURSES[id].status === 'available')
-    : purchases.map((purchase) => purchase.topic_id)
+    : purchases.filter(purchase => purchaseEntitlement(purchase).active).map((purchase) => purchase.topic_id)
   const ownedCourses = ownedIds
     .filter((id) => COURSES[id]?.status === 'available')
     .map((id) => ({ id, course: COURSES[id], purchase: purchasedById.get(id) }))
@@ -87,6 +91,12 @@ export default async function CoursesPage() {
           )}
         </header>
 
+        {expiredCourses.length > 0 && <section className="mb-8 rounded-lg border border-border bg-card p-5" aria-label="คอร์สที่หมดอายุ">
+          <h2 className="font-heading font-semibold">คอร์สที่หมดอายุ</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{expiredCourses.map(purchase => COURSES[purchase.topic_id].name).join(', ')} · หากต้องการต่ออายุ กรุณาติดต่อผู้สอน</p>
+          <a href="https://ig.me/m/j.3ra_" target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-semibold text-primary underline underline-offset-4">ติดต่อผู้สอน</a>
+        </section>}
+
         {pendingIds.length > 0 && (
           <section className="mb-8 rounded-lg border border-cta/35 bg-cta/10 p-5 text-foreground">
             <div className="flex items-start gap-3">
@@ -110,12 +120,12 @@ export default async function CoursesPage() {
               <Sparkles className="h-6 w-6" aria-hidden="true" />
             </span>
             <h2 className="mt-5 font-heading text-xl font-bold text-foreground">
-              {pendingIds.length > 0 ? 'รออีกนิด คอร์สกำลังเข้ามา' : 'ยังไม่มีคอร์สในบัญชีนี้'}
+              {pendingIds.length > 0 ? 'รออีกนิด คอร์สกำลังเข้ามา' : expiredCourses.length > 0 ? 'ไม่มีคอร์สที่พร้อมเรียนในตอนนี้' : 'ยังไม่มีคอร์สในบัญชีนี้'}
             </h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
               {pendingIds.length > 0
                 ? 'หลังตรวจสอบสลิปเรียบร้อย คุณจะกดเข้าเรียนจากหน้านี้ได้ทันที'
-                : 'เลือกคอร์สที่เหมาะกับเป้าหมายของคุณ เมื่อชำระเรียบร้อยแล้วจะกลับมาเรียนจากหน้านี้ได้ตลอด'}
+                : expiredCourses.length > 0 ? 'ดูคอร์สที่หมดอายุและช่องทางติดต่อผู้สอนได้ด้านบน' : 'เลือกคอร์สที่เหมาะกับเป้าหมายของคุณ เมื่อชำระเรียบร้อยแล้วจะกลับมาเรียนจากหน้านี้ได้'}
             </p>
             <Link
               href="/pricing"
@@ -166,6 +176,7 @@ export default async function CoursesPage() {
                         </Link>
                       </div>
                     </div>
+                    {purchase && !unrestricted && (() => { const { expiresAt } = purchaseEntitlement(purchase); return <p className="mt-3 text-xs text-muted-foreground">{expiresAt ? `เรียนได้ถึง ${new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Bangkok' }).format(expiresAt)} น. (เวลาไทย)` : 'สิทธิ์เรียนไม่มีกำหนดหมดอายุ'}</p> })()}
                   </div>
                 </article>
               )
